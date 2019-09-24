@@ -10,7 +10,7 @@
 AFrontierPlayerController::AFrontierPlayerController()
 {
 	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Hand;
+	DefaultMouseCursor = EMouseCursor::Default;
 }
 
 void AFrontierPlayerController::PlayerTick(float DeltaTime)
