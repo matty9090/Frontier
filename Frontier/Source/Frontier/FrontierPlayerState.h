@@ -16,6 +16,9 @@ class FRONTIER_API AFrontierPlayerState : public APlayerState
 {
     GENERATED_BODY()
 
-    UPROPERTY()
+public:
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+    UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 };

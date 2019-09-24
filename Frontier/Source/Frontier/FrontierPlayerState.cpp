@@ -2,4 +2,11 @@
 
 
 #include "FrontierPlayerState.h"
+#include "UnrealNetwork.h"
 
+void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AFrontierPlayerState, Resources);
+}
