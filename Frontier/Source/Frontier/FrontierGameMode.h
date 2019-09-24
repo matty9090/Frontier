@@ -6,7 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "FrontierGameMode.generated.h"
 
-UCLASS(minimalapi)
+UCLASS(MinimalAPI)
 class AFrontierGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
