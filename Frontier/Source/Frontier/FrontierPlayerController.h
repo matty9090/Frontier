@@ -6,22 +6,29 @@
 #include "GameFramework/PlayerController.h"
 #include "FrontierPlayerController.generated.h"
 
+class ABuilding;
+
 UCLASS()
 class AFrontierPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AFrontierPlayerController();
+    AFrontierPlayerController();
 
 protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	uint32 bMoveToMouseCursor : 1;
+    /** True if the controlled character should navigate to the mouse cursor. */
+    uint32 bMoveToMouseCursor : 1;
 
-	// Begin PlayerController interface
-	virtual void PlayerTick(float DeltaTime) override;
-	virtual void SetupInputComponent() override;
-	// End PlayerController interface
+    // Begin PlayerController interface
+    virtual void PlayerTick(float DeltaTime) override;
+    virtual void SetupInputComponent() override;
+    // End PlayerController interface
+
+    UPROPERTY(BlueprintReadWrite)
+    ABuilding* SelectedBuilding = nullptr;
+
+private:
+    UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    void SpawnBuildingOnServer(UClass* Type, FVector Location, FRotator Rotation);
 };
-
-
