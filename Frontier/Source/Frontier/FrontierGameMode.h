@@ -14,6 +14,3 @@ class AFrontierGameMode : public AGameModeBase
 public:
 	AFrontierGameMode();
 };
-
-
-

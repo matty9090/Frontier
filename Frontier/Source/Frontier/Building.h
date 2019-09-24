@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Resources.h"
+
 #include "Building.generated.h"
 
 UCLASS()
@@ -23,4 +25,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FResources Cost;
 };
