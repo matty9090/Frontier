@@ -7,13 +7,5 @@
 
 AFrontierGameMode::AFrontierGameMode()
 {
-	// use our custom PlayerController class
-	PlayerControllerClass = AFrontierPlayerController::StaticClass();
-
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Frontier/Blueprints/TopDownCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
+	
 }
