@@ -27,6 +27,12 @@ void AFrontierPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 }
 
+void AFrontierPlayerController::OnRep_PlacedBuilding()
+{
+    if(SelectedBuilding)
+        SelectedBuilding->Destroy();
+}
+
 bool AFrontierPlayerController::SpawnBuildingOnServer_Validate(UClass* Type, FVector Location, FRotator Rotation)
 {
     return true;
@@ -39,11 +45,18 @@ void AFrontierPlayerController::SpawnBuildingOnServer_Implementation(UClass* Typ
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-        GetWorld()->SpawnActor<ABuilding>(
+        PlacedBuilding = GetWorld()->SpawnActor<ABuilding>(
             Type,
             Location,
             Rotation,
             SpawnParams
         );
     }
+}
+
+void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AFrontierPlayerController, PlacedBuilding);
 }

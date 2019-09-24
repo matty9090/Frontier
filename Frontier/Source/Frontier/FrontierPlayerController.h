@@ -16,6 +16,8 @@ class AFrontierPlayerController : public APlayerController
 public:
     AFrontierPlayerController();
 
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
     /** True if the controlled character should navigate to the mouse cursor. */
     uint32 bMoveToMouseCursor : 1;
@@ -31,4 +33,10 @@ protected:
 private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void SpawnBuildingOnServer(UClass* Type, FVector Location, FRotator Rotation);
+
+    UFUNCTION()
+    void OnRep_PlacedBuilding();
+
+    UPROPERTY(ReplicatedUsing=OnRep_PlacedBuilding)
+    ABuilding* PlacedBuilding = nullptr;
 };
