@@ -15,7 +15,6 @@ ABaseResource::ABaseResource()
 void ABaseResource::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

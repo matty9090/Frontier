@@ -2,8 +2,7 @@
 
 #include "FrontierPlayerController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Runtime/Engine/Classes/Components/DecalComponent.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
+#include "AIController.h"
 #include "Net/UnrealNetwork.h"
 #include "FrontierCharacter.h"
 #include "Engine/World.h"
@@ -29,8 +28,10 @@ void AFrontierPlayerController::SetupInputComponent()
 
 void AFrontierPlayerController::OnRep_PlacedBuilding()
 {
-    if(SelectedBuilding)
+    if (SelectedBuilding)
+    {
         SelectedBuilding->Destroy();
+    }
 }
 
 bool AFrontierPlayerController::ServerSpawnBuilding_Validate(UClass* Type, FVector Location, FRotator Rotation)
@@ -51,7 +52,22 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type,
             Rotation,
             SpawnParams
         );
+
+        if (GetNetMode() == ENetMode::NM_ListenServer && SelectedBuilding)
+        {
+            SelectedBuilding->Destroy();
+        }
     }
+}
+
+bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(AFrontierCharacter* AI, FVector Location, AActor* Resource)
+{
+    return true;
+}
+
+void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierCharacter* AI, FVector Location, AActor* Object)
+{
+    AI->MoveToLocation(Location, Object);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

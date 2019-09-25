@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "FrontierCharacter.generated.h"
 
@@ -16,6 +16,9 @@ public:
 
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void MoveToLocation(FVector Location, AActor* Object);
 
     UPROPERTY(EditAnywhere)
     float WalkSpeed;

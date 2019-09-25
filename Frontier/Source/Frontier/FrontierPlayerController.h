@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "FrontierCharacter.h"
 #include "FrontierPlayerController.generated.h"
 
 class ABuilding;
@@ -33,6 +34,9 @@ protected:
 private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerSpawnBuilding(UClass* Type, FVector Location, FRotator Rotation);
+
+     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    void ServerMoveAIToLocation(AFrontierCharacter* AI, FVector Location, AActor* Object);
 
     UFUNCTION()
     void OnRep_PlacedBuilding();
