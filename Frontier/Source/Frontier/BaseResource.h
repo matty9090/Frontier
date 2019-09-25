@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Resources.h"
 #include "BaseResource.generated.h"
 
 UCLASS()
@@ -20,14 +21,17 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 ResourceAmount;
+	int32 ResourceAmount = 200;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FString ResourceName;
+	FString ResourceName = "BlankResource";
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    EResource ResourceType;
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetRemainingResources() const { return ResourceAmount; }
