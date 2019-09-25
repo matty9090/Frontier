@@ -19,8 +19,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ResourceAmount;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString ResourceName;
+	
+	UFUNCTION(BlueprintCallable)
+	int32 GetRemainingResources() const { return ResourceAmount; }
 };
