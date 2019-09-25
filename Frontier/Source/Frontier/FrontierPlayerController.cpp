@@ -33,12 +33,12 @@ void AFrontierPlayerController::OnRep_PlacedBuilding()
         SelectedBuilding->Destroy();
 }
 
-bool AFrontierPlayerController::SpawnBuildingOnServer_Validate(UClass* Type, FVector Location, FRotator Rotation)
+bool AFrontierPlayerController::ServerSpawnBuilding_Validate(UClass* Type, FVector Location, FRotator Rotation)
 {
     return true;
 }
 
-void AFrontierPlayerController::SpawnBuildingOnServer_Implementation(UClass* Type, FVector Location, FRotator Rotation)
+void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type, FVector Location, FRotator Rotation)
 {
     if (Type)
     {

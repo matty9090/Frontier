@@ -32,7 +32,7 @@ protected:
 
 private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
-    void SpawnBuildingOnServer(UClass* Type, FVector Location, FRotator Rotation);
+    void ServerSpawnBuilding(UClass* Type, FVector Location, FRotator Rotation);
 
     UFUNCTION()
     void OnRep_PlacedBuilding();
