@@ -14,4 +14,6 @@ class FRONTIER_API AFrontierGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 	
+public:
+    
 };
