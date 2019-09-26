@@ -19,4 +19,7 @@ public:
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	int32 Team;
 };

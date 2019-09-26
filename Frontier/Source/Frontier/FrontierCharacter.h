@@ -38,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 GatherSpeed;
 
+	UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
+	int32 Team;
+
 private:
 
 };

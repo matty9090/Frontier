@@ -9,4 +9,5 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AFrontierPlayerState, Resources);
+    DOREPLIFETIME(AFrontierPlayerState, Team);
 }
