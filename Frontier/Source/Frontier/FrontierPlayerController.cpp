@@ -44,7 +44,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type,
     if (Type)
     {
         FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
         PlacedBuilding = GetWorld()->SpawnActor<ABuilding>(
             Type,
