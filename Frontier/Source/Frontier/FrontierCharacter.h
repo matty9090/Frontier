@@ -32,6 +32,12 @@ public:
     UPROPERTY(EditAnywhere)
     float AttackStrength;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool CanGather;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 GatherSpeed;
+
 private:
 
 };
