@@ -28,9 +28,9 @@ void AFrontierPlayerController::SetupInputComponent()
 
 void AFrontierPlayerController::OnRep_PlacedBuilding()
 {
-    if (SelectedBuilding)
+    if (HoveredBuilding)
     {
-        SelectedBuilding->Destroy();
+		HoveredBuilding->Destroy();
     }
 }
 
@@ -53,9 +53,9 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type,
             SpawnParams
         );
 
-        if (GetNetMode() == ENetMode::NM_ListenServer && SelectedBuilding)
+        if (GetNetMode() == ENetMode::NM_ListenServer && HoveredBuilding)
         {
-            SelectedBuilding->Destroy();
+			HoveredBuilding->Destroy();
         }
     }
 }

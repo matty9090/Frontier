@@ -29,7 +29,7 @@ protected:
     // End PlayerController interface
 
     UPROPERTY(BlueprintReadWrite)
-    ABuilding* SelectedBuilding = nullptr;
+    ABuilding* HoveredBuilding = nullptr;
 
 private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
