@@ -2,7 +2,50 @@
 
 
 #include "FrontierPlayerState.h"
+#include "CoreMinimal.h"
 #include "UnrealNetwork.h"
+#include "Building.h"
+#include "Engine/World.h"
+#include "FrontierCharacter.h"
+
+AFrontierPlayerState::AFrontierPlayerState()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AFrontierPlayerState::Tick(float DeltaTime)
+{
+	if (HasAuthority())
+	{
+		if (UnitQueue.Num() > 0)
+		{
+			FUnitQueueItem& Item = UnitQueue[0];
+			Item.TimeRemaining -= DeltaTime;
+
+			if (Item.TimeRemaining < 0.0f)
+			{
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+				GetWorld()->SpawnActor<AFrontierCharacter>(Item.Unit, Item.SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+				UnitQueue.RemoveAt(0);
+			}
+		}
+	}
+}
+
+void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
+{
+	if (HasAuthority())
+	{
+		FUnitQueueItem Item;
+		Item.Unit = Unit;
+		Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
+		Item.SpawnLocation = Building->GetActorLocation();
+
+		UnitQueue.Push(Item);
+	}
+}
 
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -10,4 +53,5 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
     DOREPLIFETIME(AFrontierPlayerState, Resources);
     DOREPLIFETIME(AFrontierPlayerState, Team);
+    DOREPLIFETIME(AFrontierPlayerState, UnitQueue);
 }

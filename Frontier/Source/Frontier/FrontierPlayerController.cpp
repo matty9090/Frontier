@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "Net/UnrealNetwork.h"
 #include "FrontierCharacter.h"
+#include "FrontierPlayerState.h"
 #include "Engine/World.h"
 #include "Building.h"
 #include "Frontier.h"
@@ -68,6 +69,16 @@ bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(AFrontierCharact
 void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierCharacter* AI, FVector Location, AActor* Object)
 {
     AI->MoveToLocation(Location, Object);
+}
+
+bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
+{
+	return true;
+}
+
+void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
+{
+	Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

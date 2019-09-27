@@ -2,9 +2,28 @@
 
 #pragma once
 
+#include "Containers/Queue.h"
 #include "GameFramework/PlayerState.h"
 #include "Resources.h"
 #include "FrontierPlayerState.generated.h"
+
+class ABuilding;
+class AFrontierCharacter;
+
+USTRUCT(BlueprintType)
+struct FUnitQueueItem
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TSubclassOf<AFrontierCharacter> Unit;
+
+	UPROPERTY(BlueprintReadOnly)
+	float TimeRemaining;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector SpawnLocation;
+};
 
 /**
  * 
@@ -15,6 +34,11 @@ class FRONTIER_API AFrontierPlayerState : public APlayerState
     GENERATED_BODY()
 
 public:
+	AFrontierPlayerState();
+
+	void Tick(float DeltaTime) override;
+
+	void QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
@@ -22,4 +46,7 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	int32 Team;
+
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	TArray<FUnitQueueItem> UnitQueue;
 };

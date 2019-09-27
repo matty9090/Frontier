@@ -21,25 +21,28 @@ public:
     void MoveToLocation(FVector Location, AActor* Object);
 
     UPROPERTY(EditAnywhere)
-    float WalkSpeed;
+    float WalkSpeed = 500;
 
     UPROPERTY(EditAnywhere)
-    float Armour;
+    float Armour = 10;
 
     UPROPERTY(EditAnywhere)
-    float Health;
+    float Health = 100;
 
     UPROPERTY(EditAnywhere)
-    float AttackStrength;
+    float AttackStrength = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool CanGather;
+	bool CanGather = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 GatherSpeed;
+	int32 GatherSpeed = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TrainTime = 1;
 
 	UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
-	int32 Team;
+	int32 Team = -1;
 
 private:
 

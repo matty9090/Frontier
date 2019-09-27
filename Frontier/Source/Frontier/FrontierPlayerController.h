@@ -35,8 +35,11 @@ private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerSpawnBuilding(UClass* Type, FVector Location, FRotator Rotation);
 
-     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerMoveAIToLocation(AFrontierCharacter* AI, FVector Location, AActor* Object);
+
+	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    void ServerQueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
 
     UFUNCTION()
     void OnRep_PlacedBuilding();
