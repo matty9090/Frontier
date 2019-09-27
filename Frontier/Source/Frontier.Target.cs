@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public class FrontierTarget : TargetRules
 {
-	public FrontierTarget(TargetInfo Target) : base(Target)
-	{
-		Type = TargetType.Game;
-		ExtraModuleNames.Add("Frontier");
-	}
+    public FrontierTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Game;
+        ExtraModuleNames.Add("Frontier");
+    }
 }

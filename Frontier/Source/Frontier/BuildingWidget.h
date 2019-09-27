@@ -12,5 +12,5 @@
 UCLASS()
 class FRONTIER_API UBuildingWidget : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };

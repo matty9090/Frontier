@@ -9,13 +9,13 @@
 UCLASS(Blueprintable)
 class AFrontierCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AFrontierCharacter();
+    AFrontierCharacter();
 
-	// Called every frame.
-	virtual void Tick(float DeltaSeconds) override;
+    // Called every frame.
+    virtual void Tick(float DeltaSeconds) override;
 
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
@@ -32,17 +32,17 @@ public:
     UPROPERTY(EditAnywhere)
     float AttackStrength = 1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool CanGather = false;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    bool CanGather = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 GatherSpeed = 10;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    int32 GatherSpeed = 10;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TrainTime = 1;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    float TrainTime = 1;
 
-	UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
-	int32 Team = -1;
+    UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
+    int32 Team = -1;
 
 private:
 

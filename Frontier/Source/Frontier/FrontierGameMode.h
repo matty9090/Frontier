@@ -9,8 +9,8 @@
 UCLASS(MinimalAPI)
 class AFrontierGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AFrontierGameMode();
+    AFrontierGameMode();
 };

@@ -12,26 +12,26 @@
 
 AFrontierPlayerController::AFrontierPlayerController()
 {
-	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Default;
+    bShowMouseCursor = true;
+    DefaultMouseCursor = EMouseCursor::Default;
 }
 
 void AFrontierPlayerController::PlayerTick(float DeltaTime)
 {
-	Super::PlayerTick(DeltaTime);
+    Super::PlayerTick(DeltaTime);
 }
 
 void AFrontierPlayerController::SetupInputComponent()
 {
-	// set up gameplay key bindings
-	Super::SetupInputComponent();
+    // set up gameplay key bindings
+    Super::SetupInputComponent();
 }
 
 void AFrontierPlayerController::OnRep_PlacedBuilding()
 {
     if (HoveredBuilding)
     {
-		HoveredBuilding->Destroy();
+        HoveredBuilding->Destroy();
     }
 }
 
@@ -56,7 +56,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type,
 
         if (GetNetMode() == ENetMode::NM_ListenServer && HoveredBuilding)
         {
-			HoveredBuilding->Destroy();
+            HoveredBuilding->Destroy();
         }
     }
 }
@@ -73,12 +73,12 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-	return true;
+    return true;
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-	Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
+    Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

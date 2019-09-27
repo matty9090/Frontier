@@ -13,16 +13,16 @@ class AFrontierCharacter;
 USTRUCT(BlueprintType)
 struct FUnitQueueItem
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	UPROPERTY()
-	TSubclassOf<AFrontierCharacter> Unit;
+    UPROPERTY()
+    TSubclassOf<AFrontierCharacter> Unit;
 
-	UPROPERTY(BlueprintReadOnly)
-	float TimeRemaining;
+    UPROPERTY(BlueprintReadOnly)
+    float TimeRemaining;
 
-	UPROPERTY(BlueprintReadOnly)
-	FVector SpawnLocation;
+    UPROPERTY(BlueprintReadOnly)
+    FVector SpawnLocation;
 };
 
 /**
@@ -34,19 +34,28 @@ class FRONTIER_API AFrontierPlayerState : public APlayerState
     GENERATED_BODY()
 
 public:
-	AFrontierPlayerState();
+    AFrontierPlayerState();
 
-	void Tick(float DeltaTime) override;
+    void Tick(float DeltaTime) override;
 
-	void QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
+    void QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    
+    UFUNCTION(BlueprintCallable)
+    int32 GetPopulation() const { return Units.Num(); }
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	int32 Team;
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    int32 Team;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
-	TArray<FUnitQueueItem> UnitQueue;
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    int32 MaxPopulation = 40;
+
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    TArray<AFrontierCharacter*> Units;
+
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    TArray<FUnitQueueItem> UnitQueue;
 };

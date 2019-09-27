@@ -38,7 +38,7 @@ private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerMoveAIToLocation(AFrontierCharacter* AI, FVector Location, AActor* Object);
 
-	UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerQueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
 
     UFUNCTION()

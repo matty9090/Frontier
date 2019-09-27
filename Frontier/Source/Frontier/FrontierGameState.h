@@ -14,17 +14,17 @@ class AFrontierPlayerState;
 UCLASS()
 class FRONTIER_API AFrontierGameState : public AGameStateBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 public:
-	void AddPlayerState(APlayerState* PlayerState) override;
-	void RemovePlayerState(APlayerState* PlayerState) override;
+    void AddPlayerState(APlayerState* PlayerState) override;
+    void RemovePlayerState(APlayerState* PlayerState) override;
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-	TArray<AFrontierPlayerState*> FrontierPlayers;
+    TArray<AFrontierPlayerState*> FrontierPlayers;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	int32 NumTeams = 0;
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    int32 NumTeams = 0;
 };

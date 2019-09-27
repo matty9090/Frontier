@@ -31,4 +31,24 @@ struct FResources
         Resources.Add(EResource::Food, 0);
         Resources.Add(EResource::Population, 0);
     }
+
+    void operator+=(const FResources& Res)
+    {
+        Resources[EResource::Wood] += Res.Resources[EResource::Wood];
+        Resources[EResource::Stone] += Res.Resources[EResource::Stone];
+        Resources[EResource::Metal] += Res.Resources[EResource::Metal];
+        Resources[EResource::Gold] += Res.Resources[EResource::Gold];
+        Resources[EResource::Food] += Res.Resources[EResource::Food];
+        Resources[EResource::Population] += Res.Resources[EResource::Population];
+    }
+
+    void operator-=(const FResources& Res)
+    {
+        Resources[EResource::Wood] -= Res.Resources[EResource::Wood];
+        Resources[EResource::Stone] -= Res.Resources[EResource::Stone];
+        Resources[EResource::Metal] -= Res.Resources[EResource::Metal];
+        Resources[EResource::Gold] -= Res.Resources[EResource::Gold];
+        Resources[EResource::Food] -= Res.Resources[EResource::Food];
+        Resources[EResource::Population] -= Res.Resources[EResource::Population];
+    }
 };
