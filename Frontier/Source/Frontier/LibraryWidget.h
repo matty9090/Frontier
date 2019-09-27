@@ -3,27 +3,46 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "BuildingBaseWidget.h"
 #include "LibraryWidget.generated.h"
 
 class UCanvasPanel;
 class UResearchNode;
+class UResearchNodeWidget;
 
 /**
  * 
  */
 UCLASS()
-class FRONTIER_API ULibraryWidget : public UUserWidget
+class FRONTIER_API ULibraryWidget : public UBuildingBaseWidget
 {
 	GENERATED_BODY()
 	
 public:
     void NativeConstruct() override;
 
-    UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn))
+    UPROPERTY(BlueprintReadOnly)
     UResearchNode* ResearchRoot;
 
 private:
+    void BuildTree(UResearchNode* Node, FVector2D Pos);
+    void CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos);
+
     UPROPERTY(Meta=(BindWidget))
     UCanvasPanel* Canvas;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<UResearchNodeWidget> ResearchNodeWidgetClass;
+
+    UPROPERTY(EditAnywhere)
+    int Size = 200;
+
+    UPROPERTY(EditAnywhere)
+    int XSpacing = 200;
+
+    UPROPERTY(EditAnywhere)
+    int YSpacing = 200;
+
+    UPROPERTY(EditAnywhere)
+    int VPadding = 10;
 };

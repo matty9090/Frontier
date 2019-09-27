@@ -6,18 +6,29 @@
 #include "UnrealNetwork.h"
 #include "Building.h"
 #include "Engine/World.h"
+#include "Engine/ActorChannel.h"
 #include "FrontierCharacter.h"
 #include "Research.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
 {
     PrimaryActorTick.bCanEverTick = true;
+}
 
-    ResearchManager = CreateDefaultSubobject<UResearchManager>(TEXT("Research Manager"));
+void AFrontierPlayerState::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    if (HasAuthority())
+    {
+        ResearchRootNode = NewObject<UResearchNode>(this);
+    }
 }
 
 void AFrontierPlayerState::Tick(float DeltaTime)
 {
+    Super::Tick(DeltaTime);
+
     if (HasAuthority())
     {
         if (UnitQueue.Num() > 0)
@@ -62,5 +73,24 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     DOREPLIFETIME(AFrontierPlayerState, Units);
     DOREPLIFETIME(AFrontierPlayerState, UnitQueue);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);
-    DOREPLIFETIME(AFrontierPlayerState, ResearchManager);
+    DOREPLIFETIME(AFrontierPlayerState, ResearchRootNode);
+}
+
+bool AFrontierPlayerState::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+    bool DidWrite = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+    if (ResearchRootNode != nullptr)
+    {
+        if (Channel->ReplicateSubobject(ResearchRootNode, *Bunch, *RepFlags))
+            return true;
+
+        for (auto ChildNode : ResearchRootNode->ChildNodes)
+        {
+            if (Channel->ReplicateSubobject(ChildNode, *Bunch, *RepFlags))
+                return true;
+        }
+    }
+
+    return DidWrite;
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Object.h"
 #include "GameFramework/Actor.h"
 #include "Containers/Array.h"
 #include "Resources.h"
@@ -19,46 +18,27 @@ class UResearchNode : public UObject
     GENERATED_BODY()
 
 public:
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     FString Name = "Unknown";
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     EResearchType Type;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     FResources Cost;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     TSubclassOf<AActor> Object;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     bool bUnlocked = false;
 
-    UPROPERTY(BlueprintReadOnly)
-    TArray<UResearchNode*> Children;
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    TArray<UResearchNode*> ChildNodes;
 
     UFUNCTION(BlueprintCallable)
-    UResearchNode* AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject)
-    {
-        auto Node = NewObject<UResearchNode>();
-        Node->Type = InType;
-        Node->Cost = InCost;
-        Node->Object = InObject;
+    UResearchNode* AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject);
 
-        Children.Add(Node);
-        return Node;
-    }
-};
-
-UCLASS()
-class UResearchManager : public UObject
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    UResearchNode* Root;
-
-private:
-
+    bool IsSupportedForNetworking() const override { return true; }
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

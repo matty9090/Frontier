@@ -7,5 +7,13 @@
 
 void UResearchNodeWidget::NativeConstruct()
 {
-    TxtName->SetText(FText::FromString(Node->Name));
+    
+}
+
+void UResearchNodeWidget::UpdateNodeProperties()
+{
+    if (Node)
+    {
+        TxtName->SetText(FText::FromString(Node->Name));
+    }
 }

@@ -9,7 +9,7 @@
 
 class ABuilding;
 class AFrontierCharacter;
-class UResearchManager;
+class UResearchNode;
 
 USTRUCT(BlueprintType)
 struct FUnitQueueItem
@@ -37,10 +37,12 @@ class FRONTIER_API AFrontierPlayerState : public APlayerState
 public:
     AFrontierPlayerState();
 
+    void PostInitializeComponents() override;
     void Tick(float DeltaTime) override;
 
     void QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
     
     UFUNCTION(BlueprintCallable)
     int32 GetPopulation() const { return Units.Num(); }
@@ -61,5 +63,5 @@ public:
     TArray<FUnitQueueItem> UnitQueue;
 
     UPROPERTY(Replicated, BlueprintReadOnly)
-    UResearchManager* ResearchManager;
+    UResearchNode* ResearchRootNode = nullptr;
 };

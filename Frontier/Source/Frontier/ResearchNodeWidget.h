@@ -19,8 +19,9 @@ class FRONTIER_API UResearchNodeWidget : public UUserWidget
 	
 public:
     void NativeConstruct() override;
+    void UpdateNodeProperties();
 
-    UPROPERTY()
+    UPROPERTY(BlueprintReadOnly)
     UResearchNode* Node;
 
 private:
