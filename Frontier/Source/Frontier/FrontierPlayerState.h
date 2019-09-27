@@ -9,6 +9,7 @@
 
 class ABuilding;
 class AFrontierCharacter;
+class UResearchManager;
 
 USTRUCT(BlueprintType)
 struct FUnitQueueItem
@@ -58,4 +59,7 @@ public:
 
     UPROPERTY(Replicated, BlueprintReadOnly)
     TArray<FUnitQueueItem> UnitQueue;
+
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    UResearchManager* ResearchManager;
 };

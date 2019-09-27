@@ -7,10 +7,13 @@
 #include "Building.h"
 #include "Engine/World.h"
 #include "FrontierCharacter.h"
+#include "Research.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
 {
     PrimaryActorTick.bCanEverTick = true;
+
+    ResearchManager = CreateDefaultSubobject<UResearchManager>(TEXT("Research Manager"));
 }
 
 void AFrontierPlayerState::Tick(float DeltaTime)
@@ -59,4 +62,5 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     DOREPLIFETIME(AFrontierPlayerState, Units);
     DOREPLIFETIME(AFrontierPlayerState, UnitQueue);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);
+    DOREPLIFETIME(AFrontierPlayerState, ResearchManager);
 }

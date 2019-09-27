@@ -32,6 +32,16 @@ struct FResources
         Resources.Add(EResource::Population, 0);
     }
 
+    FResources(int32 Wood, int32 Stone, int32 Metal, int32 Gold, int32 Food, int32 Population)
+    {
+        Resources.Add(EResource::Wood, Wood);
+        Resources.Add(EResource::Stone, Stone);
+        Resources.Add(EResource::Metal, Metal);
+        Resources.Add(EResource::Gold, Gold);
+        Resources.Add(EResource::Food, Food);
+        Resources.Add(EResource::Population, Population);
+    }
+
     void operator+=(const FResources& Res)
     {
         Resources[EResource::Wood] += Res.Resources[EResource::Wood];

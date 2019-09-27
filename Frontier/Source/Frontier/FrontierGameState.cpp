@@ -4,6 +4,13 @@
 #include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "Research.h"
+#include "WidgetAnimation.h"
+
+AFrontierGameState::AFrontierGameState()
+{
+
+}
 
 void AFrontierGameState::AddPlayerState(APlayerState* PlayerState)
 {

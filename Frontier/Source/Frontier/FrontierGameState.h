@@ -7,6 +7,7 @@
 #include "FrontierGameState.generated.h"
 
 class AFrontierPlayerState;
+class UResearchNode;
 
 /**
  * 
@@ -17,6 +18,8 @@ class FRONTIER_API AFrontierGameState : public AGameStateBase
     GENERATED_BODY()
     
 public:
+    AFrontierGameState();
+
     void AddPlayerState(APlayerState* PlayerState) override;
     void RemovePlayerState(APlayerState* PlayerState) override;
 

@@ -8,6 +8,8 @@
 
 #include "Building.generated.h"
 
+class UBuildingBaseWidget;
+
 UCLASS()
 class FRONTIER_API ABuilding : public AActor
 {
@@ -27,4 +29,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FResources Cost;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    TSubclassOf<UBuildingBaseWidget> Widget;
 };
