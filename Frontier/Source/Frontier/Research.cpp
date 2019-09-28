@@ -4,13 +4,13 @@
 #include "FrontierPlayerState.h"
 #include "Frontier.h"
 
-UResearchNode* UResearchNode::AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject)
+UResearchNode* UResearchNode::AddChild(FString InName, FResources InCost, TArray<TSubclassOf<AActor>> InObjects)
 {
     auto Node = NewObject<UResearchNode>(GetOuter());
+    Node->Name = InName;
     Node->Parent = this;
-    Node->Type = InType;
     Node->Cost = InCost;
-    Node->Object = InObject;
+    Node->Objects = InObjects;
 
     ChildNodes.Add(Node);
     return Node;
@@ -62,10 +62,9 @@ void UResearchNode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(UResearchNode, Name);
-    DOREPLIFETIME(UResearchNode, Type);
     DOREPLIFETIME(UResearchNode, Cost);
     DOREPLIFETIME(UResearchNode, State);
-    DOREPLIFETIME(UResearchNode, Object);
+    DOREPLIFETIME(UResearchNode, Objects);
     DOREPLIFETIME(UResearchNode, Parent);
     DOREPLIFETIME(UResearchNode, ChildNodes);
 }

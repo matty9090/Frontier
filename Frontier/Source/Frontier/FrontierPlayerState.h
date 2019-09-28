@@ -46,6 +46,9 @@ public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
     
+    UFUNCTION(BlueprintNativeEvent)
+    UResearchNode* CreateResearchTree();
+
     UFUNCTION(BlueprintCallable)
     int32 GetPopulation() const { return Units.Num(); }
 

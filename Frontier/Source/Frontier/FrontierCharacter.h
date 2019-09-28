@@ -4,6 +4,7 @@
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
+#include "Resources.h"
 #include "FrontierCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -20,16 +21,16 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float WalkSpeed = 500;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float Armour = 10;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float Health = 100;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float AttackStrength = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -43,6 +44,9 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
     int32 Team = -1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FResources Cost;
 
 private:
 

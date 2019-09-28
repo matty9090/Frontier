@@ -74,12 +74,14 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    return true;
+    auto PS = Cast<AFrontierPlayerState>(PlayerState);
+    return PS->IsObjectResearched(Unit) && PS->Resources >= Unit.GetDefaultObject()->Cost;
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
+    auto PS = Cast<AFrontierPlayerState>(PlayerState);
+    PS->QueueUnit(Unit, Building);
 }
 
 bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)

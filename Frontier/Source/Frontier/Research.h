@@ -6,13 +6,6 @@
 #include "Research.generated.h"
 
 UENUM(BlueprintType)
-enum class EResearchType : uint8
-{
-    Unit        UMETA(DisplayName = "Unit"),
-    Building    UMETA(DisplayName = "Building")
-};
-
-UENUM(BlueprintType)
 enum class EResearchState : uint8
 {
     Researched  UMETA(DisplayName = "Researched"),
@@ -20,7 +13,7 @@ enum class EResearchState : uint8
     Locked      UMETA(DisplayName = "Locked")
 };
 
-UCLASS()
+UCLASS(BlueprintType)
 class UResearchNode : public UObject
 {
     GENERATED_BODY()
@@ -33,13 +26,10 @@ public:
     EResearchState State = EResearchState::Locked;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    EResearchType Type;
-
-    UPROPERTY(BlueprintReadOnly, Replicated)
     FResources Cost;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    TSubclassOf<AActor> Object = nullptr;
+    TArray<TSubclassOf<AActor>> Objects;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
     UResearchNode* Parent = nullptr;
@@ -48,7 +38,7 @@ public:
     TArray<UResearchNode*> ChildNodes;
 
     UFUNCTION(BlueprintCallable)
-    UResearchNode* AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject);
+    UResearchNode* AddChild(FString InName, FResources InCost, TArray<TSubclassOf<AActor>> InObjects);
 
     UFUNCTION()
     void OnRep_State();

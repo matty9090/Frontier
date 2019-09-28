@@ -21,8 +21,13 @@ void AFrontierPlayerState::PostInitializeComponents()
 
     if (HasAuthority())
     {
-        ResearchRootNode = NewObject<UResearchNode>(this);
+        ResearchRootNode = CreateResearchTree();
     }
+}
+
+UResearchNode* AFrontierPlayerState::CreateResearchTree_Implementation()
+{
+    return NewObject<UResearchNode>(this);
 }
 
 void AFrontierPlayerState::Tick(float DeltaTime)
@@ -80,7 +85,9 @@ void AFrontierPlayerState::Research(UResearchNode* Node)
         Node->State = EResearchState::Researched;
         Node->Refresh();
 
-        AvailableObjects.Add(Node->Object);
+        Resources -= Node->Cost;
+
+        AvailableObjects.Append(Node->Objects);
         OnResearchTreeChangedEvent.ExecuteIfBound();
     }
 }
