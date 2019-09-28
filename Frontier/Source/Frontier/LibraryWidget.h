@@ -10,6 +10,18 @@ class UCanvasPanel;
 class UResearchNode;
 class UResearchNodeWidget;
 
+USTRUCT()
+struct FLine
+{
+    GENERATED_BODY()
+
+    UPROPERTY()
+    FVector2D A;
+
+    UPROPERTY()
+    FVector2D B;
+};
+
 /**
  * 
  */
@@ -25,8 +37,18 @@ public:
     UResearchNode* ResearchRoot;
 
 private:
-    void BuildTree(UResearchNode* Node, FVector2D Pos);
+    void BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector2D Pos);
     void CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos);
+    
+    int32 NativePaint(
+        const FPaintArgs& Args,
+        const FGeometry& AllottedGeometry,
+        const FSlateRect& MyCullingRect,
+        FSlateWindowElementList& OutDrawElements,
+        int32 LayerId,
+        const FWidgetStyle& InWidgetStyle,
+        bool bParentEnabled
+    ) const override;
 
     UPROPERTY(Meta=(BindWidget))
     UCanvasPanel* Canvas;
@@ -35,14 +57,20 @@ private:
     TSubclassOf<UResearchNodeWidget> ResearchNodeWidgetClass;
 
     UPROPERTY(EditAnywhere)
+    FLinearColor LineColour;
+
+    UPROPERTY(EditAnywhere)
+    float LineThickness = 2.0f;
+
+    UPROPERTY()
+    TArray<FLine> Lines;
+
+    UPROPERTY(EditAnywhere)
     int Size = 200;
 
     UPROPERTY(EditAnywhere)
-    int XSpacing = 200;
+    int XPadding = 40;
 
     UPROPERTY(EditAnywhere)
-    int YSpacing = 200;
-
-    UPROPERTY(EditAnywhere)
-    int VPadding = 10;
+    int VPadding = 40;
 };

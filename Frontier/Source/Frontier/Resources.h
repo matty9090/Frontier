@@ -22,6 +22,9 @@ struct FResources
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TMap<EResource, int32> Resources;
 
+    TArray<EResource> Keys;
+    TArray<int32> Values;
+
     FResources()
     {
         Resources.Add(EResource::Wood, 0);
@@ -61,4 +64,39 @@ struct FResources
         Resources[EResource::Food] -= Res.Resources[EResource::Food];
         Resources[EResource::Population] -= Res.Resources[EResource::Population];
     }
+
+    bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+    {
+        if (Ar.IsLoading())
+        {
+            // Move data to Map
+            Ar << Keys;
+            Ar << Values;
+
+            for (auto It = Keys.CreateConstIterator(); It; ++It)
+                Resources.Add(Keys[It.GetIndex()], Values[It.GetIndex()]);
+        }
+        else {
+            // Move data to Arrays
+            Resources.GenerateKeyArray(Keys);
+            Resources.GenerateValueArray(Values);
+            Ar << Keys;
+            Ar << Values;
+        }
+        Keys.Empty();
+        Values.Empty();
+
+        bOutSuccess = true;
+        return true;
+    }
+
+};
+
+template<>
+struct TStructOpsTypeTraits<FResources> : public TStructOpsTypeTraitsBase2<FResources>
+{
+    enum
+    {
+        WithNetSerializer = true
+    };
 };
