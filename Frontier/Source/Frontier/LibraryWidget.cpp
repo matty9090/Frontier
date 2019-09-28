@@ -17,7 +17,7 @@ void ULibraryWidget::NativeConstruct()
 
     if (ResearchRoot)
     {
-        BuildTree(ResearchRoot, FVector2D(60, 400), FVector2D(60, 400));
+        BuildTree(ResearchRoot, FVector2D(100, 400), FVector2D(100, 400));
     }
     else
     {

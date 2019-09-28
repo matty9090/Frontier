@@ -21,7 +21,10 @@ public:
     void NativeConstruct() override;
 
     UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-    UWidgetAnimation* GetToggleAnimation();
+    UWidgetAnimation* GetShowAnimation() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+    UWidgetAnimation* GetHideAnimation() const;
 
     UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn))
     ABuilding* BuildingActor;
