@@ -8,6 +8,7 @@
 #include "FrontierPlayerController.generated.h"
 
 class ABuilding;
+class UResearchNode;
 
 UCLASS()
 class AFrontierPlayerController : public APlayerController
@@ -40,6 +41,9 @@ private:
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerQueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
+
+    UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    void ServerResearch(UResearchNode* Node);
 
     UFUNCTION()
     void OnRep_PlacedBuilding();

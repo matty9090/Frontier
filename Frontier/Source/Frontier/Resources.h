@@ -65,6 +65,16 @@ struct FResources
         Resources[EResource::Population] -= Res.Resources[EResource::Population];
     }
 
+    bool operator>=(const FResources& Res)
+    {
+        return Resources[EResource::Wood] >= Res.Resources[EResource::Wood] &&
+               Resources[EResource::Stone] >= Res.Resources[EResource::Stone] &&
+               Resources[EResource::Metal] >= Res.Resources[EResource::Metal] &&
+               Resources[EResource::Gold] >= Res.Resources[EResource::Gold] &&
+               Resources[EResource::Food] >= Res.Resources[EResource::Food] &&
+               Resources[EResource::Population] >= Res.Resources[EResource::Population];
+    }
+
     bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
     {
         if (Ar.IsLoading())

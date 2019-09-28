@@ -1,9 +1,8 @@
 #include "Research.h"
 #include "UnrealNetwork.h"
 #include "Engine/ActorChannel.h"
+#include "FrontierPlayerState.h"
 #include "Frontier.h"
-
-
 
 UResearchNode* UResearchNode::AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject)
 {
@@ -14,6 +13,16 @@ UResearchNode* UResearchNode::AddChild(EResearchType InType, FResources InCost, 
 
     ChildNodes.Add(Node);
     return Node;
+}
+
+void UResearchNode::OnRep_State()
+{
+    auto PS = Cast<AFrontierPlayerState>(GetOuter());
+
+    if (PS)
+    {
+        PS->OnResearchTreeChangedEvent.ExecuteIfBound();
+    }
 }
 
 void UResearchNode::Traverse(TArray<UResearchNode*>& OutNodes)
@@ -35,7 +44,7 @@ void UResearchNode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
     DOREPLIFETIME(UResearchNode, Name);
     DOREPLIFETIME(UResearchNode, Type);
     DOREPLIFETIME(UResearchNode, Cost);
+    DOREPLIFETIME(UResearchNode, State);
     DOREPLIFETIME(UResearchNode, Object);
-    DOREPLIFETIME(UResearchNode, bUnlocked);
     DOREPLIFETIME(UResearchNode, ChildNodes);
 }
