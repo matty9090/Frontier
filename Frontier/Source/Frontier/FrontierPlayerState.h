@@ -61,6 +61,12 @@ public:
     UFUNCTION(BlueprintCallable)
     bool IsObjectResearched(TSubclassOf<AActor> Obj) const;
 
+    UFUNCTION(BlueprintCallable)
+    bool CanCreateBuilding(TSubclassOf<ABuilding> Building) const;
+
+    UFUNCTION(BlueprintCallable)
+    bool CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const;
+
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 

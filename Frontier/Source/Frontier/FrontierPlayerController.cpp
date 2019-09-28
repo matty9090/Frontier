@@ -24,7 +24,6 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
 void AFrontierPlayerController::SetupInputComponent()
 {
-    // set up gameplay key bindings
     Super::SetupInputComponent();
 }
 
@@ -36,15 +35,18 @@ void AFrontierPlayerController::OnRep_PlacedBuilding()
     }
 }
 
-bool AFrontierPlayerController::ServerSpawnBuilding_Validate(UClass* Type, FVector Location, FRotator Rotation)
+bool AFrontierPlayerController::ServerSpawnBuilding_Validate(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
 {
-    return true;
+    return Cast<AFrontierPlayerState>(PlayerState)->CanCreateBuilding(Type);
 }
 
-void AFrontierPlayerController::ServerSpawnBuilding_Implementation(UClass* Type, FVector Location, FRotator Rotation)
+void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
 {
     if (Type)
     {
+        auto PS = Cast<AFrontierPlayerState>(PlayerState);
+        PS->Resources -= Type.GetDefaultObject()->Cost;
+
         FActorSpawnParameters SpawnParams;
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
@@ -74,8 +76,7 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto PS = Cast<AFrontierPlayerState>(PlayerState);
-    return PS->IsObjectResearched(Unit) && PS->Resources >= Unit.GetDefaultObject()->Cost;
+    return Cast<AFrontierPlayerState>(PlayerState)->CanCreateUnit(Unit);
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
@@ -86,8 +87,11 @@ void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFron
 
 bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 {
-    auto PS = Cast<AFrontierPlayerState>(PlayerState);
-    return PS->Resources >= Node->Cost;
+        auto PS = Cast<AFrontierPlayerState>(PlayerState);
+
+    return PS->Resources >= Node->Cost ||
+           !(Node->Parent && Node->Parent->State == EResearchState::Researched) &&
+           Node->State == EResearchState::Available;
 }
 
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)

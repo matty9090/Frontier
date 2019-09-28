@@ -97,6 +97,16 @@ bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
     return AvailableObjects.Contains(Obj);
 }
 
+bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) const
+{
+    return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building);
+}
+
+bool AFrontierPlayerState::CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const
+{
+    return Resources >= Unit.GetDefaultObject()->Cost && IsObjectResearched(Unit);
+}
+
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);

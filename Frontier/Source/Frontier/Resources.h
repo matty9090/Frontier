@@ -65,7 +65,7 @@ struct FResources
         Resources[EResource::Population] -= Res.Resources[EResource::Population];
     }
 
-    bool operator>=(const FResources& Res)
+    bool operator>=(const FResources& Res) const
     {
         return Resources[EResource::Wood] >= Res.Resources[EResource::Wood] &&
                Resources[EResource::Stone] >= Res.Resources[EResource::Stone] &&

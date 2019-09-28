@@ -34,7 +34,7 @@ protected:
 
 private:
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
-    void ServerSpawnBuilding(UClass* Type, FVector Location, FRotator Rotation);
+    void ServerSpawnBuilding(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation);
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerMoveAIToLocation(AFrontierCharacter* AI, FVector Location, AActor* Object);
