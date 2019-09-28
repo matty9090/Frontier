@@ -69,6 +69,7 @@ void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
     if (HasAuthority())
     {
         Node->State = EResearchState::Available;
+        OnResearchTreeChangedEvent.ExecuteIfBound();
     }
 }
 
@@ -77,6 +78,8 @@ void AFrontierPlayerState::Research(UResearchNode* Node)
     if (HasAuthority())
     {
         Node->State = EResearchState::Researched;
+        Node->Refresh();
+
         AvailableObjects.Add(Node->Object);
         OnResearchTreeChangedEvent.ExecuteIfBound();
     }

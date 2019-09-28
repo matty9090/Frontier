@@ -39,7 +39,10 @@ public:
     FResources Cost;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    TSubclassOf<AActor> Object;
+    TSubclassOf<AActor> Object = nullptr;
+
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    UResearchNode* Parent = nullptr;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<UResearchNode*> ChildNodes;
@@ -50,6 +53,7 @@ public:
     UFUNCTION()
     void OnRep_State();
 
+    void Refresh();
     void Traverse(TArray<UResearchNode*>& OutNodes);
     bool IsSupportedForNetworking() const override { return true; }
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
