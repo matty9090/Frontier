@@ -64,6 +64,32 @@ void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuil
     }
 }
 
+void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
+{
+    if (HasAuthority())
+    {
+        Node->State = EResearchState::Available;
+        OnResearchTreeChangedEvent.ExecuteIfBound();
+    }
+}
+
+void AFrontierPlayerState::Research(UResearchNode* Node)
+{
+    if (HasAuthority())
+    {
+        Node->State = EResearchState::Researched;
+        Node->Refresh();
+
+        AvailableObjects.Add(Node->Object);
+        OnResearchTreeChangedEvent.ExecuteIfBound();
+    }
+}
+
+bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
+{
+    return AvailableObjects.Contains(Obj);
+}
+
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -74,6 +100,7 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     DOREPLIFETIME(AFrontierPlayerState, UnitQueue);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);
     DOREPLIFETIME(AFrontierPlayerState, ResearchRootNode);
+    DOREPLIFETIME(AFrontierPlayerState, AvailableObjects);
 }
 
 bool AFrontierPlayerState::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)

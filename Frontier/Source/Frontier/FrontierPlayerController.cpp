@@ -8,6 +8,7 @@
 #include "FrontierPlayerState.h"
 #include "Engine/World.h"
 #include "Building.h"
+#include "Research.h"
 #include "Frontier.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
@@ -79,6 +80,17 @@ bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCh
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
     Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
+}
+
+bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
+{
+    auto PS = Cast<AFrontierPlayerState>(PlayerState);
+    return PS->Resources >= Node->Cost;
+}
+
+void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)
+{
+    Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

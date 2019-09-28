@@ -36,9 +36,20 @@ public:
     UPROPERTY(BlueprintReadOnly)
     UResearchNode* ResearchRoot;
 
+protected:
+    UFUNCTION(BlueprintImplementableEvent)
+    void InitTree();
+
+    UPROPERTY(BlueprintReadWrite)
+    TArray<UResearchNodeWidget*> ResearchNodeWidgets;
+
+    UPROPERTY(BlueprintReadWrite)
+    bool bPaintLines = false;
+
 private:
     void BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector2D Pos);
     void CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos);
+    void ResearchTreeChanged();
     
     int32 NativePaint(
         const FPaintArgs& Args,
@@ -55,6 +66,9 @@ private:
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<UResearchNodeWidget> ResearchNodeWidgetClass;
+
+    UPROPERTY(EditAnywhere)
+    FVector2D NodeStartPosition = FVector2D(100, 500);
 
     UPROPERTY(EditAnywhere)
     FLinearColor LineColour;

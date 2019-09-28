@@ -11,6 +11,8 @@ class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
 
+DECLARE_DELEGATE(FOnResearchTreeChangedEvent);
+
 USTRUCT(BlueprintType)
 struct FUnitQueueItem
 {
@@ -47,6 +49,15 @@ public:
     UFUNCTION(BlueprintCallable)
     int32 GetPopulation() const { return Units.Num(); }
 
+    UFUNCTION(BlueprintCallable)
+    void UnlockResearchNode(UResearchNode* Node);
+
+    UFUNCTION(BlueprintCallable)
+    void Research(UResearchNode* Node);
+
+    UFUNCTION(BlueprintCallable)
+    bool IsObjectResearched(TSubclassOf<AActor> Obj) const;
+
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 
@@ -64,4 +75,10 @@ public:
 
     UPROPERTY(Replicated, BlueprintReadOnly)
     UResearchNode* ResearchRootNode = nullptr;
+
+    FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
+
+private:
+    UPROPERTY(Replicated)
+    TArray<TSubclassOf<AActor>> AvailableObjects;
 };

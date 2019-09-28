@@ -12,6 +12,14 @@ enum class EResearchType : uint8
     Building    UMETA(DisplayName = "Building")
 };
 
+UENUM(BlueprintType)
+enum class EResearchState : uint8
+{
+    Researched  UMETA(DisplayName = "Researched"),
+    Available   UMETA(DisplayName = "Available"),
+    Locked      UMETA(DisplayName = "Locked")
+};
+
 UCLASS()
 class UResearchNode : public UObject
 {
@@ -21,6 +29,9 @@ public:
     UPROPERTY(BlueprintReadOnly, Replicated)
     FString Name = "Unknown";
 
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_State)
+    EResearchState State = EResearchState::Locked;
+
     UPROPERTY(BlueprintReadOnly, Replicated)
     EResearchType Type;
 
@@ -28,10 +39,10 @@ public:
     FResources Cost;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    TSubclassOf<AActor> Object;
+    TSubclassOf<AActor> Object = nullptr;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    bool bUnlocked = false;
+    UResearchNode* Parent = nullptr;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<UResearchNode*> ChildNodes;
@@ -39,6 +50,10 @@ public:
     UFUNCTION(BlueprintCallable)
     UResearchNode* AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject);
 
+    UFUNCTION()
+    void OnRep_State();
+
+    void Refresh();
     void Traverse(TArray<UResearchNode*>& OutNodes);
     bool IsSupportedForNetworking() const override { return true; }
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

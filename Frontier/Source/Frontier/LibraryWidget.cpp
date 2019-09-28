@@ -12,17 +12,22 @@
 
 void ULibraryWidget::NativeConstruct()
 {
+    Super::NativeConstruct();
+
     auto PS = GetOwningPlayerState<AFrontierPlayerState>();
     ResearchRoot = PS->ResearchRootNode;
 
     if (ResearchRoot)
     {
-        BuildTree(ResearchRoot, FVector2D(100, 400), FVector2D(100, 400));
+        BuildTree(ResearchRoot, NodeStartPosition, NodeStartPosition);
+        InitTree();
     }
     else
     {
         UE_LOG(LogFrontier, Error, TEXT("Research manager is not set!"));
     }
+
+    PS->OnResearchTreeChangedEvent.BindUObject(this, &ULibraryWidget::ResearchTreeChanged);
 }
 
 void ULibraryWidget::BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector2D Pos)
@@ -34,7 +39,7 @@ void ULibraryWidget::BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector
         if(Node != ResearchRoot)
             Lines.Add({ ParentPos, Pos });
 
-        CreateNodeAtPosition(ResearchRoot, Pos);
+        CreateNodeAtPosition(Node, Pos);
         
         int32 NumNodes = Node->ChildNodes.Num();
         int32 Total = NumNodes * Size + (NumNodes - 1) * VPadding;
@@ -61,6 +66,19 @@ void ULibraryWidget::CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos)
     CanvasSlot->SetPosition(Pos);
     CanvasSlot->SetZOrder(2);
     CanvasSlot->SynchronizeProperties();
+
+    ResearchNodeWidgets.Add(Widget);
+}
+
+void ULibraryWidget::ResearchTreeChanged()
+{
+    UE_LOG(LogFrontier, Display, TEXT("Research tree changed"));
+
+    if (ResearchRoot)
+    {
+        BuildTree(ResearchRoot, NodeStartPosition, NodeStartPosition);
+        InitTree();
+    }
 }
 
 int32 ULibraryWidget::NativePaint(
@@ -73,24 +91,27 @@ int32 ULibraryWidget::NativePaint(
     bool bParentEnabled
 ) const
 {
-    const auto OffsetA = FVector2D(Size + LineThickness, Size / 2);
-    const auto OffsetB = FVector2D(-LineThickness, Size / 2);
-
-    for (const auto& Line : Lines)
+    if (bPaintLines)
     {
-        TArray<FVector2D> Points;
-        Points.Add(Line.A + OffsetA);
-        Points.Add(Line.B + OffsetB);
+        const auto OffsetA = FVector2D(Size + LineThickness, Size / 2);
+        const auto OffsetB = FVector2D(-LineThickness, Size / 2);
 
-        FSlateDrawElement::MakeLines(
-            OutDrawElements,
-            LayerId,
-            AllottedGeometry.ToPaintGeometry(),
-            Points,
-            ESlateDrawEffect::None,
-            LineColour,
-            true,
-            LineThickness);
+        for (const auto& Line : Lines)
+        {
+            TArray<FVector2D> Points;
+            Points.Add(Line.A + OffsetA);
+            Points.Add(Line.B + OffsetB);
+
+            FSlateDrawElement::MakeLines(
+                OutDrawElements,
+                LayerId,
+                AllottedGeometry.ToPaintGeometry(),
+                Points,
+                ESlateDrawEffect::None,
+                LineColour,
+                true,
+                LineThickness);
+        }
     }
 
     return LayerId;
