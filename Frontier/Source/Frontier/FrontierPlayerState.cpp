@@ -82,13 +82,14 @@ bool AFrontierPlayerState::ReplicateSubobjects(UActorChannel* Channel, FOutBunch
 
     if (ResearchRootNode != nullptr)
     {
-        if (Channel->ReplicateSubobject(ResearchRootNode, *Bunch, *RepFlags))
-            return true;
+        DidWrite |= Channel->ReplicateSubobject(ResearchRootNode, *Bunch, *RepFlags);
 
-        for (auto ChildNode : ResearchRootNode->ChildNodes)
+        TArray<UResearchNode*> Nodes;
+        ResearchRootNode->Traverse(Nodes);
+
+        for (const auto& Node : Nodes)
         {
-            if (Channel->ReplicateSubobject(ChildNode, *Bunch, *RepFlags))
-                return true;
+            DidWrite |= Channel->ReplicateSubobject(Node, *Bunch, *RepFlags);
         }
     }
 

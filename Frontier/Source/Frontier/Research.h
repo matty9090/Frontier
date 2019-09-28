@@ -39,6 +39,7 @@ public:
     UFUNCTION(BlueprintCallable)
     UResearchNode* AddChild(EResearchType InType, FResources InCost, TSubclassOf<AActor> InObject);
 
+    void Traverse(TArray<UResearchNode*>& OutNodes);
     bool IsSupportedForNetworking() const override { return true; }
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

@@ -16,6 +16,18 @@ UResearchNode* UResearchNode::AddChild(EResearchType InType, FResources InCost, 
     return Node;
 }
 
+void UResearchNode::Traverse(TArray<UResearchNode*>& OutNodes)
+{
+    for (const auto& Node : ChildNodes)
+    {
+        if (Node)
+        {
+            OutNodes.Add(Node);
+            Node->Traverse(OutNodes);
+        }
+    }
+}
+
 void UResearchNode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
