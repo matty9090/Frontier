@@ -46,7 +46,13 @@ void AFrontierPlayerState::Tick(float DeltaTime)
                 FActorSpawnParameters SpawnParams;
                 SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-                auto Unit = GetWorld()->SpawnActor<AFrontierCharacter>(Item.Unit, Item.SpawnLocation, FRotator::ZeroRotator, SpawnParams);
+                auto Unit = GetWorld()->SpawnActor<AFrontierCharacter>(
+                    Item.Unit,
+                    Item.SpawnLocation + FVector(0.0f, 0.0f, 100.0f),
+                    FRotator::ZeroRotator,
+                    SpawnParams
+                );
+
                 Unit->Team = Team;
 
                 Units.Add(Unit);
