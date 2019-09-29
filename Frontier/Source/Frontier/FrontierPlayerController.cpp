@@ -64,6 +64,7 @@ bool AFrontierPlayerController::ServerSpawnBuilding_Validate(TSubclassOf<ABuildi
 
 void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
 {
+    // TODO: Move to PlayerState?
     if (Type)
     {
         auto PS = Cast<AFrontierPlayerState>(PlayerState);
@@ -78,6 +79,8 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
             Rotation,
             SpawnParams
         );
+
+        PlacedBuilding->Team = PS->Team;
 
         if (GetNetMode() == ENetMode::NM_ListenServer && HoveredBuilding)
         {

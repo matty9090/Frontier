@@ -2,6 +2,7 @@
 
 
 #include "Building.h"
+#include "UnrealNetwork.h"
 
 // Sets default values
 ABuilding::ABuilding()
@@ -24,3 +25,9 @@ void ABuilding::Tick(float DeltaTime)
 
 }
 
+void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ABuilding, Team);
+}

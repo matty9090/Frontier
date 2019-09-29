@@ -19,6 +19,8 @@ public:
     // Sets default values for this actor's properties
     ABuilding();
 
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -32,4 +34,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSubclassOf<UBuildingBaseWidget> Widget;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
+    int32 Team;
 };

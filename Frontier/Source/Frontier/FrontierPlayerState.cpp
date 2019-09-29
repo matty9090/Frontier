@@ -58,7 +58,7 @@ void AFrontierPlayerState::Tick(float DeltaTime)
 
 void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    if (HasAuthority())
+    if (HasAuthority() && Building->Team == Team)
     {
         FUnitQueueItem Item;
         Item.Unit = Unit;
