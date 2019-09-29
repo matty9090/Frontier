@@ -26,6 +26,6 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
     UWidgetAnimation* GetHideAnimation() const;
 
-    UPROPERTY(BlueprintReadOnly, Meta = (ExposeOnSpawn))
+    UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn))
     ABuilding* BuildingActor;
 };
