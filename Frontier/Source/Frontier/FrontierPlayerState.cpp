@@ -74,7 +74,7 @@ void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
     if (HasAuthority())
     {
         Node->State = EResearchState::Available;
-        OnResearchTreeChangedEvent.ExecuteIfBound();
+        OnResearchTreeChangedEvent.Broadcast();
     }
 }
 
@@ -88,7 +88,7 @@ void AFrontierPlayerState::Research(UResearchNode* Node)
         Resources -= Node->Cost;
 
         AvailableObjects.Append(Node->Objects);
-        OnResearchTreeChangedEvent.ExecuteIfBound();
+        OnResearchTreeChangedEvent.Broadcast();
     }
 }
 
@@ -105,6 +105,18 @@ bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) co
 bool AFrontierPlayerState::CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const
 {
     return Resources >= Unit.GetDefaultObject()->Cost && IsObjectResearched(Unit);
+}
+
+bool AFrontierPlayerState::CanResearchNode(UResearchNode* Node) const
+{
+    bool CanResearch = Resources >= Node->Cost && Node->State == EResearchState::Available;
+
+    if (Node->Parent)
+    {
+        return CanResearch && Node->Parent->State == EResearchState::Researched;
+    }
+
+    return CanResearch;
 }
 
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

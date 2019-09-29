@@ -17,6 +17,16 @@ AFrontierPlayerController::AFrontierPlayerController()
     DefaultMouseCursor = EMouseCursor::Default;
 }
 
+void AFrontierPlayerController::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (GetNetMode() == ENetMode::NM_ListenServer)
+    {
+        ClientCreateUI();
+    }
+}
+
 void AFrontierPlayerController::PlayerTick(float DeltaTime)
 {
     Super::PlayerTick(DeltaTime);
@@ -33,6 +43,18 @@ void AFrontierPlayerController::OnRep_PlacedBuilding()
     {
         HoveredBuilding->Destroy();
     }
+}
+
+void AFrontierPlayerController::ClientCreateUI_Implementation()
+{
+    CreateUI();
+}
+
+void AFrontierPlayerController::OnRep_PlayerState()
+{
+    Super::OnRep_PlayerState();
+
+    CreateUI();
 }
 
 bool AFrontierPlayerController::ServerSpawnBuilding_Validate(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
@@ -81,17 +103,12 @@ bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCh
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto PS = Cast<AFrontierPlayerState>(PlayerState);
-    PS->QueueUnit(Unit, Building);
+    Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
 }
 
 bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 {
-        auto PS = Cast<AFrontierPlayerState>(PlayerState);
-
-    return PS->Resources >= Node->Cost ||
-           !(Node->Parent && Node->Parent->State == EResearchState::Researched) &&
-           Node->State == EResearchState::Available;
+    return Cast<AFrontierPlayerState>(PlayerState)->CanResearchNode(Node);
 }
 
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)

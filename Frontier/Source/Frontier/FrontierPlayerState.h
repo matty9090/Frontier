@@ -11,7 +11,7 @@ class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
 
-DECLARE_DELEGATE(FOnResearchTreeChangedEvent);
+DECLARE_MULTICAST_DELEGATE(FOnResearchTreeChangedEvent);
 
 USTRUCT(BlueprintType)
 struct FUnitQueueItem
@@ -66,6 +66,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     bool CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const;
+
+    UFUNCTION(BlueprintCallable)
+    bool CanResearchNode(UResearchNode* Node) const;
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;

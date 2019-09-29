@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "UI.generated.h"
+#include "BuildingBaseWidget.h"
+#include "BarracksWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FRONTIER_API UUI : public UUserWidget
+class FRONTIER_API UBarracksWidget : public UBuildingBaseWidget
 {
-    GENERATED_BODY()
-    
+	GENERATED_BODY()
+	
 public:
-    bool Initialize() override;
+    void NativeConstruct() override;
 
 protected:
     UFUNCTION(BlueprintImplementableEvent)

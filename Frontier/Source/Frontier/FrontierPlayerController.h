@@ -18,6 +18,7 @@ class AFrontierPlayerController : public APlayerController
 public:
     AFrontierPlayerController();
 
+    void BeginPlay() override;
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
@@ -28,6 +29,14 @@ protected:
     virtual void PlayerTick(float DeltaTime) override;
     virtual void SetupInputComponent() override;
     // End PlayerController interface
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void CreateUI();
+
+    UFUNCTION(Client, Reliable)
+    void ClientCreateUI();
+
+    void OnRep_PlayerState() override;
 
     UPROPERTY(BlueprintReadWrite)
     ABuilding* HoveredBuilding = nullptr;

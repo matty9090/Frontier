@@ -27,7 +27,7 @@ void ULibraryWidget::NativeConstruct()
         UE_LOG(LogFrontier, Error, TEXT("Research manager is not set!"));
     }
 
-    PS->OnResearchTreeChangedEvent.BindUObject(this, &ULibraryWidget::ResearchTreeChanged);
+    PS->OnResearchTreeChangedEvent.AddUObject(this, &ULibraryWidget::ResearchTreeChanged);
 }
 
 void ULibraryWidget::BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector2D Pos)
