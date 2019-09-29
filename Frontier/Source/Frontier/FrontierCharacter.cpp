@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "UnrealNetwork.h"
 
 AFrontierCharacter::AFrontierCharacter()
 {
@@ -35,4 +36,11 @@ AFrontierCharacter::AFrontierCharacter()
 void AFrontierCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(AFrontierCharacter, Team);
 }

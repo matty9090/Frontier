@@ -15,6 +15,8 @@ class AFrontierCharacter : public ACharacter
 public:
     AFrontierCharacter();
 
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
     // Called every frame.
     virtual void Tick(float DeltaSeconds) override;
 
@@ -42,7 +44,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float TrainTime = 1;
 
-    UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn))
+    UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn), Replicated)
     int32 Team = -1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)

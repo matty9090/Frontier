@@ -65,6 +65,7 @@ void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuil
         Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
         Item.SpawnLocation = Building->GetActorLocation();
 
+        Resources -= Unit.GetDefaultObject()->Cost;
         UnitQueue.Push(Item);
     }
 }
