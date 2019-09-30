@@ -80,7 +80,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
             SpawnParams
         );
 
-        PlacedBuilding->Team = PS->Team;
+        PlacedBuilding->Player = PS;
 
         if (GetNetMode() == ENetMode::NM_ListenServer && HoveredBuilding)
         {
@@ -101,12 +101,12 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    return Cast<AFrontierPlayerState>(PlayerState)->CanCreateUnit(Unit);
+    return Building->CanCreateUnit(Unit);
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    Cast<AFrontierPlayerState>(PlayerState)->QueueUnit(Unit, Building);
+    Building->QueueUnit(Unit);
 }
 
 bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)

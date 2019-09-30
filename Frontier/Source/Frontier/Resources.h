@@ -93,13 +93,13 @@ struct FResources
             Ar << Keys;
             Ar << Values;
         }
+
         Keys.Empty();
         Values.Empty();
 
         bOutSuccess = true;
         return true;
     }
-
 };
 
 template<>

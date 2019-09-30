@@ -13,21 +13,6 @@ class UResearchNode;
 
 DECLARE_MULTICAST_DELEGATE(FOnResearchTreeChangedEvent);
 
-USTRUCT(BlueprintType)
-struct FUnitQueueItem
-{
-    GENERATED_BODY()
-
-    UPROPERTY()
-    TSubclassOf<AFrontierCharacter> Unit;
-
-    UPROPERTY(BlueprintReadOnly)
-    float TimeRemaining;
-
-    UPROPERTY(BlueprintReadOnly)
-    FVector SpawnLocation;
-};
-
 /**
  * 
  */
@@ -42,7 +27,6 @@ public:
     void PostInitializeComponents() override;
     void Tick(float DeltaTime) override;
 
-    void QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
     
@@ -68,9 +52,6 @@ public:
     bool CanCreateBuilding(TSubclassOf<ABuilding> Building) const;
 
     UFUNCTION(BlueprintCallable)
-    bool CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const;
-
-    UFUNCTION(BlueprintCallable)
     bool CanResearchNode(UResearchNode* Node) const;
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
@@ -83,13 +64,10 @@ public:
     int32 MaxPopulation = 40;
 
     UPROPERTY(Replicated, BlueprintReadOnly)
-    TArray<AFrontierCharacter*> Units;
-
-    UPROPERTY(Replicated, BlueprintReadOnly)
-    TArray<FUnitQueueItem> UnitQueue;
-
-    UPROPERTY(Replicated, BlueprintReadOnly)
     UResearchNode* ResearchRootNode = nullptr;
+
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    TArray<AFrontierCharacter*> Units;
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
 

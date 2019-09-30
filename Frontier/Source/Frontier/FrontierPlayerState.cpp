@@ -12,7 +12,7 @@
 
 AFrontierPlayerState::AFrontierPlayerState()
 {
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 }
 
 void AFrontierPlayerState::PostInitializeComponents()
@@ -32,53 +32,12 @@ UResearchNode* AFrontierPlayerState::CreateResearchTree_Implementation()
 
 void AFrontierPlayerState::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaTime);
-
-    if (HasAuthority())
-    {
-        if (UnitQueue.Num() > 0)
-        {
-            FUnitQueueItem& Item = UnitQueue[0];
-            Item.TimeRemaining -= DeltaTime;
-
-            if (Item.TimeRemaining < 0.0f)
-            {
-                FActorSpawnParameters SpawnParams;
-                SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-                auto Unit = GetWorld()->SpawnActor<AFrontierCharacter>(
-                    Item.Unit,
-                    Item.SpawnLocation + FVector(0.0f, 0.0f, 100.0f),
-                    FRotator::ZeroRotator,
-                    SpawnParams
-                );
-
-                Unit->Team = Team;
-
-                Units.Add(Unit);
-                UnitQueue.RemoveAt(0);
-            }
-        }
-    }
+    Super::Tick(DeltaTime);    
 }
 
 void AFrontierPlayerState::AddResources(FResources Res)
 {
     Resources += Res;
-}
-
-void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
-{
-    if (HasAuthority() && Building->Team == Team)
-    {
-        FUnitQueueItem Item;
-        Item.Unit = Unit;
-        Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
-        Item.SpawnLocation = Building->GetActorLocation();
-
-        Resources -= Unit.GetDefaultObject()->Cost;
-        UnitQueue.Push(Item);
-    }
 }
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
@@ -114,11 +73,6 @@ bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) co
     return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building);
 }
 
-bool AFrontierPlayerState::CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const
-{
-    return Resources >= Unit.GetDefaultObject()->Cost && IsObjectResearched(Unit);
-}
-
 bool AFrontierPlayerState::CanResearchNode(UResearchNode* Node) const
 {
     bool CanResearch = Resources >= Node->Cost && Node->State == EResearchState::Available;
@@ -138,7 +92,6 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     DOREPLIFETIME(AFrontierPlayerState, Resources);
     DOREPLIFETIME(AFrontierPlayerState, Team);
     DOREPLIFETIME(AFrontierPlayerState, Units);
-    DOREPLIFETIME(AFrontierPlayerState, UnitQueue);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);
     DOREPLIFETIME(AFrontierPlayerState, ResearchRootNode);
     DOREPLIFETIME(AFrontierPlayerState, AvailableObjects);
