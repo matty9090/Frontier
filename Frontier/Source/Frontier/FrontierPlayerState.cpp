@@ -62,6 +62,11 @@ void AFrontierPlayerState::Tick(float DeltaTime)
     }
 }
 
+void AFrontierPlayerState::AddResources(FResources Res)
+{
+    Resources += Res;
+}
+
 void AFrontierPlayerState::QueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
     if (HasAuthority() && Building->Team == Team)

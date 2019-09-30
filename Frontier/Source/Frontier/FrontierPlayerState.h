@@ -50,6 +50,9 @@ public:
     UResearchNode* CreateResearchTree();
 
     UFUNCTION(BlueprintCallable)
+    void AddResources(FResources Res);
+
+    UFUNCTION(BlueprintCallable)
     int32 GetPopulation() const { return Units.Num(); }
 
     UFUNCTION(BlueprintCallable)
