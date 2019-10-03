@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Research.h"
 #include "Resources.h"
+#include "Building.h"
+#include "FrontierCharacter.h"
 #include "FrontierHelperFunctionLibrary.generated.h"
 
 /**
@@ -41,5 +43,56 @@ public:
         Node->Parent = Parent;
 
         return Node;
+    }
+
+    UFUNCTION(BlueprintCallable)
+    static FString TryGetFrontierObjectName(TSubclassOf<AActor> Object)
+    {
+        auto Obj = Object.GetDefaultObject();
+
+        if (!Obj) return "";
+        
+        auto Building = Cast<ABuilding>(Obj);
+        if (Building) return Building->BuildingName;
+
+        auto Unit = Cast<AFrontierCharacter>(Obj);
+        if (Unit) return Unit->UnitName;
+
+        return "";
+    }
+
+    UFUNCTION(BlueprintCallable)
+    static FString TryGetFrontierObjectDescription(TSubclassOf<AActor> Object)
+    {
+        auto Obj = Object.GetDefaultObject();
+
+        if (!Obj) return "";
+        
+        auto Building = Cast<ABuilding>(Obj);
+        if (Building) return Building->BuildingDesc;
+
+        auto Unit = Cast<AFrontierCharacter>(Obj);
+        if (Unit) return Unit->UnitDesc;
+
+        return "";
+    }
+
+    UFUNCTION(BlueprintPure)
+    static FString GetResourcesAvailableString(FResources Target, FResources Current)
+    {
+        auto Available = Current.GetResourcesAvailable(Target);
+
+        auto GetImg = [](bool Available) {
+            return FString(Available ? "<img id=\"Tick\"/>" : "<img id=\"Cross\"/>");
+        };
+
+        FString Str = "Wood " + GetImg(Available[EResource::Wood]);
+        Str += "\nStone " + GetImg(Available[EResource::Stone]);
+        Str += "\nMetal " + GetImg(Available[EResource::Metal]);
+        Str += "\nGold " + GetImg(Available[EResource::Gold]);
+        Str += "\nFood " + GetImg(Available[EResource::Food]);
+        Str += "\nPopulation " + GetImg(Available[EResource::Population]);
+
+        return Str;
     }
 };

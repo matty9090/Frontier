@@ -21,7 +21,7 @@ void AFrontierPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (GetNetMode() == ENetMode::NM_ListenServer)
+    if (GetNetMode() == ENetMode::NM_ListenServer || GetNetMode() == ENetMode::NM_Standalone)
     {
         ClientCreateUI();
     }

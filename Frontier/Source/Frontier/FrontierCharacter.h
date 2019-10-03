@@ -23,6 +23,12 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    FString UnitName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    FString UnitDesc;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float WalkSpeed = 500;
 

@@ -7,17 +7,6 @@
 #include "Resources.h"
 #include "BaseResource.generated.h"
 
-UENUM(BlueprintType)
-enum class EResources : uint8
-{
-    Wood        UMETA(DisplayName = "Wood"),
-    Stone        UMETA(DisplayName = "Stone"),
-    Metal        UMETA(DisplayName = "Metal"),
-    Gold        UMETA(DisplayName = "Gold"),
-    Food        UMETA(DisplayName = "Food"),
-    Population    UMETA(DisplayName = "Population")
-};
-
 UCLASS()
 class FRONTIER_API ABaseResource : public AActor
 {
@@ -38,8 +27,11 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
     FString ResourceName = "BlankResource";
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    FString ResourceDesc = "Resource description";
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     EResource ResourceType;

@@ -75,6 +75,20 @@ struct FResources
                Resources[EResource::Population] >= Res.Resources[EResource::Population];
     }
 
+    TMap<EResource, bool> GetResourcesAvailable(const FResources& Target) const
+    {
+        TMap<EResource, bool> Available;
+
+        Available.Add(EResource::Wood, Resources[EResource::Wood] >= Target.Resources[EResource::Wood]);
+        Available.Add(EResource::Stone, Resources[EResource::Stone] >= Target.Resources[EResource::Stone]);
+        Available.Add(EResource::Metal, Resources[EResource::Metal] >= Target.Resources[EResource::Metal]);
+        Available.Add(EResource::Gold, Resources[EResource::Gold] >= Target.Resources[EResource::Gold]);
+        Available.Add(EResource::Food, Resources[EResource::Food] >= Target.Resources[EResource::Food]);
+        Available.Add(EResource::Population, Resources[EResource::Population] >= Target.Resources[EResource::Population]);
+
+        return Available;
+    }
+
     bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
     {
         if (Ar.IsLoading())

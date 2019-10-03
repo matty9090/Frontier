@@ -63,4 +63,10 @@ public:
 
     UPROPERTY(Replicated, BlueprintReadOnly)
     TArray<FUnitQueueItem> UnitQueue;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    FString BuildingName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    FString BuildingDesc;
 };
