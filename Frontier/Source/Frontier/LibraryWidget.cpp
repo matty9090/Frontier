@@ -5,7 +5,6 @@
 #include "CanvasPanel.h"
 #include "CanvasPanelSlot.h"
 #include "Rendering/DrawElements.h"
-#include "Research.h"
 #include "ResearchNodeWidget.h"
 #include "FrontierPlayerState.h"
 #include "Frontier.h"
@@ -70,14 +69,20 @@ void ULibraryWidget::CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos)
     ResearchNodeWidgets.Add(Widget);
 }
 
-void ULibraryWidget::ResearchTreeChanged()
+void ULibraryWidget::ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node)
 {
     UE_LOG(LogFrontier, Display, TEXT("Research tree changed"));
 
     if (ResearchRoot)
     {
+        ResearchNodeWidgets.Empty();
         BuildTree(ResearchRoot, NodeStartPosition, NodeStartPosition);
         InitTree();
+    }
+
+    if (Type == EResearchTreeChangedType::NodeStateChanged && Node->State == EResearchState::Researched)
+    {
+        ShowResearchedPopup(Node);
     }
 }
 

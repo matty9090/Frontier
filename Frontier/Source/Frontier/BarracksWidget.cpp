@@ -6,7 +6,7 @@
 
 void UBarracksWidget::NativeConstruct()
 {
-    ResearchTreeChanged();
+    ResearchTreeChanged(EResearchTreeChangedType::Unknown, nullptr);
 
     auto PS = GetOwningPlayerState<AFrontierPlayerState>();
     ResearchTreeChangedHandle = PS->OnResearchTreeChangedEvent.AddUObject(this, &UBarracksWidget::ResearchTreeChanged);

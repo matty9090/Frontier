@@ -22,7 +22,7 @@ void UResearchNode::OnRep_State()
 
     if (PS)
     {
-        PS->OnResearchTreeChangedEvent.Broadcast();
+        PS->OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, this);
     }
 }
 

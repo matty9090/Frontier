@@ -8,7 +8,7 @@ bool UUI::Initialize()
 {
     Super::Initialize();
 
-    ResearchTreeChanged();
+    ResearchTreeChanged(EResearchTreeChangedType::Unknown, nullptr);
 
     auto PS = GetOwningPlayerState<AFrontierPlayerState>();
 

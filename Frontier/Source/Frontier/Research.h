@@ -6,6 +6,13 @@
 #include "Research.generated.h"
 
 UENUM(BlueprintType)
+enum class EResearchTreeChangedType : uint8
+{
+    NodeStateChanged  UMETA(DisplayName = "Node State Changed"),
+    Unknown           UMETA(DisplayName = "Unknown")
+};
+
+UENUM(BlueprintType)
 enum class EResearchState : uint8
 {
     Researched  UMETA(DisplayName = "Researched"),

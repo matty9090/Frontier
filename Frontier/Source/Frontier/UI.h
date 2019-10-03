@@ -19,7 +19,7 @@ public:
 
 protected:
     UFUNCTION(BlueprintImplementableEvent)
-    void ResearchTreeChanged();
+    void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
 
 private:
     FDelegateHandle ResearchTreeChangedHandle;

@@ -2,16 +2,18 @@
 
 #pragma once
 
+#include "DelegateCombinations.h"
 #include "Containers/Queue.h"
 #include "GameFramework/PlayerState.h"
 #include "Resources.h"
+#include "Research.h"
 #include "FrontierPlayerState.generated.h"
 
 class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
 
-DECLARE_MULTICAST_DELEGATE(FOnResearchTreeChangedEvent);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnResearchTreeChangedEvent, EResearchTreeChangedType, UResearchNode*);
 
 /**
  * 

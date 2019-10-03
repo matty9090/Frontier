@@ -8,7 +8,6 @@
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "FrontierCharacter.h"
-#include "Research.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
 {
@@ -45,7 +44,7 @@ void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
     if (HasAuthority())
     {
         Node->State = EResearchState::Available;
-        OnResearchTreeChangedEvent.Broadcast();
+        OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
     }
 }
 
@@ -59,7 +58,7 @@ void AFrontierPlayerState::Research(UResearchNode* Node)
         Resources -= Node->Cost;
 
         AvailableObjects.Append(Node->Objects);
-        OnResearchTreeChangedEvent.Broadcast();
+        OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
     }
 }
 

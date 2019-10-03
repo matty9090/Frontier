@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BuildingBaseWidget.h"
+#include "Research.h"
 #include "BarracksWidget.generated.h"
 
 /**
@@ -19,7 +20,7 @@ public:
 
 protected:
     UFUNCTION(BlueprintImplementableEvent)
-    void ResearchTreeChanged();
+    void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
 
 private:
     FDelegateHandle ResearchTreeChangedHandle;

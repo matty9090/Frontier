@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "BuildingBaseWidget.h"
+#include "Research.h"
 #include "LibraryWidget.generated.h"
 
 class UCanvasPanel;
-class UResearchNode;
 class UResearchNodeWidget;
 
 USTRUCT()
@@ -40,6 +40,9 @@ protected:
     UFUNCTION(BlueprintImplementableEvent)
     void InitTree();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void ShowResearchedPopup(UResearchNode* Node);
+
     UPROPERTY(BlueprintReadWrite)
     TArray<UResearchNodeWidget*> ResearchNodeWidgets;
 
@@ -49,7 +52,7 @@ protected:
 private:
     void BuildTree(UResearchNode* Node, FVector2D ParentPos, FVector2D Pos);
     void CreateNodeAtPosition(UResearchNode* Node, FVector2D Pos);
-    void ResearchTreeChanged();
+    void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
     
     int32 NativePaint(
         const FPaintArgs& Args,
