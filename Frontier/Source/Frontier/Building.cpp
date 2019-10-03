@@ -18,7 +18,6 @@ ABuilding::ABuilding()
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
-    
 }
 
 // Called every frame
@@ -77,6 +76,8 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+    DOREPLIFETIME(ABuilding, Cost);
+    DOREPLIFETIME(ABuilding, Player);
     DOREPLIFETIME(ABuilding, UnitQueue);
 }
 

@@ -52,16 +52,16 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
     FResources Cost;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSubclassOf<UBuildingBaseWidget> Widget;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
 
-    UPROPERTY(Replicated, BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<FUnitQueueItem> UnitQueue;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")

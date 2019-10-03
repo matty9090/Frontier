@@ -82,16 +82,17 @@ public:
     {
         auto Available = Current.GetResourcesAvailable(Target);
 
-        auto GetImg = [](bool Available) {
-            return FString(Available ? "<img id=\"Tick\"/>" : "<img id=\"Cross\"/>");
+        auto GetTxt = [Available, Target, Current](EResource Resource) {
+            return FString::FromInt(Target.Resources[Resource])
+                 + FString(Available[Resource] ? " <img id=\"Tick\"/>" : "<img id=\"Cross\"/>");
         };
 
-        FString Str = "Wood " + GetImg(Available[EResource::Wood]);
-        Str += "\nStone " + GetImg(Available[EResource::Stone]);
-        Str += "\nMetal " + GetImg(Available[EResource::Metal]);
-        Str += "\nGold " + GetImg(Available[EResource::Gold]);
-        Str += "\nFood " + GetImg(Available[EResource::Food]);
-        Str += "\nPopulation " + GetImg(Available[EResource::Population]);
+        FString Str = "Wood " + GetTxt(EResource::Wood);
+        Str += "\nStone " + GetTxt(EResource::Stone);
+        Str += "\nMetal " + GetTxt(EResource::Metal);
+        Str += "\nGold " + GetTxt(EResource::Gold);
+        Str += "\nFood " + GetTxt(EResource::Food);
+        Str += "\nPopulation " + GetTxt(EResource::Population);
 
         return Str;
     }
