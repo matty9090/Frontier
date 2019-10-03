@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BuildingBaseWidget.h"
 #include "Research.h"
+#include "Building.h"
 #include "BarracksWidget.generated.h"
 
 /**
@@ -22,6 +23,10 @@ protected:
     UFUNCTION(BlueprintImplementableEvent)
     void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void UnitQueueChanged();
+
 private:
     FDelegateHandle ResearchTreeChangedHandle;
+    FDelegateHandle UnitQueueChangedHandle;
 };

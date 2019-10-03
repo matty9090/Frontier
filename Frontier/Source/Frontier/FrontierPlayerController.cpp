@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "Buildings/Barracks.h"
 #include "Engine/World.h"
 #include "Building.h"
 #include "Research.h"
@@ -101,12 +102,24 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    return Building->CanCreateUnit(Unit);
+    auto Barracks = Cast<ABarracks>(Building);
+
+    if (Barracks)
+    {
+        return Barracks->CanCreateUnit(Unit);
+    }
+
+    return false;
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    Building->QueueUnit(Unit);
+    auto Barracks = Cast<ABarracks>(Building);
+
+    if (Barracks)
+    {
+        Barracks->QueueUnit(Unit);
+    }
 }
 
 bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)

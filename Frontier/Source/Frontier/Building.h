@@ -5,27 +5,15 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Resources.h"
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 #include "Building.generated.h"
 
 class AFrontierCharacter;
 class AFrontierPlayerState;
 class UBuildingBaseWidget;
-
-USTRUCT(BlueprintType)
-struct FUnitQueueItem
-{
-    GENERATED_BODY()
-
-    UPROPERTY()
-    TSubclassOf<AFrontierCharacter> Unit;
-
-    UPROPERTY(BlueprintReadOnly)
-    float TimeRemaining;
-
-    UPROPERTY(BlueprintReadOnly)
-    FVector SpawnLocation;
-};
+class UStaticMeshComponent;
 
 UCLASS()
 class FRONTIER_API ABuilding : public AActor
@@ -36,22 +24,28 @@ public:
     // Sets default values for this actor's properties
     ABuilding();
 
-    void QueueUnit(TSubclassOf<AFrontierCharacter> Unit);
-    void RemoveQueuedUnit(int32 Index);
-
-    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    UFUNCTION(BlueprintCallable)
+    void ShowOutline();
 
     UFUNCTION(BlueprintCallable)
-    bool CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const;
+    void HideOutline();
+
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-public:    
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
+    UPROPERTY(EditAnywhere)
+    UBoxComponent* Box = nullptr;
 
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* Mesh = nullptr;
+
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* Outline = nullptr;
+
+public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
     FResources Cost;
 
@@ -60,9 +54,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
-
-    UPROPERTY(BlueprintReadOnly, Replicated)
-    TArray<FUnitQueueItem> UnitQueue;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
     FString BuildingName;
