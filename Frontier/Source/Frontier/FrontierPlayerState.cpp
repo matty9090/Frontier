@@ -41,25 +41,19 @@ void AFrontierPlayerState::AddResources(FResources Res)
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
 {
-    if (HasAuthority())
-    {
-        Node->State = EResearchState::Available;
-        OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
-    }
+    Node->State = EResearchState::Available;
+    OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
 }
 
 void AFrontierPlayerState::Research(UResearchNode* Node)
 {
-    if (HasAuthority())
-    {
-        Node->State = EResearchState::Researched;
-        Node->Refresh();
+    Node->State = EResearchState::Researched;
+    Node->Refresh();
 
-        Resources -= Node->Cost;
+    Resources -= Node->Cost;
 
-        AvailableObjects.Append(Node->Objects);
-        OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
-    }
+    AvailableObjects.Append(Node->Objects);
+    OnResearchTreeChangedEvent.Broadcast(EResearchTreeChangedType::NodeStateChanged, Node);
 }
 
 bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
