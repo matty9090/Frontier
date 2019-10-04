@@ -114,11 +114,32 @@ bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCh
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto Barracks = Cast<ABarracks>(Building);
-
-    if (Barracks)
+    if (GetNetMode() != ENetMode::NM_ListenServer)
     {
-        Barracks->QueueUnit(Unit);
+        auto Barracks = Cast<ABarracks>(Building);
+
+        if (Barracks)
+        {
+            Barracks->QueueUnit(Unit);
+        }
+    }
+}
+
+bool AFrontierPlayerController::ServerRemoveQueuedUnit_Validate(int Index, ABuilding* Building)
+{
+    return true;
+}
+
+void AFrontierPlayerController::ServerRemoveQueuedUnit_Implementation(int Index, ABuilding* Building)
+{
+    if (GetNetMode() != ENetMode::NM_ListenServer)
+    {
+        auto Barracks = Cast<ABarracks>(Building);
+
+        if (Barracks)
+        {
+            Barracks->RemoveQueuedUnit(Index);
+        }
     }
 }
 

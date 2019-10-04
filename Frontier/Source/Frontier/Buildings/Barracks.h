@@ -42,15 +42,21 @@ public:
     UFUNCTION(BlueprintCallable)
     bool CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const;
 
+    UFUNCTION(BlueprintCallable)
     void QueueUnit(TSubclassOf<AFrontierCharacter> Unit);
+
+    UFUNCTION(BlueprintCallable)
     void RemoveQueuedUnit(int32 Index);
 
     DECLARE_EVENT(ABuilding, FUnitQueueChangedEvent);
     FUnitQueueChangedEvent& OnUnitQueueChanged() { return UnitQueueChangedEvent; }
 
-    UPROPERTY(BlueprintReadOnly, Replicated)
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_UnitQueue)
     TArray<FUnitQueueItem> UnitQueue;
 
 private:
+    UFUNCTION()
+    void OnRep_UnitQueue();
+
     FUnitQueueChangedEvent UnitQueueChangedEvent;
 };

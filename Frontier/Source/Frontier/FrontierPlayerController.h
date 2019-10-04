@@ -52,6 +52,9 @@ private:
     void ServerQueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
+    void ServerRemoveQueuedUnit(int Index, ABuilding* Building);
+
+    UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerResearch(UResearchNode* Node);
 
     UFUNCTION()

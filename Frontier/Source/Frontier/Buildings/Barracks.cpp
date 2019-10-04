@@ -4,6 +4,7 @@
 #include "UnrealNetwork.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "Frontier.h"
 
 ABarracks::ABarracks() : Super()
 {
@@ -12,23 +13,34 @@ ABarracks::ABarracks() : Super()
 
 void ABarracks::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
 {
-    if (HasAuthority())
-    {
-        FUnitQueueItem Item;
-        Item.Unit = Unit;
-        Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
-        Item.SpawnLocation = GetActorLocation();
+    FUnitQueueItem Item;
+    Item.Unit = Unit;
+    Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
+    Item.SpawnLocation = GetActorLocation();
 
-        Player->Resources -= Unit.GetDefaultObject()->Cost;
-        UnitQueue.Push(Item);
-
+    Player->Resources -= Unit.GetDefaultObject()->Cost;
+    UnitQueue.Push(Item);
+    
+    if(!HasAuthority() || GetNetMode() == ENetMode::NM_ListenServer)
         UnitQueueChangedEvent.Broadcast();
-    }
 }
 
 void ABarracks::RemoveQueuedUnit(int32 Index)
 {
-    UnitQueue.RemoveAt(Index);
+    if (UnitQueue.Num() > Index)
+    {
+        auto Item = UnitQueue[Index];
+        Player->Resources += Item.Unit.GetDefaultObject()->Cost;
+
+        UnitQueue.RemoveAt(Index);
+
+        if(!HasAuthority() || GetNetMode() == ENetMode::NM_ListenServer)
+            UnitQueueChangedEvent.Broadcast();
+    }
+}
+
+void ABarracks::OnRep_UnitQueue()
+{
     UnitQueueChangedEvent.Broadcast();
 }
 
@@ -36,14 +48,14 @@ void ABarracks::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (HasAuthority())
+    if (UnitQueue.Num() > 0)
     {
-        if (UnitQueue.Num() > 0)
-        {
-            FUnitQueueItem& Item = UnitQueue[0];
-            Item.TimeRemaining -= DeltaTime;
+        FUnitQueueItem& Item = UnitQueue[0];
+        Item.TimeRemaining -= DeltaTime;
 
-            if (Item.TimeRemaining < 0.0f)
+        if (Item.TimeRemaining < 0.0f)
+        {
+            if (HasAuthority())
             {
                 FActorSpawnParameters SpawnParams;
                 SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -53,14 +65,16 @@ void ABarracks::Tick(float DeltaTime)
                     Item.SpawnLocation + FVector(0.0f, 0.0f, 100.0f),
                     FRotator::ZeroRotator,
                     SpawnParams
-                    );
+                );
 
                 Unit->Team = Player->Team;
 
+                Player->Resources -= Unit->Cost;
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);
 
-                UnitQueueChangedEvent.Broadcast();
+                if(GetNetMode() == ENetMode::NM_ListenServer)
+                    UnitQueueChangedEvent.Broadcast();
             }
         }
     }
