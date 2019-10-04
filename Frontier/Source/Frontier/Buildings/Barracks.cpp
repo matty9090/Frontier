@@ -69,7 +69,6 @@ void ABarracks::Tick(float DeltaTime)
 
                 Unit->Team = Player->Team;
 
-                Player->Resources -= Unit->Cost;
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);
 

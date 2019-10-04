@@ -150,7 +150,10 @@ bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)
 {
-    Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
+    if (GetNetMode() != ENetMode::NM_ListenServer)
+    {
+        Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
+    }
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
