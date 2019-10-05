@@ -21,6 +21,8 @@ ABuilding::ABuilding()
     Outline = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Outline"));
     Outline->SetupAttachment(Mesh);
     Outline->SetVisibility(false);
+
+    RootComponent = Box;
 }
 
 // Called when the game starts or when spawned
