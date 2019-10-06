@@ -68,10 +68,7 @@ bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
 
 bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) const
 {
-    bool a = Resources >= Building.GetDefaultObject()->Cost;
-    bool b = IsObjectResearched(Building);
-
-    return a && b;
+    return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building);
 }
 
 bool AFrontierPlayerState::CanResearchNode(UResearchNode* Node) const
