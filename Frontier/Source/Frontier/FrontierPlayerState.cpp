@@ -39,9 +39,9 @@ void AFrontierPlayerState::AddResources(FResources Res)
     Resources += Res;
 }
 
-void AFrontierPlayerState::AddSpecificResources(int Res, EResource type)
+void AFrontierPlayerState::AddSpecificResources(int Res, EResource Type)
 {
-	Resources.Resources[type] += Res;
+	Resources.Resources[Type] += Res;
 }
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
@@ -68,7 +68,10 @@ bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
 
 bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) const
 {
-    return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building);
+    bool a = Resources >= Building.GetDefaultObject()->Cost;
+    bool b = IsObjectResearched(Building);
+
+    return a && b;
 }
 
 bool AFrontierPlayerState::CanResearchNode(UResearchNode* Node) const
