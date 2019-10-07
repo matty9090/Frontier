@@ -65,6 +65,7 @@ void ABarracks::Tick(float DeltaTime)
                     SpawnParams
                 );
 
+				Unit->SetOwner(Player);
                 Unit->Team = Player->Team;
 
                 Player->Units.Add(Unit);
