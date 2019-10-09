@@ -32,15 +32,15 @@ public:
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* Mesh = nullptr;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
     UPROPERTY(EditAnywhere)
     UBoxComponent* Box = nullptr;
-
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* Mesh = nullptr;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* Outline = nullptr;

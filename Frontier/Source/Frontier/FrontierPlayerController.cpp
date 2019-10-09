@@ -1,16 +1,23 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "FrontierPlayerController.h"
+
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
+#include "UserWidget.h"
+#include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
+
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Buildings/Barracks.h"
-#include "Engine/World.h"
 #include "Building.h"
 #include "Research.h"
 #include "Frontier.h"
+#include "Widgets/UI.h"
+#include "RoamPawn.h"
+#include "BaseResource.h"
+#include "Widgets/BuildingBaseWidget.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
 {
@@ -22,20 +29,59 @@ void AFrontierPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+    ControllerState = EControllerState::Idle;
+
     if (!IsRunningDedicatedServer())
     {
         ClientCreateUI();
     }
 }
 
-void AFrontierPlayerController::PlayerTick(float DeltaTime)
-{
-    Super::PlayerTick(DeltaTime);
-}
-
 void AFrontierPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
+
+    InputComponent->BindAxis("Zoom", this, &AFrontierPlayerController::OnZoom);
+    InputComponent->BindAxis("MoveUp", this, &AFrontierPlayerController::OnMoveUp);
+    InputComponent->BindAxis("MoveRight", this, &AFrontierPlayerController::OnMoveRight);
+
+    InputComponent->BindAction("Send", IE_Pressed, this, &AFrontierPlayerController::OnSend);
+    InputComponent->BindAction("Select", IE_Pressed, this, &AFrontierPlayerController::OnSelect);
+}
+
+void AFrontierPlayerController::PlayerTick(float DeltaTime)
+{
+    Super::PlayerTick(DeltaTime);
+
+    /* float MX, MY;
+    
+    if (GetMousePosition(MX, MY))
+    {
+        int32 VX, VY;
+        GetViewportSize(VX, VY);
+
+        if (MY <      MouseMovementPadding) OnMoveUp   ( 1.0f);
+        if (MY > VY - MouseMovementPadding) OnMoveUp   (-1.0f);
+        if (MX <      MouseMovementPadding) OnMoveRight(-1.0f);
+        if (MX > VX - MouseMovementPadding) OnMoveRight( 1.0f);
+    }*/
+
+    if (ControllerState == EControllerState::PlacingBuilding)
+    {
+        if (HoveredBuilding)
+        {
+            FHitResult Hit;
+
+            TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+                EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            };
+
+            if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+            {
+                HoveredBuilding->SetActorLocation(Hit.Location);
+            }
+        }
+    }
 }
 
 void AFrontierPlayerController::ClientCreateUI_Implementation()
@@ -43,11 +89,55 @@ void AFrontierPlayerController::ClientCreateUI_Implementation()
     CreateUI();
 }
 
+void AFrontierPlayerController::CreateUI()
+{
+    UI = CreateWidget<UUI>(this, UIClass, "UI");
+
+    if (UI)
+    {
+        UI->AddToViewport();
+    }
+
+    AnimationFinishedEvent.BindUFunction(this, "BuildingUIAnimationFinished");
+}
+
+void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> BuildingType)
+{
+    if (HoveredBuilding)
+        HoveredBuilding->Destroy();
+
+    FTransform Transform;
+    FActorSpawnParameters SpawnParams;
+
+    HoveredBuilding = GetWorld()->SpawnActor<ABuilding>(BuildingType, Transform, SpawnParams);
+    HoveredBuilding->SetActorEnableCollision(false);
+
+    auto Mesh = HoveredBuilding->Mesh;
+    
+    if (Mesh)
+    {
+        auto NumMaterials = Mesh->GetMaterials().Num();
+
+        for(int i = 0; i < NumMaterials; ++i)
+            Mesh->SetMaterial(i, HoverMaterialGreen);
+    }
+
+    ControllerState = EControllerState::PlacingBuilding;
+}
+
+void AFrontierPlayerController::BuildingUIAnimationFinished()
+{
+    UI->ShowUI();
+}
+
 void AFrontierPlayerController::OnRep_PlayerState()
 {
     Super::OnRep_PlayerState();
 
-    CreateUI();
+    if (!UI)
+    {
+        CreateUI();
+    }
 }
 
 void AFrontierPlayerController::OnRep_PlacedBuilding()
@@ -55,6 +145,170 @@ void AFrontierPlayerController::OnRep_PlacedBuilding()
     if (HoveredBuilding)
     {
         HoveredBuilding->Destroy();
+    }
+}
+
+void AFrontierPlayerController::OnMoveUp(float Value)
+{
+    if (GetPawn())
+    {
+        auto RoamPawn = Cast<ARoamPawn>(GetPawn());
+        auto Delta = Value * MoveSpeed * MovementCurve->GetFloatValue(RoamPawn->GetCameraHeight());
+        auto Location = GetPawn()->GetActorLocation() + FVector(Delta, 0.0f, 0.0f);
+
+        RoamPawn->SetActorLocation(Location);
+    }
+}
+
+void AFrontierPlayerController::OnMoveRight(float Value)
+{
+    if (GetPawn())
+    {
+        auto RoamPawn = Cast<ARoamPawn>(GetPawn());
+        auto Delta = Value * MoveSpeed * MovementCurve->GetFloatValue(RoamPawn->GetCameraHeight());
+        auto Location = GetPawn()->GetActorLocation() + FVector(0.0f, Delta, 0.0f);
+
+        RoamPawn->SetActorLocation(Location);
+    }
+}
+
+void AFrontierPlayerController::OnSelect()
+{
+    if (IsRunningDedicatedServer())
+    {
+        UE_LOG(LogFrontier, Display, TEXT("Ummmmmmmmm"));
+    }
+
+    FHitResult Hit;
+
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+        EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+        EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+        EObjectTypeQuery::ObjectTypeQuery3  // Pawn
+    };
+
+    auto DeselectUnit = [&]() {
+        if (SelectedUnit) SelectedUnit->HideOutline();
+        SelectedUnit = nullptr;
+    };
+
+    auto DeselectBuilding = [&] {
+        if (SelectedBuildingUI)
+        {
+            if (SelectedBuildingUI->StaticClass() == SelectedBuilding->Widget)
+                SelectedBuildingUI->RemoveFromParent();
+            else
+                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
+        }
+        else if(!UI->bIsHidden)
+            UI->HideUI();
+
+        SelectedBuilding = nullptr;
+        SelectedBuildingUI = nullptr;
+    };    
+
+    if (ControllerState == EControllerState::PlacingBuilding)
+    {
+        if (Cast<AFrontierPlayerState>(PlayerState)->CanCreateBuilding(HoveredBuilding->StaticClass()))
+        {
+            ServerSpawnBuilding(HoveredBuilding->StaticClass(), HoveredBuilding->GetActorLocation(), FRotator::ZeroRotator);
+        }
+    }
+    else
+    {
+        bool Selected = false;
+
+        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        {
+            auto Unit = Cast<AFrontierCharacter>(Hit.Actor);
+
+            if (Unit)
+            {
+                UE_LOG(LogFrontier, Display, TEXT("Selected unit"));
+
+                DeselectUnit();
+                DeselectBuilding();
+
+                SelectedUnit = Unit;
+                SelectedUnit->ShowOutline();
+
+                Selected = true;
+            }
+
+            auto Building = Cast<ABuilding>(Hit.Actor);
+
+            if (!Selected && Building)
+            {
+                UE_LOG(LogFrontier, Display, TEXT("Selected building"));
+
+                DeselectUnit();
+                DeselectBuilding();
+
+                SelectedBuilding = Building;
+                SelectedBuilding->ShowOutline();
+
+                SelectedBuildingUI = CreateWidget<UBuildingBaseWidget>(this, SelectedBuilding->Widget);
+                SelectedBuildingUI->AddToViewport();
+                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetShowAnimation());
+                SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
+
+                Selected = true;
+            }
+
+            auto Resource = Cast<ABaseResource>(Hit.Actor);
+
+            if (!Selected && Resource)
+            {
+                UE_LOG(LogFrontier, Display, TEXT("Selected resource"));
+                Selected = true;
+            }
+        }
+
+        if (!Selected)
+        {
+            if (UI->bIsHidden)
+                UI->ShowUI();
+
+            DeselectUnit();
+
+            if (SelectedBuilding)
+            {
+                SelectedBuilding->HideOutline();
+                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
+            }
+
+            SelectedBuilding = nullptr, SelectedBuildingUI = nullptr;
+        }
+    }
+}
+
+void AFrontierPlayerController::OnSend()
+{
+    if (SelectedUnit)
+    {
+        FHitResult Hit;
+
+        TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+        };
+
+        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        {
+            ServerMoveAIToLocation(SelectedUnit, Hit.Location, Hit.Actor.Get());
+        }
+    }
+}
+
+void AFrontierPlayerController::OnZoom(float Value)
+{
+    if (GetPawn())
+    {
+        auto RoamPawn = Cast<ARoamPawn>(GetPawn());
+        auto Zoom = ZoomCurve->GetFloatValue(RoamPawn->GetCameraHeight()) * ZoomSpeed * Value * -1.0f;
+
+        Zoom = FMath::Clamp(Zoom + RoamPawn->GetCameraHeight(), MinZoom, MaxZoom);
+        RoamPawn->SetCameraHeight(Zoom);
     }
 }
 

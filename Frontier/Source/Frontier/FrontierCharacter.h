@@ -21,6 +21,12 @@ public:
     virtual void Tick(float DeltaSeconds) override;
 
     UFUNCTION(BlueprintImplementableEvent)
+    void ShowOutline();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void HideOutline();
+
+    UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")

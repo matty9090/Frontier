@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "FrontierCharacter.h"
+#include "Frontier.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
 {

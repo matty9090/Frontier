@@ -15,6 +15,12 @@ public:
     // Sets default values for this pawn's properties
     ARoamPawn();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    float GetCameraHeight() const;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void SetCameraHeight(float Height);
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;

@@ -17,6 +17,15 @@ class FRONTIER_API UUI : public UUserWidget
 public:
     bool Initialize() override;
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void ShowUI();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void HideUI();
+
+    UPROPERTY(BlueprintReadWrite)
+    bool bIsHidden = false;
+
 protected:
     UFUNCTION(BlueprintImplementableEvent)
     void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
