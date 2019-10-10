@@ -22,6 +22,7 @@
 AFrontierPlayerController::AFrontierPlayerController()
 {
     bShowMouseCursor = true;
+    bEnableMouseOverEvents = false;
     DefaultMouseCursor = EMouseCursor::Default;
 }
 
@@ -86,11 +87,6 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
 void AFrontierPlayerController::ClientCreateUI_Implementation()
 {
-    CreateUI();
-}
-
-void AFrontierPlayerController::CreateUI()
-{
     UI = CreateWidget<UUI>(this, UIClass, "UI");
 
     if (UI)
@@ -127,17 +123,18 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
 
 void AFrontierPlayerController::BuildingUIAnimationFinished()
 {
-    UI->ShowUI();
+    if(UI->bIsHidden)
+        UI->ShowUI();
 }
 
 void AFrontierPlayerController::OnRep_PlayerState()
 {
     Super::OnRep_PlayerState();
 
-    if (!UI)
-    {
-        CreateUI();
-    }
+    if (UI)
+        UI->RemoveFromParent();
+
+    ClientCreateUI();
 }
 
 void AFrontierPlayerController::OnRep_PlacedBuilding()
@@ -174,11 +171,6 @@ void AFrontierPlayerController::OnMoveRight(float Value)
 
 void AFrontierPlayerController::OnSelect()
 {
-    if (IsRunningDedicatedServer())
-    {
-        UE_LOG(LogFrontier, Display, TEXT("Ummmmmmmmm"));
-    }
-
     FHitResult Hit;
 
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
@@ -193,25 +185,38 @@ void AFrontierPlayerController::OnSelect()
     };
 
     auto DeselectBuilding = [&] {
+        if (!UI->bIsHidden)
+            UI->HideUI();
+
         if (SelectedBuildingUI)
         {
             if (SelectedBuildingUI->StaticClass() == SelectedBuilding->Widget)
                 SelectedBuildingUI->RemoveFromParent();
             else
+            {
                 SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
+                SelectedBuildingUI->UnbindAllFromAnimationFinished(SelectedBuildingUI->GetHideAnimation());
+            }
         }
-        else if(!UI->bIsHidden)
-            UI->HideUI();
 
         SelectedBuilding = nullptr;
         SelectedBuildingUI = nullptr;
-    };    
+    };
+
+    auto PS = Cast<AFrontierPlayerState>(PlayerState);
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (Cast<AFrontierPlayerState>(PlayerState)->CanCreateBuilding(HoveredBuilding->StaticClass()))
+        if (PS->CanCreateBuilding(HoveredBuilding->GetClass()))
         {
-            ServerSpawnBuilding(HoveredBuilding->StaticClass(), HoveredBuilding->GetActorLocation(), FRotator::ZeroRotator);
+            ServerSpawnBuilding(HoveredBuilding->GetClass(), HoveredBuilding->GetActorLocation(), FRotator::ZeroRotator);
+            ControllerState = EControllerState::Idle;
+
+            if (HasAuthority())
+            {
+                HoveredBuilding->Destroy();
+                HoveredBuilding = nullptr;
+            }
         }
     }
     else
@@ -222,7 +227,8 @@ void AFrontierPlayerController::OnSelect()
         {
             auto Unit = Cast<AFrontierCharacter>(Hit.Actor);
 
-            if (Unit)
+            // TODO: Unit should store player
+            if (Unit && Unit->Team == PS->Team)
             {
                 UE_LOG(LogFrontier, Display, TEXT("Selected unit"));
 
@@ -237,7 +243,7 @@ void AFrontierPlayerController::OnSelect()
 
             auto Building = Cast<ABuilding>(Hit.Actor);
 
-            if (!Selected && Building)
+            if (!Selected && Building && Building->Player == PS)
             {
                 UE_LOG(LogFrontier, Display, TEXT("Selected building"));
 
@@ -248,6 +254,7 @@ void AFrontierPlayerController::OnSelect()
                 SelectedBuilding->ShowOutline();
 
                 SelectedBuildingUI = CreateWidget<UBuildingBaseWidget>(this, SelectedBuilding->Widget);
+                SelectedBuildingUI->BuildingActor = SelectedBuilding;
                 SelectedBuildingUI->AddToViewport();
                 SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetShowAnimation());
                 SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
@@ -297,6 +304,11 @@ void AFrontierPlayerController::OnSend()
         {
             ServerMoveAIToLocation(SelectedUnit, Hit.Location, Hit.Actor.Get());
         }
+    }
+    else if (HoveredBuilding)
+    {
+        HoveredBuilding->Destroy();
+        HoveredBuilding = nullptr;
     }
 }
 

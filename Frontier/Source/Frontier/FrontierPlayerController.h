@@ -46,9 +46,6 @@ protected:
 
 private:
     UFUNCTION()
-    void CreateUI();
-
-    UFUNCTION()
     void BuildingUIAnimationFinished();
 
     void OnRep_PlayerState() override;
