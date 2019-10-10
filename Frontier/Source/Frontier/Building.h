@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #pragma once
 
@@ -52,12 +52,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSubclassOf<UBuildingBaseWidget> Widget;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
-    AFrontierPlayerState* Player;
-
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
     FString BuildingName;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
     FString BuildingDesc;
+    
+    UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
+    AFrontierPlayerState* Player;
 };
