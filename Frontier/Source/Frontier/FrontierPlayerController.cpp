@@ -190,14 +190,12 @@ void AFrontierPlayerController::OnSelect()
 
         if (SelectedBuildingUI)
         {
-            if (SelectedBuildingUI->StaticClass() == SelectedBuilding->Widget)
-                SelectedBuildingUI->RemoveFromParent();
-            else
-            {
-                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
-                SelectedBuildingUI->UnbindAllFromAnimationFinished(SelectedBuildingUI->GetHideAnimation());
-            }
+            SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
+            SelectedBuildingUI->UnbindFromAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
         }
+
+        if(SelectedBuilding)
+            SelectedBuilding->HideOutline();
 
         SelectedBuilding = nullptr;
         SelectedBuildingUI = nullptr;
@@ -227,16 +225,18 @@ void AFrontierPlayerController::OnSelect()
         {
             auto Unit = Cast<AFrontierCharacter>(Hit.Actor);
 
-            // TODO: Unit should store player
-            if (Unit && Unit->Team == PS->Team)
+            if (Unit && Unit->Player == PS)
             {
                 UE_LOG(LogFrontier, Display, TEXT("Selected unit"));
 
-                DeselectUnit();
-                DeselectBuilding();
+                if (Unit != SelectedUnit)
+                {
+                    DeselectUnit();
+                    DeselectBuilding();
 
-                SelectedUnit = Unit;
-                SelectedUnit->ShowOutline();
+                    SelectedUnit = Unit;
+                    SelectedUnit->ShowOutline();
+                }
 
                 Selected = true;
             }
@@ -247,18 +247,21 @@ void AFrontierPlayerController::OnSelect()
             {
                 UE_LOG(LogFrontier, Display, TEXT("Selected building"));
 
-                DeselectUnit();
-                DeselectBuilding();
+                if (Building != SelectedBuilding)
+                {
+                    DeselectUnit();
+                    DeselectBuilding();
 
-                SelectedBuilding = Building;
-                SelectedBuilding->ShowOutline();
+                    SelectedBuilding = Building;
+                    SelectedBuilding->ShowOutline();
 
-                SelectedBuildingUI = CreateWidget<UBuildingBaseWidget>(this, SelectedBuilding->Widget);
-                SelectedBuildingUI->BuildingActor = SelectedBuilding;
-                SelectedBuildingUI->AddToViewport();
-                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetShowAnimation());
-                SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
-
+                    SelectedBuildingUI = CreateWidget<UBuildingBaseWidget>(this, SelectedBuilding->Widget);
+                    SelectedBuildingUI->BuildingActor = SelectedBuilding;
+                    SelectedBuildingUI->AddToViewport();
+                    SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetShowAnimation());
+                    SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
+                }
+                
                 Selected = true;
             }
 

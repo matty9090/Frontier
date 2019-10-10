@@ -66,7 +66,7 @@ void ABarracks::Tick(float DeltaTime)
                 );
 
 				Unit->SetOwner(Player);
-                Unit->Team = Player->Team;
+                Unit->Player = Player;
 
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);
