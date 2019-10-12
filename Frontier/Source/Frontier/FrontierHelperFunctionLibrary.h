@@ -6,7 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Research.h"
 #include "Resources.h"
-#include "Building.h"
+#include "Buildings/Building.h"
 #include "FrontierCharacter.h"
 #include "FrontierHelperFunctionLibrary.generated.h"
 

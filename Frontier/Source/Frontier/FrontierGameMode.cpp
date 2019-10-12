@@ -5,7 +5,7 @@
 #include "FrontierPlayerState.h"
 #include "FrontierCharacter.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Building.h"
+#include "Buildings/Building.h"
 
 AFrontierGameMode::AFrontierGameMode()
 {

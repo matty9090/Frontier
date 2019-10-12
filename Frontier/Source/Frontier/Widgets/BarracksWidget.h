@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "BuildingBaseWidget.h"
 #include "Research.h"
-#include "Building.h"
+#include "Buildings/Building.h"
 #include "BarracksWidget.generated.h"
 
 /**
