@@ -39,9 +39,9 @@ void AFrontierPlayerState::AddResources(FResources Res)
     Resources += Res;
 }
 
-void AFrontierPlayerState::AddSpecificResources(int Res, EResource type)
+void AFrontierPlayerState::AddSpecificResources(int Res, EResource Type)
 {
-	Resources.Resources[type] += Res;
+	Resources.Resources[Type] += Res;
 }
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)

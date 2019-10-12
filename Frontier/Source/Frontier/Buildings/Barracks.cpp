@@ -20,9 +20,7 @@ void ABarracks::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
 
     Player->Resources -= Unit.GetDefaultObject()->Cost;
     UnitQueue.Push(Item);
-    
-    if(!HasAuthority() || GetNetMode() == ENetMode::NM_ListenServer)
-        UnitQueueChangedEvent.Broadcast();
+    UnitQueueChangedEvent.Broadcast();
 }
 
 void ABarracks::RemoveQueuedUnit(int32 Index)
@@ -34,7 +32,7 @@ void ABarracks::RemoveQueuedUnit(int32 Index)
 
         UnitQueue.RemoveAt(Index);
 
-        if(!HasAuthority() || GetNetMode() == ENetMode::NM_ListenServer)
+        if(!IsRunningDedicatedServer())
             UnitQueueChangedEvent.Broadcast();
     }
 }
@@ -67,12 +65,13 @@ void ABarracks::Tick(float DeltaTime)
                     SpawnParams
                 );
 
+				Unit->SetOwner(Player);
                 Unit->Team = Player->Team;
 
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);
 
-                if(GetNetMode() == ENetMode::NM_ListenServer)
+                if(!IsRunningDedicatedServer())
                     UnitQueueChangedEvent.Broadcast();
             }
         }

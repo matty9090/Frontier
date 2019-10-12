@@ -22,7 +22,7 @@ void AFrontierPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (GetNetMode() == ENetMode::NM_ListenServer || GetNetMode() == ENetMode::NM_Standalone)
+    if (!IsRunningDedicatedServer())
     {
         ClientCreateUI();
     }
@@ -38,14 +38,6 @@ void AFrontierPlayerController::SetupInputComponent()
     Super::SetupInputComponent();
 }
 
-void AFrontierPlayerController::OnRep_PlacedBuilding()
-{
-    if (HoveredBuilding)
-    {
-        HoveredBuilding->Destroy();
-    }
-}
-
 void AFrontierPlayerController::ClientCreateUI_Implementation()
 {
     CreateUI();
@@ -56,6 +48,14 @@ void AFrontierPlayerController::OnRep_PlayerState()
     Super::OnRep_PlayerState();
 
     CreateUI();
+}
+
+void AFrontierPlayerController::OnRep_PlacedBuilding()
+{
+    if (HoveredBuilding)
+    {
+        HoveredBuilding->Destroy();
+    }
 }
 
 bool AFrontierPlayerController::ServerSpawnBuilding_Validate(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
@@ -82,11 +82,6 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
         );
 
         PlacedBuilding->Player = PS;
-
-        if (GetNetMode() == ENetMode::NM_ListenServer && HoveredBuilding)
-        {
-            HoveredBuilding->Destroy();
-        }
     }
 }
 
@@ -114,14 +109,11 @@ bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCh
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    if (GetNetMode() != ENetMode::NM_ListenServer)
-    {
-        auto Barracks = Cast<ABarracks>(Building);
+    auto Barracks = Cast<ABarracks>(Building);
 
-        if (Barracks)
-        {
-            Barracks->QueueUnit(Unit);
-        }
+    if (Barracks)
+    {
+        Barracks->QueueUnit(Unit);
     }
 }
 
@@ -132,14 +124,11 @@ bool AFrontierPlayerController::ServerRemoveQueuedUnit_Validate(int Index, ABuil
 
 void AFrontierPlayerController::ServerRemoveQueuedUnit_Implementation(int Index, ABuilding* Building)
 {
-    if (GetNetMode() != ENetMode::NM_ListenServer)
-    {
-        auto Barracks = Cast<ABarracks>(Building);
+    auto Barracks = Cast<ABarracks>(Building);
 
-        if (Barracks)
-        {
-            Barracks->RemoveQueuedUnit(Index);
-        }
+    if (Barracks)
+    {
+        Barracks->RemoveQueuedUnit(Index);
     }
 }
 
@@ -150,10 +139,7 @@ bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)
 {
-    if (GetNetMode() != ENetMode::NM_ListenServer)
-    {
-        Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
-    }
+    Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
