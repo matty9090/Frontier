@@ -96,4 +96,23 @@ public:
 
         return Str;
     }
+
+	UFUNCTION(BlueprintPure)
+	static AActor* GetClosestObject(FVector Position,TArray<AActor*> Objects)
+	{
+		AActor* Closest = nullptr;
+		float Distance = MAX_FLT;
+
+		for (auto Actor : Objects)
+		{
+			float TmpDistance = FVector::DistSquared(Position, Actor->GetActorLocation());
+
+			if (TmpDistance < Distance)
+			{
+				Distance = TmpDistance;
+				Closest = Actor;
+			}
+		}
+		return Closest;
+	}
 };
