@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Resources.h"
 #include "Components/BoxComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
 
 #include "Building.generated.h"
@@ -45,6 +46,9 @@ protected:
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* Outline = nullptr;
 
+    UPROPERTY(EditAnywhere)
+    UWidgetComponent* Tooltip = nullptr;
+
 public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
     FResources Cost;
@@ -60,4 +64,14 @@ public:
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
+
+private:
+    UFUNCTION()
+    void BeginMouseOver(UPrimitiveComponent* TouchedComponent);
+
+    UFUNCTION()
+    void EndMouseOver(UPrimitiveComponent* TouchedComponent);
+
+    TScriptDelegate<> BeginMouseOverDelegate;
+    TScriptDelegate<> EndMouseOverDelegate;
 };

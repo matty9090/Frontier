@@ -10,8 +10,8 @@
 
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "Buildings/Building.h"
 #include "Buildings/Barracks.h"
-#include "Building.h"
 #include "Research.h"
 #include "Frontier.h"
 #include "Widgets/UI.h"
@@ -22,7 +22,7 @@
 AFrontierPlayerController::AFrontierPlayerController()
 {
     bShowMouseCursor = true;
-    bEnableMouseOverEvents = false;
+    bEnableMouseOverEvents = true;
     DefaultMouseCursor = EMouseCursor::Default;
 }
 
@@ -79,7 +79,10 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
             if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
             {
-                HoveredBuilding->SetActorLocation(Hit.Location);
+                auto BoxComponent = Cast<UBoxComponent>(HoveredBuilding->GetComponentByClass(UBoxComponent::StaticClass()));
+                float Z = BoxComponent->GetScaledBoxExtent().Z;
+
+                HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Z));
             }
         }
     }
