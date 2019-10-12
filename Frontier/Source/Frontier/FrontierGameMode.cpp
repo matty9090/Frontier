@@ -24,9 +24,12 @@ void AFrontierGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActo
     auto Location = StartSpot->GetActorLocation();
     Location.Z = 0;
 
-    auto Library = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location, FRotator::ZeroRotator, SpawnParams);
+    auto BoxComponent = Cast<UBoxComponent>(StartBuildingClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+    float Z = BoxComponent->GetScaledBoxExtent().Z;
+
+    auto Library = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location + FVector(0.0f, 0.0f, Z), FRotator::ZeroRotator, SpawnParams);
     Library->Player = PS;
 
-    auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location, FRotator::ZeroRotator, SpawnParams);
+    auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location + FVector(300.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnParams);
     Worker->Player = PS;
 }
