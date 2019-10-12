@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 
 #include "FrontierPlayerState.h"
@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "FrontierCharacter.h"
+#include "Frontier.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
 {

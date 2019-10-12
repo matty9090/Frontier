@@ -42,5 +42,5 @@ void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(AFrontierCharacter, Team);
+    DOREPLIFETIME(AFrontierCharacter, Player);
 }

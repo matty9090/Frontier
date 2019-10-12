@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #pragma once
 
@@ -14,6 +14,12 @@ class FRONTIER_API ARoamPawn : public APawn
 public:
     // Sets default values for this pawn's properties
     ARoamPawn();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    float GetCameraHeight() const;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void SetCameraHeight(float Height);
 
 protected:
     // Called when the game starts or when spawned

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "Barracks.h"
 #include "UnrealNetwork.h"
@@ -66,7 +66,7 @@ void ABarracks::Tick(float DeltaTime)
                 );
 
 				Unit->SetOwner(Player);
-                Unit->Team = Player->Team;
+                Unit->Player = Player;
 
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);

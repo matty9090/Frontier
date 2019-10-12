@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 
 #include "FrontierGameState.h"
@@ -16,28 +16,22 @@ void AFrontierGameState::AddPlayerState(APlayerState* PlayerState)
 {
     Super::AddPlayerState(PlayerState);
 
-    if (HasAuthority())
-    {
-        auto Player = Cast<AFrontierPlayerState>(PlayerState);
-        Player->Team = NumTeams++;
+    auto Player = Cast<AFrontierPlayerState>(PlayerState);
+    Player->Team = NumTeams++;
 
-        FrontierPlayers.Add(Player);
-    }
+    FrontierPlayers.Add(Player);
 }
 
 void AFrontierGameState::RemovePlayerState(APlayerState* PlayerState)
 {
     Super::RemovePlayerState(PlayerState);
 
-    if (HasAuthority())
+    for (int32 i = 0; i < FrontierPlayers.Num(); i++)
     {
-        for (int32 i = 0; i < FrontierPlayers.Num(); i++)
+        if (FrontierPlayers[i] == PlayerState)
         {
-            if (FrontierPlayers[i] == PlayerState)
-            {
-                FrontierPlayers.RemoveAt(i, 1);
-                return;
-            }
+            FrontierPlayers.RemoveAt(i, 1);
+            return;
         }
     }
 }

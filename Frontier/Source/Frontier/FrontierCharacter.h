@@ -7,6 +7,8 @@
 #include "Resources.h"
 #include "FrontierCharacter.generated.h"
 
+class AFrontierPlayerState;
+
 UCLASS(Blueprintable)
 class AFrontierCharacter : public ACharacter
 {
@@ -19,6 +21,12 @@ public:
 
     // Called every frame.
     virtual void Tick(float DeltaSeconds) override;
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void ShowOutline();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void HideOutline();
 
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
@@ -50,8 +58,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float TrainTime = 1;
 
-    UPROPERTY(BlueprintReadOnly, Meta=(ExposeOnSpawn), Replicated)
-    int32 Team = -1;
+    UPROPERTY(BlueprintReadWrite, Meta=(ExposeOnSpawn), Replicated)
+    AFrontierPlayerState* Player = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FResources Cost;
