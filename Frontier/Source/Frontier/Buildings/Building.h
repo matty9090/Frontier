@@ -11,10 +11,20 @@
 
 #include "Building.generated.h"
 
+class UImage;
 class AFrontierCharacter;
 class AFrontierPlayerState;
 class UBuildingBaseWidget;
 class UStaticMeshComponent;
+
+USTRUCT(BlueprintType)
+struct FTextureHolder
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UTexture2D* Texture = nullptr;
+};
 
 UCLASS()
 class FRONTIER_API ABuilding : public AActor
@@ -56,11 +66,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSubclassOf<UBuildingBaseWidget> Widget;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FString BuildingName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FString BuildingDesc;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FTextureHolder Icon;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
