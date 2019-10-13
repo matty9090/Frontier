@@ -130,7 +130,6 @@ void AFrontierPlayerController::BuildingUIAnimationFinished()
         UI->ShowUI();
 
     SelectedBuilding = nullptr;
-    SelectedBuildingUI = nullptr;
 }
 
 void AFrontierPlayerController::OnRep_PlayerState()
@@ -287,11 +286,8 @@ void AFrontierPlayerController::OnSelect()
 
             DeselectUnit();
 
-            if (SelectedBuilding)
-            {
-                SelectedBuilding->HideOutline();
-                SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
-            }
+            if (SelectedBuilding)    SelectedBuilding->HideOutline();
+            if (SelectedBuildingUI)  SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
 
             SelectedBuilding = nullptr, SelectedBuildingUI = nullptr;
         }
