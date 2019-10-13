@@ -22,6 +22,7 @@ void AFrontierPlayerState::PostInitializeComponents()
     if (HasAuthority())
     {
         ResearchRootNode = CreateResearchTree();
+        Research(ResearchRootNode);
     }
 }
 
