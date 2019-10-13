@@ -54,9 +54,6 @@ protected:
     UBoxComponent* Box = nullptr;
 
     UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* Outline = nullptr;
-
-    UPROPERTY(EditAnywhere)
     UWidgetComponent* Tooltip = nullptr;
 
 public:

@@ -129,7 +129,11 @@ void AFrontierPlayerController::BuildingUIAnimationFinished()
     if(UI->bIsHidden)
         UI->ShowUI();
 
-    SelectedBuilding = nullptr;
+    if (SelectedBuilding)
+    {
+        SelectedBuilding->HideOutline();
+        SelectedBuilding = nullptr;
+    }
 }
 
 void AFrontierPlayerController::OnRep_PlayerState()

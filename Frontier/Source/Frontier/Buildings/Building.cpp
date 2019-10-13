@@ -27,10 +27,6 @@ ABuilding::ABuilding() : Super()
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     Mesh->SetupAttachment(Box);
 
-    Outline = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Outline"));
-    Outline->SetupAttachment(Mesh);
-    Outline->SetVisibility(false);
-
     Tooltip = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tooltip"));
     Tooltip->SetupAttachment(RootComponent);
     Tooltip->AddRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
@@ -76,12 +72,12 @@ void ABuilding::EndMouseOver(UPrimitiveComponent* TouchedComponent)
 
 void ABuilding::ShowOutline()
 {
-    Outline->SetVisibility(true);
+    Mesh->SetRenderCustomDepth(true);
 }
 
 void ABuilding::HideOutline()
 {
-    Outline->SetVisibility(false);
+    Mesh->SetRenderCustomDepth(false);
 }
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
