@@ -83,8 +83,9 @@ public:
         auto Available = Current.GetResourcesAvailable(Target);
 
         auto GetTxt = [Available, Target, Current](EResource Resource) {
-            return FString::FromInt(Target.Resources[Resource])
-                 + FString(Available[Resource] ? " <img id=\"Tick\"/>" : "<img id=\"Cross\"/>");
+            return FString(Available[Resource] ? "<Green>" : "<Red>")
+                 + FString::FromInt(Target.Resources[Resource])
+                 + FString("</>");
         };
 
         FString Str = "Wood " + GetTxt(EResource::Wood);
