@@ -13,14 +13,17 @@ AUnitQueueCommon::AUnitQueueCommon() : Super()
 
 void AUnitQueueCommon::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
 {
-    FUnitQueueItem Item;
-    Item.Unit = Unit;
-    Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
-    Item.SpawnLocation = GetActorLocation();
+    if (Unit.GetDefaultObject()->TrainedInBuilding == GetClass())
+    {
+        FUnitQueueItem Item;
+        Item.Unit = Unit;
+        Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
+        Item.SpawnLocation = GetActorLocation();
 
-    Player->Resources -= Unit.GetDefaultObject()->Cost;
-    UnitQueue.Push(Item);
-    UnitQueueChangedEvent.Broadcast();
+        Player->Resources -= Unit.GetDefaultObject()->Cost;
+        UnitQueue.Push(Item);
+        UnitQueueChangedEvent.Broadcast();
+    }
 }
 
 void AUnitQueueCommon::RemoveQueuedUnit(int32 Index)

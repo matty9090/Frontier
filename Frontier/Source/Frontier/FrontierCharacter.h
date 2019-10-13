@@ -7,6 +7,7 @@
 #include "Resources.h"
 #include "FrontierCharacter.generated.h"
 
+class ABuilding;
 class AFrontierPlayerState;
 
 UCLASS(Blueprintable)
@@ -31,11 +32,14 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FString UnitName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Frontier Object")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FString UnitDesc;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    TSubclassOf<ABuilding> TrainedInBuilding;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float WalkSpeed = 500;
