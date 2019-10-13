@@ -11,7 +11,7 @@
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Buildings/Building.h"
-#include "Buildings/Barracks.h"
+#include "Buildings/UnitQueueCommon.h"
 #include "Research.h"
 #include "Frontier.h"
 #include "Widgets/UI.h"
@@ -372,7 +372,7 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierC
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto Barracks = Cast<ABarracks>(Building);
+    auto Barracks = Cast<AUnitQueueCommon>(Building);
 
     if (Barracks)
     {
@@ -384,7 +384,7 @@ bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCh
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto Barracks = Cast<ABarracks>(Building);
+    auto Barracks = Cast<AUnitQueueCommon>(Building);
 
     if (Barracks)
     {
@@ -399,7 +399,7 @@ bool AFrontierPlayerController::ServerRemoveQueuedUnit_Validate(int Index, ABuil
 
 void AFrontierPlayerController::ServerRemoveQueuedUnit_Implementation(int Index, ABuilding* Building)
 {
-    auto Barracks = Cast<ABarracks>(Building);
+    auto Barracks = Cast<AUnitQueueCommon>(Building);
 
     if (Barracks)
     {
