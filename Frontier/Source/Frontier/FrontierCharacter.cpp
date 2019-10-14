@@ -4,6 +4,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -36,6 +37,16 @@ AFrontierCharacter::AFrontierCharacter()
 void AFrontierCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+}
+
+void AFrontierCharacter::ShowOutline()
+{
+    GetMesh()->SetRenderCustomDepth(true);
+}
+
+void AFrontierCharacter::HideOutline()
+{
+    GetMesh()->SetRenderCustomDepth(false);
 }
 
 void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

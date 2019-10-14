@@ -23,10 +23,10 @@ public:
     // Called every frame.
     virtual void Tick(float DeltaSeconds) override;
 
-    UFUNCTION(BlueprintImplementableEvent)
+    UFUNCTION(BlueprintCallable)
     void ShowOutline();
 
-    UFUNCTION(BlueprintImplementableEvent)
+    UFUNCTION(BlueprintCallable)
     void HideOutline();
 
     UFUNCTION(BlueprintImplementableEvent)
