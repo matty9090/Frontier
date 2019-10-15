@@ -55,9 +55,11 @@ void AFrontierGameMode::InitPlayers()
         float Z = BoxComponent->GetScaledBoxExtent().Z;
 
         auto StartBuilding = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location + FVector(0.0f, 0.0f, Z), FRotator::ZeroRotator, SpawnParams);
+        StartBuilding->SetOwner(PS);
         StartBuilding->Player = PS;
 
         auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location + FVector(300.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnParams);
+        Worker->SetOwner(PS);
         Worker->Player = PS;
 
         SpawnedStartActors.Add(StartBuilding);

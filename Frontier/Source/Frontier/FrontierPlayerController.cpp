@@ -110,6 +110,7 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
 
     HoveredBuilding = GetWorld()->SpawnActor<ABuilding>(BuildingType, Transform, SpawnParams);
     HoveredBuilding->SetActorEnableCollision(false);
+    HoveredBuilding->SetOwner(this);
 
     auto Mesh = HoveredBuilding->Mesh;
     
@@ -356,6 +357,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
             SpawnParams
         );
 
+        PlacedBuilding->SetOwner(PS);
         PlacedBuilding->Player = PS;
     }
 }

@@ -6,6 +6,7 @@
 #include "ConstructorHelpers.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "Widgets/BuildingBaseWidget.h"
 
 // Sets default values
 ABuilding::ABuilding() : Super()
@@ -42,12 +43,19 @@ ABuilding::ABuilding() : Super()
     {
         Tooltip->SetWidgetClass(TooltipClass.Class);
     }
+
+    Widget = UBuildingBaseWidget::StaticClass();
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
+    
+    if (!HasAuthority())
+    {
+        SetActorHiddenInGame(!GetOwner());
+    }
 
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
