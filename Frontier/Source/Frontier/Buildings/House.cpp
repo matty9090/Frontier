@@ -6,12 +6,16 @@
 
 void AHouse::BeginPlay()
 {
+    Super::BeginPlay();
+
     if (Player)
         Player->AddSpecificResources(Population, EResource::MaxPop);
 }
 
 void AHouse::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
+    Super::EndPlay(EndPlayReason);
+
     if (Player)
         Player->AddSpecificResources(-Population, EResource::MaxPop);
 }
