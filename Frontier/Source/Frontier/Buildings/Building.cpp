@@ -64,7 +64,8 @@ void ABuilding::BeginPlay()
 
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)
 {
-    Tooltip->SetVisibility(true);
+    if(Player->GetOwner() == GetWorld()->GetFirstPlayerController())
+        Tooltip->SetVisibility(true);
 }
 
 void ABuilding::EndMouseOver(UPrimitiveComponent* TouchedComponent)
