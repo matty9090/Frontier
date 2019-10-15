@@ -13,6 +13,7 @@ ABuilding::ABuilding() : Super()
 {
     bReplicates = true;
     bAlwaysRelevant = true;
+    bNetLoadOnClient = true;
     PrimaryActorTick.bCanEverTick = false;
 
     BeginMouseOverDelegate.BindUFunction(this, "BeginMouseOver");
@@ -54,7 +55,9 @@ void ABuilding::BeginPlay()
     
     if (!HasAuthority())
     {
-        SetActorHiddenInGame(!GetOwner());
+        bool bOwnerValid = GetOwner() == nullptr;
+        SetActorHiddenInGame(bOwnerValid);
+        SetActorEnableCollision(!bOwnerValid);
     }
 
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
