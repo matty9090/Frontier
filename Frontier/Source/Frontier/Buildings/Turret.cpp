@@ -58,11 +58,14 @@ void ATurret::FindTarget()
 {
     CurrentTarget = nullptr;
 
+    if (!Player)
+        return;
+
     TArray<AActor*> EnemyUnits;
     
     for (TObjectIterator<AFrontierCharacter> It; It; ++It)
     {
-        //if((*It)->Player->Team != Player->Team)
+        if((*It)->Player->Team != Player->Team)
             EnemyUnits.Add(*It);
     }
 
