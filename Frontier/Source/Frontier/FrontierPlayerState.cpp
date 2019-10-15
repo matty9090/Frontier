@@ -41,7 +41,7 @@ void AFrontierPlayerState::AddResources(FResources Res)
     Resources += Res;
 }
 
-void AFrontierPlayerState::AddSpecificResources(int Res, EResource Type)
+void AFrontierPlayerState::AddSpecificResources(int32 Res, EResource Type)
 {
 	Resources.Resources[Type] += Res;
 }

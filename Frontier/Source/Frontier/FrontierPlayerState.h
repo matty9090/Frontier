@@ -39,8 +39,9 @@ public:
     void AddResources(FResources Res);
 
 	UFUNCTION(BlueprintCallable)
-	void AddSpecificResources(int Res, EResource Type);
+	void AddSpecificResources(int32 Res, EResource Type);
 
+    // Do we need this?
     UFUNCTION(BlueprintCallable)
     int32 GetPopulation() const { return Units.Num(); }
 

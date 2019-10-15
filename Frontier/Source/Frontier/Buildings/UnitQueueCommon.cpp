@@ -13,14 +13,16 @@ AUnitQueueCommon::AUnitQueueCommon() : Super()
 
 void AUnitQueueCommon::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
 {
-    if (Unit.GetDefaultObject()->TrainedInBuilding == GetClass())
+    auto DefaultUnit = Unit.GetDefaultObject();
+
+    if (DefaultUnit->TrainedInBuilding == GetClass())
     {
         FUnitQueueItem Item;
         Item.Unit = Unit;
-        Item.TimeRemaining = Unit.GetDefaultObject()->TrainTime;
+        Item.TimeRemaining = DefaultUnit->TrainTime;
         Item.SpawnLocation = GetActorLocation();
 
-        Player->Resources -= Unit.GetDefaultObject()->Cost;
+        Player->Resources -= DefaultUnit->Cost;
         UnitQueue.Push(Item);
         UnitQueueChangedEvent.Broadcast();
     }
@@ -83,7 +85,9 @@ void AUnitQueueCommon::Tick(float DeltaTime)
 
 bool AUnitQueueCommon::CanCreateUnit(TSubclassOf<AFrontierCharacter> Unit) const
 {
-    return Player->Resources >= Unit.GetDefaultObject()->Cost && Player->IsObjectResearched(Unit);
+    auto DefaultUnit = Unit.GetDefaultObject();
+
+    return Player->Resources >= DefaultUnit->Cost && Player->IsObjectResearched(Unit);
 }
 
 void AUnitQueueCommon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

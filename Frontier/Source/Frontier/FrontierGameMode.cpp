@@ -66,7 +66,7 @@ void AFrontierGameMode::InitPlayers()
         SpawnedStartActors.Add(Worker);
     }
 
-    UE_LOG(LogFrontier, Warning, TEXT("Initialised world"));
+    UE_LOG(LogFrontier, Display, TEXT("Initialised world"));
 }
 
 void AFrontierGameMode::ClearMap()

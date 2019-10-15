@@ -7,6 +7,7 @@
 #include "UserWidget.h"
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
@@ -347,18 +348,18 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
         auto PS = Cast<AFrontierPlayerState>(PlayerState);
         PS->Resources -= Type.GetDefaultObject()->Cost;
 
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+        FTransform Transform(Rotation, Location);
 
-        PlacedBuilding = GetWorld()->SpawnActor<ABuilding>(
+        PlacedBuilding = GetWorld()->SpawnActorDeferred<ABuilding>(
             Type,
-            Location,
-            Rotation,
-            SpawnParams
+            Transform,
+            PS,
+            GetPawn(),
+            ESpawnActorCollisionHandlingMethod::AlwaysSpawn
         );
 
-        PlacedBuilding->SetOwner(PS);
         PlacedBuilding->Player = PS;
+        UGameplayStatics::FinishSpawningActor(PlacedBuilding, Transform);
     }
 }
 

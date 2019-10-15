@@ -11,7 +11,8 @@ enum class EResource : uint8
     Metal       UMETA(DisplayName="Metal"),
     Gold        UMETA(DisplayName="Gold"),
     Food        UMETA(DisplayName="Food"),
-    Population  UMETA(DisplayName="Population")
+    Population  UMETA(DisplayName="Population"),
+    MaxPop      UMETA(DisplayName="Max Population")
 };
 
 USTRUCT(BlueprintType)
@@ -33,9 +34,10 @@ struct FResources
         Resources.Add(EResource::Gold, 0);
         Resources.Add(EResource::Food, 0);
         Resources.Add(EResource::Population, 0);
+        Resources.Add(EResource::MaxPop, 0);
     }
 
-    FResources(int32 Wood, int32 Stone, int32 Metal, int32 Gold, int32 Food, int32 Population)
+    FResources(int32 Wood, int32 Stone, int32 Metal, int32 Gold, int32 Food, int32 Population, int32 MaxPop = 0)
     {
         Resources.Add(EResource::Wood, Wood);
         Resources.Add(EResource::Stone, Stone);
@@ -43,6 +45,7 @@ struct FResources
         Resources.Add(EResource::Gold, Gold);
         Resources.Add(EResource::Food, Food);
         Resources.Add(EResource::Population, Population);
+        Resources.Add(EResource::MaxPop, MaxPop);
     }
 
     void operator+=(const FResources& Res)
@@ -52,7 +55,8 @@ struct FResources
         Resources[EResource::Metal] += Res.Resources[EResource::Metal];
         Resources[EResource::Gold] += Res.Resources[EResource::Gold];
         Resources[EResource::Food] += Res.Resources[EResource::Food];
-        Resources[EResource::Population] += Res.Resources[EResource::Population];
+        Resources[EResource::Population] -= Res.Resources[EResource::Population];
+        Resources[EResource::MaxPop] += Res.Resources[EResource::MaxPop];
     }
 
     void operator-=(const FResources& Res)
@@ -62,7 +66,8 @@ struct FResources
         Resources[EResource::Metal] -= Res.Resources[EResource::Metal];
         Resources[EResource::Gold] -= Res.Resources[EResource::Gold];
         Resources[EResource::Food] -= Res.Resources[EResource::Food];
-        Resources[EResource::Population] -= Res.Resources[EResource::Population];
+        Resources[EResource::Population] += Res.Resources[EResource::Population];
+        Resources[EResource::MaxPop] -= Res.Resources[EResource::MaxPop];
     }
 
     bool operator>=(const FResources& Res) const
@@ -72,7 +77,7 @@ struct FResources
                Resources[EResource::Metal] >= Res.Resources[EResource::Metal] &&
                Resources[EResource::Gold] >= Res.Resources[EResource::Gold] &&
                Resources[EResource::Food] >= Res.Resources[EResource::Food] &&
-               Resources[EResource::Population] >= Res.Resources[EResource::Population];
+               Resources[EResource::Population] + Res.Resources[EResource::Population] <= Resources[EResource::MaxPop];
     }
 
     TMap<EResource, bool> GetResourcesAvailable(const FResources& Target) const
@@ -84,7 +89,7 @@ struct FResources
         Available.Add(EResource::Metal, Resources[EResource::Metal] >= Target.Resources[EResource::Metal]);
         Available.Add(EResource::Gold, Resources[EResource::Gold] >= Target.Resources[EResource::Gold]);
         Available.Add(EResource::Food, Resources[EResource::Food] >= Target.Resources[EResource::Food]);
-        Available.Add(EResource::Population, Resources[EResource::Population] >= Target.Resources[EResource::Population]);
+        Available.Add(EResource::Population, Resources[EResource::Population] + Target.Resources[EResource::Population] <= Resources[EResource::MaxPop]);
 
         return Available;
     }
