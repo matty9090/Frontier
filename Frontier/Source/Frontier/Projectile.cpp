@@ -6,6 +6,9 @@
 // Sets default values
 AProjectile::AProjectile()
 {
+    bReplicates = true;
+    bAlwaysRelevant = true;
+    bReplicateMovement = true;
 	PrimaryActorTick.bCanEverTick = true;
 
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));

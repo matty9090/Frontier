@@ -8,7 +8,7 @@
 #include "FrontierHelperFunctionLibrary.h"
 #include "DrawDebugHelpers.h"
 
-ATurret::ATurret()
+ATurret::ATurret() : Timer(FireRate)
 {
     PrimaryActorTick.bCanEverTick = true;
 
@@ -33,13 +33,12 @@ void ATurret::Tick(float DeltaTime)
     {
         FindTarget();
 
-        if (CurrentTarget && !CurrentTarget->IsPendingKill() && bCanFire)
+        if (CurrentTarget && bCanFire)
         {
             FActorSpawnParameters SpawnParams;
             SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
             FVector FirePoint = GetActorLocation() + FireLocation->GetRelativeTransform().GetLocation();
-            
             auto Rotator = (CurrentTarget->GetActorLocation() - FirePoint).Rotation();
 
             GetWorld()->SpawnActor<AProjectile>(
@@ -50,6 +49,7 @@ void ATurret::Tick(float DeltaTime)
             );
 
             bCanFire = false;
+            Timer = FireRate;
         }
     }
 }
@@ -65,7 +65,7 @@ void ATurret::FindTarget()
     
     for (TObjectIterator<AFrontierCharacter> It; It; ++It)
     {
-        if((*It)->Player->Team != Player->Team)
+        if((*It)->Player->Team != Player->Team && !(*It)->IsPendingKill())
             EnemyUnits.Add(*It);
     }
 
