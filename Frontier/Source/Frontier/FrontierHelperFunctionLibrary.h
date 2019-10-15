@@ -99,7 +99,7 @@ public:
     }
 
 	UFUNCTION(BlueprintPure)
-	static AActor* GetClosestObject(FVector Position,TArray<AActor*> Objects)
+	static AActor* GetClosestObject(FVector Position, TArray<AActor*> Objects)
 	{
 		AActor* Closest = nullptr;
 		float Distance = MAX_FLT;
@@ -114,6 +114,7 @@ public:
 				Closest = Actor;
 			}
 		}
+
 		return Closest;
 	}
 };

@@ -1,4 +1,4 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "FrontierGameMode.h"
 #include "FrontierPlayerController.h"

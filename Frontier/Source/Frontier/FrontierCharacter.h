@@ -23,6 +23,9 @@ public:
     // Called every frame.
     virtual void Tick(float DeltaSeconds) override;
 
+    UFUNCTION()
+    void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
     UFUNCTION(BlueprintCallable)
     void ShowOutline();
 
@@ -31,6 +34,9 @@ public:
 
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
+
+    UFUNCTION()
+    void OnRep_Health();
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FString UnitName;
@@ -47,7 +53,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float Armour = 10;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Health)
     float Health = 100;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -69,6 +75,6 @@ public:
     FResources Cost;
 
 private:
-
+    FScriptDelegate ActorHitDelegate;
 };
 
