@@ -17,12 +17,22 @@ class AFrontierGameMode : public AGameModeBase
 public:
     AFrontierGameMode();
 
+    void BeginPlay() override;
+
 private:
-    void RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot) override;
+    void InitPlayers();
+    void ClearMap();
+    void RestartPlayer(AController* NewPlayer) override;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<ABuilding> StartBuildingClass;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<AFrontierCharacter> WorkerClass;
+
+    UPROPERTY()
+    TArray<AController*> PlayerControllers;
+
+    UPROPERTY()
+    TArray<AActor*> SpawnedStartActors;
 };

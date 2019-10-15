@@ -10,6 +10,8 @@
 // Sets default values
 ABuilding::ABuilding() : Super()
 {
+    bReplicates = true;
+    bAlwaysRelevant = true;
     PrimaryActorTick.bCanEverTick = false;
 
     BeginMouseOverDelegate.BindUFunction(this, "BeginMouseOver");

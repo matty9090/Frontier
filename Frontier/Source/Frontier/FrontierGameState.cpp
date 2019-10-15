@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Research.h"
 #include "WidgetAnimation.h"
+#include "Frontier.h"
 
 AFrontierGameState::AFrontierGameState()
 {

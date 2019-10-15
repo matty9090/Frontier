@@ -4,32 +4,85 @@
 #include "FrontierPlayerController.h"
 #include "FrontierPlayerState.h"
 #include "FrontierCharacter.h"
+#include "GameFramework/PlayerStart.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Buildings/Building.h"
+#include "EngineUtils.h"
+#include "Frontier.h"
 
 AFrontierGameMode::AFrontierGameMode()
 {
-    
+
 }
 
-void AFrontierGameMode::RestartPlayerAtPlayerStart(AController* NewPlayer, AActor* StartSpot)
-{    
-    Super::RestartPlayerAtPlayerStart(NewPlayer, StartSpot);
+void AFrontierGameMode::BeginPlay()
+{
 
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+}
 
-    auto PS = Cast<AFrontierPlayerState>(NewPlayer->PlayerState);
+void AFrontierGameMode::InitPlayers()
+{
+    TArray<FVector> AvailableSpots;
 
-    auto Location = StartSpot->GetActorLocation();
-    Location.Z = 0;
+    for (TObjectIterator<APlayerStart> It; It; ++It)
+    {
+        if (!AvailableSpots.Contains((*It)->GetActorLocation()))
+        {
+            AvailableSpots.Add((*It)->GetActorLocation());
+        }
+    }
 
-    auto BoxComponent = Cast<UBoxComponent>(StartBuildingClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
-    float Z = BoxComponent->GetScaledBoxExtent().Z;
+    for (auto Player : PlayerControllers)
+    {
+        if (AvailableSpots.Num() <= 0)
+        {
+            Logout(Player);
+            UE_LOG(LogFrontier, Warning, TEXT("Not enough start spots! Kicking player."));
+            break;
+        }
 
-    auto Library = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location + FVector(0.0f, 0.0f, Z), FRotator::ZeroRotator, SpawnParams);
-    Library->Player = PS;
+        auto Location = AvailableSpots.Pop();
+        Location.Z = 0;
 
-    auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location + FVector(300.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnParams);
-    Worker->Player = PS;
+        Player->GetPawn()->SetActorLocation(Location);
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+        auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
+        auto BoxComponent = Cast<UBoxComponent>(StartBuildingClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+        
+        float Z = BoxComponent->GetScaledBoxExtent().Z;
+
+        auto StartBuilding = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location + FVector(0.0f, 0.0f, Z), FRotator::ZeroRotator, SpawnParams);
+        StartBuilding->Player = PS;
+
+        auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location + FVector(300.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnParams);
+        Worker->Player = PS;
+
+        SpawnedStartActors.Add(StartBuilding);
+        SpawnedStartActors.Add(Worker);
+    }
+
+    UE_LOG(LogFrontier, Warning, TEXT("Initialised world"));
+}
+
+void AFrontierGameMode::ClearMap()
+{
+    for (auto Actor : SpawnedStartActors)
+    {
+        Actor->Destroy();
+    }
+
+    SpawnedStartActors.Empty();
+}
+
+void AFrontierGameMode::RestartPlayer(AController* NewPlayer)
+{
+    Super::RestartPlayer(NewPlayer);
+
+    PlayerControllers.Add(NewPlayer);
+
+    ClearMap();
+    InitPlayers();
 }
