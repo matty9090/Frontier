@@ -43,9 +43,6 @@ public:
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* Mesh = nullptr;
-
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -56,7 +53,13 @@ protected:
     UPROPERTY(EditAnywhere)
     UWidgetComponent* Tooltip = nullptr;
 
+    UPROPERTY(EditAnywhere)
+    UWidgetComponent* PlusResource = nullptr;
+
 public:
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* Mesh = nullptr;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
     FResources Cost;
 

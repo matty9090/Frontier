@@ -38,11 +38,24 @@ ABuilding::ABuilding() : Super()
     Tooltip->SetDrawAtDesiredSize(true);
     Tooltip->SetVisibility(false);
 
+    PlusResource = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlusResources"));
+    PlusResource->SetupAttachment(RootComponent);
+    PlusResource->SetWidgetSpace(EWidgetSpace::Screen);
+    PlusResource->SetDrawAtDesiredSize(true);
+    PlusResource->SetVisibility(false);
+
     static ConstructorHelpers::FClassFinder<UUserWidget> TooltipClass(TEXT("/Game/Frontier/Blueprints/Widgets/Tooltips/WBP_Tooltip_BuildingHover"));
 
     if (TooltipClass.Succeeded())
     {
         Tooltip->SetWidgetClass(TooltipClass.Class);
+    }
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> PlusResourceClass(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_PlusResources"));
+
+    if (PlusResourceClass.Succeeded())
+    {
+        PlusResource->SetWidgetClass(PlusResourceClass.Class);
     }
 
     Widget = UBuildingBaseWidget::StaticClass();

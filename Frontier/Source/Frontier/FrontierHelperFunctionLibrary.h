@@ -98,6 +98,9 @@ public:
         return Str;
     }
 
+    UFUNCTION(BlueprintPure)
+    static FString GetResourceName(EResource Res);
+
 	UFUNCTION(BlueprintPure)
 	static AActor* GetClosestObject(FVector Position, TArray<AActor*> Objects)
 	{
