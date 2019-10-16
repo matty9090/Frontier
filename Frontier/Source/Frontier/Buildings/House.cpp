@@ -3,18 +3,12 @@
 #include "House.h"
 #include "FrontierPlayerState.h"
 #include "Frontier.h"
-#include "Widgets/PlusResourceWidget.h"
-#include "FrontierHelperFunctionLibrary.h"
 
 void AHouse::BeginPlay()
 {
     Super::BeginPlay();
 
-    PlusResource->SetVisibility(true);
-
-    auto PlusResWidget = Cast<UPlusResourceWidget>(PlusResource->GetUserWidgetObject());
-    PlusResWidget->Amount = Population;
-    PlusResWidget->Resource = UFrontierHelperFunctionLibrary::GetResourceName(EResource::MaxPop);
+    ShowPlusResourceWidget(Population, EResource::MaxPop);
 
     if (Player)
         Player->AddSpecificResources(Population, EResource::MaxPop);

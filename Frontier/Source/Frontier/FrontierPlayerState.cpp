@@ -1,6 +1,5 @@
 // Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
-
 #include "FrontierPlayerState.h"
 #include "CoreMinimal.h"
 #include "UnrealNetwork.h"

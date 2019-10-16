@@ -1,4 +1,4 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "FrontierPlayerController.h"
 
@@ -8,11 +8,13 @@
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/StaticMeshComponent.h"
 
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Buildings/Building.h"
 #include "Buildings/UnitQueueCommon.h"
+#include "Buildings/DummyBuilding.h"
 #include "Research.h"
 #include "Frontier.h"
 #include "Widgets/UI.h"
@@ -107,12 +109,21 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
     if (HoveredBuilding)
         HoveredBuilding->Destroy();
 
-    FTransform Transform;
+    HoveredBuildingType = BuildingType;
+
     FActorSpawnParameters SpawnParams;
 
-    HoveredBuilding = GetWorld()->SpawnActor<ABuilding>(BuildingType, Transform, SpawnParams);
-    HoveredBuilding->SetActorEnableCollision(false);
+    auto BuildingDefaults = BuildingType.GetDefaultObject();
+    auto BuildingMesh = BuildingDefaults->Mesh->GetStaticMesh();
+
+    FTransform Transform(FRotator::ZeroRotator, FVector::ZeroVector, FVector::OneVector);
+
+    HoveredBuilding = GetWorld()->SpawnActor<ADummyBuilding>(ADummyBuilding::StaticClass(), Transform, SpawnParams);
     HoveredBuilding->SetOwner(this);
+    HoveredBuilding->Box->SetRelativeTransform(BuildingDefaults->Box->GetRelativeTransform());
+    HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetUnscaledBoxExtent());
+    HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->Mesh->GetStaticMesh());
+    HoveredBuilding->Mesh->SetRelativeTransform(BuildingDefaults->Mesh->GetRelativeTransform());
 
     auto Mesh = HoveredBuilding->Mesh;
     
@@ -217,9 +228,9 @@ void AFrontierPlayerController::OnSelect()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuilding->GetClass()))
+        if (PS->CanCreateBuilding(HoveredBuildingType))
         {
-            ServerSpawnBuilding(HoveredBuilding->GetClass(), HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
+            ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
             ControllerState = EControllerState::Idle;
 
             if (HasAuthority())

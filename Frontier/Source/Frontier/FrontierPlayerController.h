@@ -1,4 +1,4 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
+// Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #pragma once
 
@@ -11,6 +11,7 @@
 class UUI;
 class ABuilding;
 class UResearchNode;
+class ADummyBuilding;
 class UBuildingBaseWidget;
 
 UENUM(BlueprintType)
@@ -119,7 +120,10 @@ private:
     EControllerState ControllerState = EControllerState::Idle;
 
     UPROPERTY()
-    ABuilding* HoveredBuilding = nullptr;
+    ADummyBuilding* HoveredBuilding = nullptr;
+
+    UPROPERTY()
+    TSubclassOf<ABuilding> HoveredBuildingType = nullptr;
 
     UPROPERTY(ReplicatedUsing=OnRep_PlacedBuilding)
     ABuilding* PlacedBuilding = nullptr;

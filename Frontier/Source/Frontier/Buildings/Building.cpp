@@ -7,6 +7,8 @@
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Widgets/BuildingBaseWidget.h"
+#include "Widgets/PlusResourceWidget.h"
+#include "FrontierHelperFunctionLibrary.h"
 
 // Sets default values
 ABuilding::ABuilding() : Super()
@@ -65,13 +67,6 @@ ABuilding::ABuilding() : Super()
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
-    
-    if (!HasAuthority())
-    {
-        bool bOwnerValid = GetOwner() == nullptr;
-        SetActorHiddenInGame(bOwnerValid);
-        SetActorEnableCollision(!bOwnerValid);
-    }
 
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
@@ -84,6 +79,15 @@ void ABuilding::BeginPlay()
             Property->SetPropertyValue_InContainer(TooltipWidget, FText::FromString(BuildingName));
         }
     }
+}
+
+void ABuilding::ShowPlusResourceWidget(int32 Amount, EResource ResourceType)
+{
+    PlusResource->SetVisibility(true);
+
+    auto PlusResWidget = Cast<UPlusResourceWidget>(PlusResource->GetUserWidgetObject());
+    PlusResWidget->Amount = Amount;
+    PlusResWidget->Resource = UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
 }
 
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)

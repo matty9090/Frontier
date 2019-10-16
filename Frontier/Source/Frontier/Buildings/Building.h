@@ -47,8 +47,7 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere)
-    UBoxComponent* Box = nullptr;
+    void ShowPlusResourceWidget(int32 Amount, EResource ResourceType);
 
     UPROPERTY(EditAnywhere)
     UWidgetComponent* Tooltip = nullptr;
@@ -57,6 +56,9 @@ protected:
     UWidgetComponent* PlusResource = nullptr;
 
 public:
+    UPROPERTY(EditAnywhere)
+    UBoxComponent* Box = nullptr;
+
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* Mesh = nullptr;
 
