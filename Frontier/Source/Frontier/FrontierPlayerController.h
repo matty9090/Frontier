@@ -56,9 +56,10 @@ private:
     // Begin Input
     void OnMoveUp(float Value);
     void OnMoveRight(float Value);
+    void OnZoom(float Value);
     void OnSelect();
     void OnSend();
-    void OnZoom(float Value);
+    void OnRotate();
     // End Input
 
     // Begin RPCs

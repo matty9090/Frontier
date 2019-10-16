@@ -49,6 +49,7 @@ void AFrontierPlayerController::SetupInputComponent()
 
     InputComponent->BindAction("Send", IE_Pressed, this, &AFrontierPlayerController::OnSend);
     InputComponent->BindAction("Select", IE_Pressed, this, &AFrontierPlayerController::OnSelect);
+    InputComponent->BindAction("Rotate", IE_Pressed, this, &AFrontierPlayerController::OnRotate);
 }
 
 void AFrontierPlayerController::PlayerTick(float DeltaTime)
@@ -218,7 +219,7 @@ void AFrontierPlayerController::OnSelect()
     {
         if (PS->CanCreateBuilding(HoveredBuilding->GetClass()))
         {
-            ServerSpawnBuilding(HoveredBuilding->GetClass(), HoveredBuilding->GetActorLocation(), FRotator::ZeroRotator);
+            ServerSpawnBuilding(HoveredBuilding->GetClass(), HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
             ControllerState = EControllerState::Idle;
 
             if (HasAuthority())
@@ -320,6 +321,14 @@ void AFrontierPlayerController::OnSend()
     {
         HoveredBuilding->Destroy();
         HoveredBuilding = nullptr;
+    }
+}
+
+void AFrontierPlayerController::OnRotate()
+{
+    if (HoveredBuilding)
+    {
+        HoveredBuilding->AddActorWorldRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 90.0f)));
     }
 }
 
