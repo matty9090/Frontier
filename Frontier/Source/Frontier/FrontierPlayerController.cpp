@@ -78,7 +78,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             FHitResult Hit;
 
             TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
-                EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+                EObjectTypeQuery::ObjectTypeQuery7, // Terrain
             };
 
             if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
@@ -111,29 +111,27 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
 
     HoveredBuildingType = BuildingType;
 
-    FActorSpawnParameters SpawnParams;
-
     auto BuildingDefaults = BuildingType.GetDefaultObject();
     auto BuildingMesh = BuildingDefaults->Mesh->GetStaticMesh();
 
     FTransform Transform(FRotator::ZeroRotator, FVector::ZeroVector, FVector::OneVector);
 
-    HoveredBuilding = GetWorld()->SpawnActor<ADummyBuilding>(ADummyBuilding::StaticClass(), Transform, SpawnParams);
-    HoveredBuilding->SetOwner(this);
+    HoveredBuilding = GetWorld()->SpawnActorDeferred<ADummyBuilding>(
+        ADummyBuilding::StaticClass(),
+        Transform,
+        this,
+        GetPawn(),
+        ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+    );
+
     HoveredBuilding->Box->SetRelativeTransform(BuildingDefaults->Box->GetRelativeTransform());
     HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetUnscaledBoxExtent());
     HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->Mesh->GetStaticMesh());
     HoveredBuilding->Mesh->SetRelativeTransform(BuildingDefaults->Mesh->GetRelativeTransform());
+    HoveredBuilding->HoverMaterialGreen = HoverMaterialGreen;
+    HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
 
-    auto Mesh = HoveredBuilding->Mesh;
-    
-    if (Mesh)
-    {
-        auto NumMaterials = Mesh->GetMaterials().Num();
-
-        for(int i = 0; i < NumMaterials; ++i)
-            Mesh->SetMaterial(i, HoverMaterialGreen);
-    }
+    UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
     ControllerState = EControllerState::PlacingBuilding;
 }
@@ -228,10 +226,10 @@ void AFrontierPlayerController::OnSelect()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuildingType))
+        if (PS->CanCreateBuilding(HoveredBuildingType) && HoveredBuilding && HoveredBuilding->bCanPlace)
         {
-            ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
             ControllerState = EControllerState::Idle;
+            ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
 
             if (HasAuthority())
             {
@@ -319,8 +317,7 @@ void AFrontierPlayerController::OnSend()
         FHitResult Hit;
 
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
-            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
-            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+            EObjectTypeQuery::ObjectTypeQuery7, // Terrain
         };
 
         if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
@@ -379,6 +376,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
         );
 
         PlacedBuilding->Player = PS;
+        PlacedBuilding->Box->SetMobility(EComponentMobility::Static);
         UGameplayStatics::FinishSpawningActor(PlacedBuilding, Transform);
     }
 }

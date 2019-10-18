@@ -31,6 +31,10 @@ AFrontierCharacter::AFrontierCharacter()
     GetCharacterMovement()->bSnapToPlaneAtStart = true;
     GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECR_Block);
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECR_Block);
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECR_Overlap);
+    
     // Activate ticking in order to update the cursor every frame.
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.bStartWithTickEnabled = true;

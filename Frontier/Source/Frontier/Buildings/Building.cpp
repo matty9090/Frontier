@@ -24,7 +24,14 @@ ABuilding::ABuilding() : Super()
     Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
     Box->SetupAttachment(RootComponent);
     Box->SetBoxExtent(FVector(32.0f, 32.0f, 32.0f));
+    Box->CanCharacterStepUpOn = ECB_No;
+    
+    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
     Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
+    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
+    
     Box->OnBeginCursorOver.Add(BeginMouseOverDelegate);
     Box->OnEndCursorOver.Add(EndMouseOverDelegate);
 

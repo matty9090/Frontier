@@ -24,4 +24,25 @@ public:
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* Mesh = nullptr;
+
+    UPROPERTY()
+    UMaterialInterface* HoverMaterialGreen = nullptr;
+
+    UPROPERTY()
+    UMaterialInterface* HoverMaterialRed = nullptr;
+
+    UPROPERTY()
+    bool bCanPlace = false;
+
+private:
+    UFUNCTION()
+    void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    int NumOverlapping = 0;
+
+    FScriptDelegate BeginOverlapDelegate;
+    FScriptDelegate EndOverlapDelegate;
 };
