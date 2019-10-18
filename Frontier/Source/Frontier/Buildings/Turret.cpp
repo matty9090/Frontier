@@ -65,7 +65,7 @@ void ATurret::FindTarget()
     
     for (TObjectIterator<AFrontierCharacter> It; It; ++It)
     {
-        if((*It)->Player->Team != Player->Team && !(*It)->IsPendingKill())
+        if((*It)->Player && (*It)->Player->Team != Player->Team && !(*It)->IsPendingKill())
             EnemyUnits.Add(*It);
     }
 

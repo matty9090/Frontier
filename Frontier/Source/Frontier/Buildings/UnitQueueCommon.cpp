@@ -65,7 +65,7 @@ void AUnitQueueCommon::Tick(float DeltaTime)
 
                 auto Unit = GetWorld()->SpawnActor<AFrontierCharacter>(
                     Item.Unit,
-                    Item.SpawnLocation + FVector(0.0f, 0.0f, 100.0f),
+                    Item.SpawnLocation,
                     FRotator::ZeroRotator,
                     SpawnParams
                 );

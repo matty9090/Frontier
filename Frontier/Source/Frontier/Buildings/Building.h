@@ -8,23 +8,13 @@
 #include "Components/BoxComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "TextureHolder.h"
 #include "Building.generated.h"
 
-class UImage;
 class AFrontierCharacter;
 class AFrontierPlayerState;
 class UBuildingBaseWidget;
 class UStaticMeshComponent;
-
-USTRUCT(BlueprintType)
-struct FTextureHolder
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    UTexture2D* Texture = nullptr;
-};
 
 UCLASS()
 class FRONTIER_API ABuilding : public AActor

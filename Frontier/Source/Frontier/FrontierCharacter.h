@@ -5,6 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "Resources.h"
+#include "TextureHolder.h"
 #include "FrontierCharacter.generated.h"
 
 class ABuilding;
@@ -68,6 +69,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float TrainTime = 1;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    FTextureHolder Icon;
+
     UPROPERTY(BlueprintReadWrite, Meta=(ExposeOnSpawn), Replicated)
     AFrontierPlayerState* Player = nullptr;
 
@@ -77,4 +81,3 @@ public:
 private:
     FScriptDelegate ActorHitDelegate;
 };
-

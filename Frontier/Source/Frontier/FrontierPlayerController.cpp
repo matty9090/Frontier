@@ -317,6 +317,8 @@ void AFrontierPlayerController::OnSend()
         FHitResult Hit;
 
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
             EObjectTypeQuery::ObjectTypeQuery7, // Terrain
         };
 
