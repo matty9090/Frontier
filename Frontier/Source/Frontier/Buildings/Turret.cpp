@@ -7,6 +7,7 @@
 #include "FrontierPlayerState.h"
 #include "FrontierHelperFunctionLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "Frontier.h"
 
 ATurret::ATurret() : Timer(FireRate)
 {
@@ -65,8 +66,10 @@ void ATurret::FindTarget()
     
     for (TObjectIterator<AFrontierCharacter> It; It; ++It)
     {
-        if((*It)->Player && (*It)->Player->Team != Player->Team && !(*It)->IsPendingKill())
+        if ((*It)->Player && (*It)->Player->Team != Player->Team && !(*It)->IsPendingKill())
+        {
             EnemyUnits.Add(*It);
+        }
     }
 
     auto Closest = UFrontierHelperFunctionLibrary::GetClosestObject(GetActorLocation(), EnemyUnits);

@@ -17,22 +17,28 @@ void AFrontierGameState::AddPlayerState(APlayerState* PlayerState)
 {
     Super::AddPlayerState(PlayerState);
 
-    auto Player = Cast<AFrontierPlayerState>(PlayerState);
-    Player->Team = NumTeams++;
+    if (HasAuthority())
+    {
+        auto Player = Cast<AFrontierPlayerState>(PlayerState);
+        Player->Team = NumTeams++;
 
-    FrontierPlayers.Add(Player);
+        FrontierPlayers.Add(Player);
+    }
 }
 
 void AFrontierGameState::RemovePlayerState(APlayerState* PlayerState)
 {
     Super::RemovePlayerState(PlayerState);
 
-    for (int32 i = 0; i < FrontierPlayers.Num(); i++)
+    if (HasAuthority())
     {
-        if (FrontierPlayers[i] == PlayerState)
+        for (int32 i = 0; i < FrontierPlayers.Num(); i++)
         {
-            FrontierPlayers.RemoveAt(i, 1);
-            return;
+            if (FrontierPlayers[i] == PlayerState)
+            {
+                FrontierPlayers.RemoveAt(i, 1);
+                return;
+            }
         }
     }
 }

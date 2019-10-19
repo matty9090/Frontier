@@ -2,6 +2,7 @@
 
 #include "UnitQueueCommon.h"
 #include "UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Frontier.h"
@@ -60,18 +61,20 @@ void AUnitQueueCommon::Tick(float DeltaTime)
         {
             if (HasAuthority())
             {
-                FActorSpawnParameters SpawnParams;
-                SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+                auto Transform = FTransform(Item.SpawnLocation);
 
-                auto Unit = GetWorld()->SpawnActor<AFrontierCharacter>(
+                auto Unit = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(
                     Item.Unit,
-                    Item.SpawnLocation,
-                    FRotator::ZeroRotator,
-                    SpawnParams
+                    Transform,
+                    Player,
+                    (APawn*)nullptr,
+                    ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
                 );
 
 				Unit->SetOwner(Player);
                 Unit->Player = Player;
+
+                UGameplayStatics::FinishSpawningActor(Unit, Transform);
 
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);

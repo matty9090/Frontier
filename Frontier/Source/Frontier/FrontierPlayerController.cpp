@@ -248,8 +248,6 @@ void AFrontierPlayerController::OnSelect()
 
             if (Unit && Unit->Player == PS)
             {
-                UE_LOG(LogFrontier, Display, TEXT("Selected unit"));
-
                 if (Unit != SelectedUnit)
                 {
                     DeselectUnit();
