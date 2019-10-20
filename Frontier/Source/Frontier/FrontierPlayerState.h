@@ -38,8 +38,11 @@ public:
     UFUNCTION(BlueprintCallable)
     void AddResources(FResources Res);
 
+    UFUNCTION(BlueprintCallable)
+	void AddResourceMultiplier(float ResMultiplier, EResource Type);
+
 	UFUNCTION(BlueprintCallable)
-	void AddSpecificResources(int32 Res, EResource Type);
+	void AddSpecificResources(float Res, EResource Type);
 
     // Do we need this?
     UFUNCTION(BlueprintCallable)
@@ -62,6 +65,9 @@ public:
 
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
+
+    UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
+    FResources ResourceMultiplier;
 
     UPROPERTY(Replicated, BlueprintReadOnly)
     int32 Team;

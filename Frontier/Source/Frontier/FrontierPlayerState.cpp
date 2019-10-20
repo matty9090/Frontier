@@ -10,6 +10,7 @@
 #include "Frontier.h"
 
 AFrontierPlayerState::AFrontierPlayerState()
+    : ResourceMultiplier(1, 1, 1, 1, 1, 1, 1)
 {
     PrimaryActorTick.bCanEverTick = false;
 }
@@ -37,12 +38,17 @@ void AFrontierPlayerState::Tick(float DeltaTime)
 
 void AFrontierPlayerState::AddResources(FResources Res)
 {
-    Resources += Res;
+    Resources += Res * ResourceMultiplier;
 }
 
-void AFrontierPlayerState::AddSpecificResources(int32 Res, EResource Type)
+void AFrontierPlayerState::AddResourceMultiplier(float ResMultiplier, EResource Type)
 {
-	Resources.Resources[Type] += Res;
+    ResourceMultiplier.Resources[Type] += ResMultiplier;
+}
+
+void AFrontierPlayerState::AddSpecificResources(float Res, EResource Type)
+{
+	Resources.Resources[Type] += Res * ResourceMultiplier.Resources[Type];
 }
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)
@@ -89,6 +95,7 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AFrontierPlayerState, Resources);
+    DOREPLIFETIME(AFrontierPlayerState, ResourceMultiplier);
     DOREPLIFETIME(AFrontierPlayerState, Team);
     DOREPLIFETIME(AFrontierPlayerState, Units);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);

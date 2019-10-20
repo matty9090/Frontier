@@ -21,10 +21,10 @@ struct FResources
     GENERATED_BODY()
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    TMap<EResource, int32> Resources;
+    TMap<EResource, float> Resources;
 
     TArray<EResource> Keys;
-    TArray<int32> Values;
+    TArray<float> Values;
 
     FResources()
     {
@@ -68,6 +68,20 @@ struct FResources
         Resources[EResource::Food] -= Res.Resources[EResource::Food];
         Resources[EResource::Population] += Res.Resources[EResource::Population];
         Resources[EResource::MaxPop] -= Res.Resources[EResource::MaxPop];
+    }
+
+    FResources operator*(const FResources& Res)
+    {
+        FResources NewRes;
+        NewRes.Resources[EResource::Wood] = Resources[EResource::Wood] * Res.Resources[EResource::Wood];
+        NewRes.Resources[EResource::Stone] = Resources[EResource::Stone] * Res.Resources[EResource::Stone];
+        NewRes.Resources[EResource::Metal] = Resources[EResource::Metal] * Res.Resources[EResource::Metal];
+        NewRes.Resources[EResource::Gold] = Resources[EResource::Gold] * Res.Resources[EResource::Gold];
+        NewRes.Resources[EResource::Food] = Resources[EResource::Food] * Res.Resources[EResource::Food];
+        NewRes.Resources[EResource::Population] = Resources[EResource::Population] * Res.Resources[EResource::Population];
+        NewRes.Resources[EResource::MaxPop] = Resources[EResource::MaxPop] * Res.Resources[EResource::MaxPop];
+
+        return NewRes;
     }
 
     bool operator>=(const FResources& Res) const
