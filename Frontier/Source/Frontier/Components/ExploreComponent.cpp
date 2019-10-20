@@ -19,7 +19,6 @@ void UExploreComponent::BeginPlay()
 
     if (AIController)
     {
-        // OnMoveCompleteDelegate.BindUFunction(this, "OnMoveComplete");
         auto PathComp = Cast<UPathFollowingComponent>(AIController->GetComponentByClass(UPathFollowingComponent::StaticClass()));
         OnMoveCompleteDelegate = PathComp->OnRequestFinished.AddUObject(this, &UExploreComponent::OnMoveComplete);
 
