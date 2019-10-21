@@ -47,24 +47,11 @@ ABuilding::ABuilding() : Super()
     Tooltip->SetDrawAtDesiredSize(true);
     Tooltip->SetVisibility(false);
 
-    PlusResource = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlusResources"));
-    PlusResource->SetupAttachment(RootComponent);
-    PlusResource->SetWidgetSpace(EWidgetSpace::Screen);
-    PlusResource->SetDrawAtDesiredSize(true);
-    PlusResource->SetVisibility(false);
-
     static ConstructorHelpers::FClassFinder<UUserWidget> TooltipClass(TEXT("/Game/Frontier/Blueprints/Widgets/Tooltips/WBP_Tooltip_BuildingHover"));
 
     if (TooltipClass.Succeeded())
     {
         Tooltip->SetWidgetClass(TooltipClass.Class);
-    }
-
-    static ConstructorHelpers::FClassFinder<UUserWidget> PlusResourceClass(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_PlusResources"));
-
-    if (PlusResourceClass.Succeeded())
-    {
-        PlusResource->SetWidgetClass(PlusResourceClass.Class);
     }
 
     Widget = UBuildingBaseWidget::StaticClass();
@@ -86,15 +73,6 @@ void ABuilding::BeginPlay()
             Property->SetPropertyValue_InContainer(TooltipWidget, FText::FromString(BuildingName));
         }
     }
-}
-
-void ABuilding::ShowPlusResourceWidget(int32 Amount, EResource ResourceType)
-{
-    PlusResource->SetVisibility(true);
-
-    auto PlusResWidget = Cast<UPlusResourceWidget>(PlusResource->GetUserWidgetObject());
-    PlusResWidget->Amount = Amount;
-    PlusResWidget->Resource = UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
 }
 
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)

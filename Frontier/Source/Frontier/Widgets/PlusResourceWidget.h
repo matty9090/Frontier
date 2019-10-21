@@ -15,9 +15,6 @@ class FRONTIER_API UPlusResourceWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-    UFUNCTION(BlueprintImplementableEvent)
-    void Play();
-
     UPROPERTY(BlueprintReadOnly)
     int32 Amount;
 

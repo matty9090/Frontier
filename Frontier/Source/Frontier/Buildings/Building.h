@@ -37,13 +37,8 @@ protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    void ShowPlusResourceWidget(int32 Amount, EResource ResourceType);
-
     UPROPERTY(EditAnywhere)
     UWidgetComponent* Tooltip = nullptr;
-
-    UPROPERTY(EditAnywhere)
-    UWidgetComponent* PlusResource = nullptr;
 
 public:
     UPROPERTY(EditAnywhere)
