@@ -12,6 +12,7 @@
 
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "FrontierHUD.h"
 #include "Buildings/Building.h"
 #include "Buildings/UnitQueueCommon.h"
 #include "Buildings/DummyBuilding.h"
@@ -50,7 +51,8 @@ void AFrontierPlayerController::SetupInputComponent()
     InputComponent->BindAxis("MoveRight", this, &AFrontierPlayerController::OnMoveRight);
 
     InputComponent->BindAction("Send", IE_Pressed, this, &AFrontierPlayerController::OnSend);
-    InputComponent->BindAction("Select", IE_Pressed, this, &AFrontierPlayerController::OnSelect);
+    InputComponent->BindAction("Select", IE_Pressed, this, &AFrontierPlayerController::OnSelectDown);
+    InputComponent->BindAction("Select", IE_Released, this, &AFrontierPlayerController::OnSelectUp);
     InputComponent->BindAction("Rotate", IE_Pressed, this, &AFrontierPlayerController::OnRotate);
 }
 
@@ -58,7 +60,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 {
     Super::PlayerTick(DeltaTime);
 
-    /* float MX, MY;
+    float MX, MY;
     
     if (GetMousePosition(MX, MY))
     {
@@ -69,7 +71,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
         if (MY > VY - MouseMovementPadding) OnMoveUp   (-1.0f);
         if (MX <      MouseMovementPadding) OnMoveRight(-1.0f);
         if (MX > VX - MouseMovementPadding) OnMoveRight( 1.0f);
-    }*/
+    }
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
@@ -190,19 +192,18 @@ void AFrontierPlayerController::OnMoveRight(float Value)
     }
 }
 
-void AFrontierPlayerController::OnSelect()
+void AFrontierPlayerController::OnSelectDown()
 {
-    FHitResult Hit;
+    Cast<AFrontierHUD>(GetHUD())->BeginSelect();
+}
 
-    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
-        EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
-        EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
-        EObjectTypeQuery::ObjectTypeQuery3  // Pawn
-    };
+void AFrontierPlayerController::OnSelectUp()
+{
+    auto DeselectUnits = [&]() {
+        for (auto Unit : SelectedUnits)
+            Unit->HideOutline();
 
-    auto DeselectUnit = [&]() {
-        if (SelectedUnit) SelectedUnit->HideOutline();
-        SelectedUnit = nullptr;
+        SelectedUnits.Empty();
     };
 
     auto DeselectBuilding = [&] {
@@ -215,12 +216,29 @@ void AFrontierPlayerController::OnSelect()
             SelectedBuildingUI->UnbindFromAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
         }
 
-        if(SelectedBuilding)
+        if (SelectedBuilding)
             SelectedBuilding->HideOutline();
 
         SelectedBuilding = nullptr;
         SelectedBuildingUI = nullptr;
     };
+
+    auto HUD = Cast<AFrontierHUD>(GetHUD());
+
+    DeselectUnits();
+    HUD->EndSelect();
+
+    SelectedUnits = HUD->GetCharactersInSelection();
+
+    if (SelectedUnits.Num() > 0)
+    {
+        for (auto Char : SelectedUnits)
+        {
+            Char->ShowOutline();
+        }
+
+        return;
+    }
 
     auto PS = Cast<AFrontierPlayerState>(PlayerState);
 
@@ -240,6 +258,14 @@ void AFrontierPlayerController::OnSelect()
     }
     else
     {
+        FHitResult Hit;
+
+        TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+            EObjectTypeQuery::ObjectTypeQuery3  // Pawn
+        };
+
         bool Selected = false;
 
         if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
@@ -248,14 +274,11 @@ void AFrontierPlayerController::OnSelect()
 
             if (Unit && Unit->Player == PS)
             {
-                if (Unit != SelectedUnit)
-                {
-                    DeselectUnit();
-                    DeselectBuilding();
+                DeselectUnits();
+                DeselectBuilding();
 
-                    SelectedUnit = Unit;
-                    SelectedUnit->ShowOutline();
-                }
+                SelectedUnits.Add(Unit);
+                Unit->ShowOutline();
 
                 Selected = true;
             }
@@ -268,7 +291,7 @@ void AFrontierPlayerController::OnSelect()
 
                 if (Building != SelectedBuilding)
                 {
-                    DeselectUnit();
+                    DeselectUnits();
                     DeselectBuilding();
 
                     SelectedBuilding = Building;
@@ -280,7 +303,7 @@ void AFrontierPlayerController::OnSelect()
                     SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetShowAnimation());
                     SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
                 }
-                
+
                 Selected = true;
             }
 
@@ -298,7 +321,7 @@ void AFrontierPlayerController::OnSelect()
             if (UI->bIsHidden)
                 UI->ShowUI();
 
-            DeselectUnit();
+            DeselectUnits();
 
             if (SelectedBuilding)    SelectedBuilding->HideOutline();
             if (SelectedBuildingUI)  SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
@@ -310,7 +333,7 @@ void AFrontierPlayerController::OnSelect()
 
 void AFrontierPlayerController::OnSend()
 {
-    if (SelectedUnit)
+    if (SelectedUnits.Num() > 0)
     {
         FHitResult Hit;
 
@@ -322,7 +345,7 @@ void AFrontierPlayerController::OnSend()
 
         if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
         {
-            ServerMoveAIToLocation(SelectedUnit, Hit.Location, Hit.Actor.Get());
+            ServerMoveAIToLocation(SelectedUnits, Hit.Location, Hit.Actor.Get());
         }
     }
     else if (HoveredBuilding)
@@ -381,14 +404,15 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
     }
 }
 
-bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(AFrontierCharacter* AI, FVector Location, AActor* Resource)
+bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(const TArray<AFrontierCharacter*>& AI, FVector Location, AActor* Resource)
 {
     return true;
 }
 
-void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(AFrontierCharacter* AI, FVector Location, AActor* Object)
+void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(const TArray<AFrontierCharacter*>& AI, FVector Location, AActor* Object)
 {
-    AI->MoveToLocation(Location, Object);
+    for(auto Unit : AI)
+        Unit->MoveToLocation(Location, Object);
 }
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)

@@ -58,7 +58,8 @@ private:
     void OnMoveUp(float Value);
     void OnMoveRight(float Value);
     void OnZoom(float Value);
-    void OnSelect();
+    void OnSelectDown();
+    void OnSelectUp();
     void OnSend();
     void OnRotate();
     // End Input
@@ -71,7 +72,7 @@ private:
     void ServerSpawnBuilding(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation);
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
-    void ServerMoveAIToLocation(AFrontierCharacter* AI, FVector Location, AActor* Object);
+    void ServerMoveAIToLocation(const TArray<AFrontierCharacter*>& AI, FVector Location, AActor* Object);
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerQueueUnit(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building);
@@ -96,7 +97,7 @@ private:
     float MaxZoom = 4400.0f;
 
     UPROPERTY(EditAnywhere)
-    float MouseMovementPadding = 52.0f;
+    float MouseMovementPadding = 1.0f;
 
     UPROPERTY(EditAnywhere)
     UCurveFloat* MovementCurve = nullptr;
@@ -129,7 +130,7 @@ private:
     ABuilding* PlacedBuilding = nullptr;
 
     UPROPERTY()
-    AFrontierCharacter* SelectedUnit = nullptr;
+    TArray<AFrontierCharacter*> SelectedUnits;
 
     UPROPERTY()
     ABuilding* SelectedBuilding = nullptr;
