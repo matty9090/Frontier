@@ -90,6 +90,19 @@ bool AFrontierPlayerState::CanResearchNode(UResearchNode* Node) const
     return CanResearch;
 }
 
+TArray<TSubclassOf<ABuilding>> AFrontierPlayerState::GetResearchedBuildings() const
+{
+    TArray<TSubclassOf<ABuilding>> Buildings;
+
+    for (auto Actor : AvailableObjects)
+    {
+        if (Actor->IsChildOf(ABuilding::StaticClass()))
+            Buildings.Add(TSubclassOf<ABuilding>(*Actor));
+    }
+
+    return Buildings;
+}
+
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);

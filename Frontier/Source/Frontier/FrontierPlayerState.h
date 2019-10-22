@@ -63,6 +63,9 @@ public:
     UFUNCTION(BlueprintCallable)
     bool CanResearchNode(UResearchNode* Node) const;
 
+    UFUNCTION(BlueprintCallable)
+    TArray<TSubclassOf<ABuilding>> GetResearchedBuildings() const;
+
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 

@@ -8,15 +8,40 @@ bool UUI::Initialize()
 {
     Super::Initialize();
 
-    ResearchTreeChanged(EResearchTreeChangedType::Unknown, nullptr);
-
     auto PS = GetOwningPlayerState<AFrontierPlayerState>();
 
     if (PS)
     {
+        ResearchTreeChanged(EResearchTreeChangedType::Unknown, nullptr);
         ResearchTreeChangedHandle = PS->OnResearchTreeChangedEvent.AddUObject(this, &UUI::ResearchTreeChanged);
+
         return true;
     }
 
     return false;
+}
+
+void UUI::ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node)
+{
+    Buildings = GetOwningPlayerState<AFrontierPlayerState>()->GetResearchedBuildings();
+    UpdateBuildingList();
+}
+
+void UUI::UpdateBuildingList()
+{
+    BuildingsContainer->ClearChildren();
+
+    for (auto Building : Buildings)
+    {
+        auto DefaultObj = Building.GetDefaultObject();
+        
+        if (DefaultObj->BuildingCategory != ActiveCategory)
+            continue;
+
+        auto Widget = CreateWidget(GetOwningPlayer(), BuildingWidget);
+        Widget->SetPadding(BuildingPadding);
+
+        BindBuildingSelectedEvent(Widget, Building);
+        BuildingsContainer->AddChild(Widget);
+    }
 }

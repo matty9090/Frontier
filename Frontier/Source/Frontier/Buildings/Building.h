@@ -16,6 +16,14 @@ class AFrontierPlayerState;
 class UBuildingBaseWidget;
 class UStaticMeshComponent;
 
+UENUM(BlueprintType)
+enum class EBuildingCategory : uint8
+{
+    General     UMETA(DisplayName = "General"),
+    Resource    UMETA(DisplayName = "Resource"),
+    Combat      UMETA(DisplayName = "Combat")
+};
+
 UCLASS()
 class FRONTIER_API ABuilding : public AActor
 {
@@ -61,6 +69,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FTextureHolder Icon;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    EBuildingCategory BuildingCategory = EBuildingCategory::General;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
