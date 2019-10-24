@@ -13,6 +13,7 @@
 #include "UnrealNetwork.h"
 #include "Projectile.h"
 #include "FrontierGameState.h"
+#include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "FogOfWar.h"
@@ -54,9 +55,9 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
 
     if (GetOwner())
     {
-        auto FrontierController = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
-        if (FrontierController)
+        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
         {
             auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
             FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);

@@ -6,6 +6,8 @@
 #include "Engine/CollisionProfile.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/StaticMeshComponent.h"
+#include "FrontierPlayerState.h"
+#include "FrontierPlayerController.h"
 #include "Frontier.h"
 
 AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
@@ -26,7 +28,9 @@ void AFogOfWar::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (!GetOuter())
+    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+
+    if (!GetOuter() || Player != FrontierController->PlayerState)
         SetActorHiddenInGame(true);
 }
 

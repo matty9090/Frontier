@@ -8,6 +8,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Buildings/Building.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 #include "Frontier.h"
 
 AFrontierGameMode::AFrontierGameMode()
@@ -54,13 +55,16 @@ void AFrontierGameMode::InitPlayers()
         
         float Z = BoxComponent->GetScaledBoxExtent().Z;
 
-        auto StartBuilding = GetWorld()->SpawnActor<ABuilding>(StartBuildingClass, Location + FVector(0.0f, 0.0f, Z), FRotator::ZeroRotator, SpawnParams);
-        StartBuilding->SetOwner(PS);
+        FTransform BuildingTransform(Location + FVector(0.0f, 0.0f, Z));
+        auto StartBuilding = GetWorld()->SpawnActorDeferred<ABuilding>(StartBuildingClass, BuildingTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
         StartBuilding->Player = PS;
 
-        auto Worker = GetWorld()->SpawnActor<AFrontierCharacter>(WorkerClass, Location + FVector(300.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnParams);
-        Worker->SetOwner(PS);
+        FTransform WorkerTransform(Location + FVector(300.0f, 0.0f, 100.0f));
+        auto Worker = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(WorkerClass, WorkerTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
         Worker->Player = PS;
+
+        UGameplayStatics::FinishSpawningActor(StartBuilding, BuildingTransform);
+        UGameplayStatics::FinishSpawningActor(Worker, WorkerTransform);
 
         SpawnedStartActors.Add(StartBuilding);
         SpawnedStartActors.Add(Worker);

@@ -9,10 +9,12 @@
 #include "FrontierPlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "FrontierGameState.h"
+#include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "Widgets/BuildingBaseWidget.h"
 #include "Widgets/PlusResourceWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
+#include "Frontier.h"
 
 // Sets default values
 ABuilding::ABuilding() : Super()
@@ -80,12 +82,13 @@ void ABuilding::BeginPlay()
 
     if (GetOwner())
     {
-        auto Controller = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-        
-        if (Controller)
+        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+
+        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
         {
+            UE_LOG(LogFrontier, Display, TEXT("Hello"));
             auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
-            Controller->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
+            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
         }
     }
 }

@@ -6,6 +6,8 @@
 #include "RHI.h"
 #include "FogOfWar.generated.h"
 
+class AFrontierPlayerState;
+
 UCLASS()
 class FRONTIER_API AFogOfWar : public AActor
 {
@@ -14,6 +16,9 @@ class FRONTIER_API AFogOfWar : public AActor
 public:	
 	AFogOfWar();
     ~AFogOfWar() { FMemory::Free(Pixels); }
+
+    UPROPERTY()
+    AFrontierPlayerState* Player;
 
     void RevealCircle(const FVector& Pos, float Radius);
 
