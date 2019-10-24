@@ -21,6 +21,7 @@
 #include "Widgets/UI.h"
 #include "RoamPawn.h"
 #include "BaseResource.h"
+#include "FogOfWar.h"
 #include "Widgets/BuildingBaseWidget.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
@@ -39,6 +40,10 @@ void AFrontierPlayerController::BeginPlay()
     if (!IsRunningDedicatedServer())
     {
         ClientCreateUI();
+
+        FTransform Transform(FVector(0.0f, 0.0f, 200.0f));
+        FogOfWar = GetWorld()->SpawnActorDeferred<AFogOfWar>(FogOfWarClass, Transform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+        UGameplayStatics::FinishSpawningActor(FogOfWar, Transform);
     }
 }
 

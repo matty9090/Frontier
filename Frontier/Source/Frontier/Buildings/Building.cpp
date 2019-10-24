@@ -3,9 +3,12 @@
 
 #include "Building.h"
 #include "UnrealNetwork.h"
+#include "FogOfWar.h"
 #include "ConstructorHelpers.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "FrontierPlayerController.h"
 #include "Widgets/BuildingBaseWidget.h"
 #include "Widgets/PlusResourceWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
@@ -71,6 +74,16 @@ void ABuilding::BeginPlay()
         if (Property)
         {
             Property->SetPropertyValue_InContainer(TooltipWidget, FText::FromString(BuildingName));
+        }
+    }
+
+    if (GetOwner())
+    {
+        auto Controller = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+        
+        if (Controller)
+        {
+            Controller->FogOfWar->RevealCircle(GetActorLocation(), 800.0f);
         }
     }
 }

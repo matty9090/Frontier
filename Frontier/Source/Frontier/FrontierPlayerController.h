@@ -9,6 +9,7 @@
 #include "FrontierPlayerController.generated.h"
 
 class UUI;
+class AFogOfWar;
 class ABuilding;
 class UResearchNode;
 class ADummyBuilding;
@@ -35,6 +36,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void SetHoveredBuilding(TSubclassOf<ABuilding> BuildingType);
+
+    UPROPERTY()
+    AFogOfWar* FogOfWar;
 
 protected:
     /** True if the controlled character should navigate to the mouse cursor. */
@@ -113,6 +117,9 @@ private:
 
     UPROPERTY(EditAnywhere)
     UMaterialInterface* HoverMaterialRed = nullptr;
+
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<AFogOfWar> FogOfWarClass;
 
     UPROPERTY()
     UUI* UI;
