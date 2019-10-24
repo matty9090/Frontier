@@ -8,6 +8,7 @@
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "FrontierGameState.h"
 #include "FrontierPlayerController.h"
 #include "Widgets/BuildingBaseWidget.h"
 #include "Widgets/PlusResourceWidget.h"
@@ -83,7 +84,8 @@ void ABuilding::BeginPlay()
         
         if (Controller)
         {
-            Controller->FogOfWar->RevealCircle(GetActorLocation(), 800.0f);
+            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
+            Controller->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
         }
     }
 }

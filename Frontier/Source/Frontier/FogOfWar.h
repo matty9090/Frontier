@@ -18,6 +18,7 @@ public:
     void RevealCircle(const FVector& Pos, float Radius);
 
 protected:
+    virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 
 private:
@@ -33,13 +34,13 @@ private:
     int32 TextureSize = 512;
 
     UPROPERTY(EditAnywhere)
-    UMaterialInterface* Material;
+    UMaterialInterface* Material = nullptr;
 
     UPROPERTY()
-    UTexture2D* Texture;
+    UTexture2D* Texture = nullptr;
 
     UPROPERTY()
-    UMaterialInstanceDynamic* MaterialInstance;
+    UMaterialInstanceDynamic* MaterialInstance = nullptr;
 
     uint8* Pixels;
     FUpdateTextureRegion2D WholeTexRegion;

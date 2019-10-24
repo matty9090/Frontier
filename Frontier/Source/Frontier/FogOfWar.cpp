@@ -12,12 +12,27 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+    Scale *= 2.0f;
+
     Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
     Plane->TranslucencySortPriority = 100;
-    Plane->SetRelativeScale3D(FVector(Scale, Scale, 1.0f) * 2.0f);
+    Plane->SetRelativeScale3D(FVector(Scale, Scale, 1.0f));
     Plane->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
     
     RootComponent = Plane;
+}
+
+void AFogOfWar::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (!GetOuter())
+        SetActorHiddenInGame(true);
+}
+
+void AFogOfWar::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
 
     Texture = UTexture2D::CreateTransient(TextureSize, TextureSize, PF_G8);
     Texture->CompressionSettings = TextureCompressionSettings::TC_Grayscale;
@@ -36,14 +51,6 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
     }
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
-}
-
-void AFogOfWar::PostInitializeComponents()
-{
-    Super::PostInitializeComponents();
-
-    if (!GetOuter())
-        SetActorHiddenInGame(true);
 
     if (Material)
     {

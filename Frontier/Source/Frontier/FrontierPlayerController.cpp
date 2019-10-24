@@ -41,7 +41,7 @@ void AFrontierPlayerController::BeginPlay()
     {
         ClientCreateUI();
 
-        FTransform Transform(FVector(0.0f, 0.0f, 200.0f));
+        FTransform Transform(FVector(0.0f, 0.0f, 260.0f));
         FogOfWar = GetWorld()->SpawnActorDeferred<AFogOfWar>(FogOfWarClass, Transform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
         UGameplayStatics::FinishSpawningActor(FogOfWar, Transform);
     }

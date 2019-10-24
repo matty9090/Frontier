@@ -12,6 +12,10 @@
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
 #include "Projectile.h"
+#include "FrontierGameState.h"
+#include "FrontierPlayerController.h"
+#include "Kismet/GameplayStatics.h"
+#include "FogOfWar.h"
 #include "Frontier.h"
 
 AFrontierCharacter::AFrontierCharacter()
@@ -47,6 +51,17 @@ AFrontierCharacter::AFrontierCharacter()
 void AFrontierCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+    if (GetOwner())
+    {
+        auto FrontierController = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+        if (FrontierController)
+        {
+            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
+            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
+        }
+    }
 }
 
 void AFrontierCharacter::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
