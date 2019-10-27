@@ -36,6 +36,9 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void MoveToLocation(FVector Location, AActor* Object);
 
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(int Damage);
+
     UFUNCTION()
     void OnRep_Health();
 

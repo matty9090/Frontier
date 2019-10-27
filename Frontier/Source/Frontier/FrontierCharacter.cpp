@@ -90,6 +90,17 @@ void AFrontierCharacter::HideOutline()
     GetMesh()->SetRenderCustomDepth(false);
 }
 
+
+void AFrontierCharacter::TakeDamage(int Damage)
+{
+	Health -= Damage;
+
+	if (Health <= 0)
+	{
+		Destroy();
+	}
+}
+
 void AFrontierCharacter::OnRep_Health()
 {
     if (Health <= 0)

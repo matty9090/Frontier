@@ -134,7 +134,7 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
 
     HoveredBuilding->Box->SetRelativeTransform(BuildingDefaults->Box->GetRelativeTransform());
     HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetUnscaledBoxExtent());
-    HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->Mesh->GetStaticMesh());
+    HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->BuildingMesh);
     HoveredBuilding->Mesh->SetRelativeTransform(BuildingDefaults->Mesh->GetRelativeTransform());
     HoveredBuilding->HoverMaterialGreen = HoverMaterialGreen;
     HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
@@ -346,6 +346,7 @@ void AFrontierPlayerController::OnSend()
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
             EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
             EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+			EObjectTypeQuery::ObjectTypeQuery3, // Pawn
             EObjectTypeQuery::ObjectTypeQuery7, // Terrain
         };
 

@@ -55,6 +55,12 @@ public:
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* Mesh = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* ConstructionMesh = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* BuildingMesh = nullptr;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
     FResources Cost;
 
@@ -72,10 +78,12 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     EBuildingCategory BuildingCategory = EBuildingCategory::General;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 HP;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
-
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);
@@ -85,4 +93,6 @@ private:
 
     TScriptDelegate<> BeginMouseOverDelegate;
     TScriptDelegate<> EndMouseOverDelegate;
+
+	float ConstructionProgress = 0.f;
 };

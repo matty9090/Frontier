@@ -67,7 +67,7 @@ ABuilding::ABuilding() : Super()
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
-
+	Mesh->SetStaticMesh(ConstructionMesh ? ConstructionMesh : BuildingMesh);
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
     if (TooltipWidget)
