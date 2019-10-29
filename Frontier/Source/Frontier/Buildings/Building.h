@@ -39,6 +39,12 @@ public:
     UFUNCTION(BlueprintCallable)
     void HideOutline();
 
+	UFUNCTION(BlueprintCallable)
+	bool IsConstructed() { return Built; }
+
+	UFUNCTION(BlueprintCallable)
+	bool Construct(float constructionAmount);
+
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
@@ -95,4 +101,6 @@ private:
     TScriptDelegate<> EndMouseOverDelegate;
 
 	float ConstructionProgress = 0.f;
+	const float MaxConstruct = 100.f;
+	bool Built = false;
 };

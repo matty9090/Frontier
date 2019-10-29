@@ -114,6 +114,18 @@ void ABuilding::HideOutline()
     Mesh->SetRenderCustomDepth(false);
 }
 
+
+bool ABuilding::Construct(float constructionAmount)
+{
+	ConstructionProgress += constructionAmount;
+	if (ConstructionProgress >= MaxConstruct)
+	{
+		Built = true;
+		Mesh->SetStaticMesh(BuildingMesh);
+	}
+	return Built;
+}
+
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
