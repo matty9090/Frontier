@@ -42,11 +42,11 @@ private:
     UPROPERTY(EditAnywhere)
     int32 TextureSize = 512;
 
-    UPROPERTY(EditAnywhere)
-    UMaterialInterface* Material = nullptr;
-
     UPROPERTY()
     UTexture2D* Texture = nullptr;
+    
+    UPROPERTY()
+    UMaterialInterface* Material = nullptr;
 
     UPROPERTY()
     UMaterialInstanceDynamic* MaterialInstance = nullptr;

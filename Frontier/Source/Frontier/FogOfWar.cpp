@@ -14,10 +14,11 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-    Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("Fog"));
-    // Decal->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f).Quaternion());
-    Decal->DecalSize = FVector(Scale, Scale, Height);
-
+    Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalFog"));
+    Decal->SetDecalMaterial(Material);
+    Decal->DecalSize = FVector(600.0f, Scale, Scale);
+    Decal->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+    
     RootComponent = Decal;
 }
 
@@ -56,8 +57,9 @@ void AFogOfWar::PostInitializeComponents()
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 
-    if (MaterialInstance)
+    if (Decal)
     {
+        MaterialInstance = Decal->CreateDynamicMaterialInstance();
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
     }
 }
@@ -99,7 +101,10 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
     }
 
     if (dirty)
+    {
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
+        MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
+    }
 }
 
 void AFogOfWar::UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
