@@ -40,10 +40,10 @@ public:
     void HideOutline();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsConstructed() { return Built; }
+	bool IsConstructed() const { return bBuilt; }
 
 	UFUNCTION(BlueprintCallable)
-	bool Construct(float constructionAmount);
+	bool Construct(float ConstructionAmount);
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -87,6 +87,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 HP;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Built)
+    bool bBuilt = false;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
@@ -97,10 +100,12 @@ private:
     UFUNCTION()
     void EndMouseOver(UPrimitiveComponent* TouchedComponent);
 
+    UFUNCTION()
+    void OnRep_Built();
+
     TScriptDelegate<> BeginMouseOverDelegate;
     TScriptDelegate<> EndMouseOverDelegate;
 
 	float ConstructionProgress = 0.f;
 	const float MaxConstruct = 100.f;
-	bool Built = false;
 };

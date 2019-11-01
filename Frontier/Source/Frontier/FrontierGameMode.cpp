@@ -58,6 +58,7 @@ void AFrontierGameMode::InitPlayers()
         FTransform BuildingTransform(Location + FVector(0.0f, 0.0f, Z));
         auto StartBuilding = GetWorld()->SpawnActorDeferred<ABuilding>(StartBuildingClass, BuildingTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
         StartBuilding->Player = PS;
+        StartBuilding->bBuilt = true;
 
         FTransform WorkerTransform(Location + FVector(300.0f, 0.0f, 100.0f));
         auto Worker = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(WorkerClass, WorkerTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);

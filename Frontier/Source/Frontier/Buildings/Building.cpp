@@ -67,7 +67,7 @@ ABuilding::ABuilding() : Super()
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
-	Mesh->SetStaticMesh(ConstructionMesh ? ConstructionMesh : BuildingMesh);
+	Mesh->SetStaticMesh(bBuilt ? BuildingMesh : ConstructionMesh);
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
     if (TooltipWidget)
@@ -77,18 +77,6 @@ void ABuilding::BeginPlay()
         if (Property)
         {
             Property->SetPropertyValue_InContainer(TooltipWidget, FText::FromString(BuildingName));
-        }
-    }
-
-    if (GetOwner())
-    {
-        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-
-        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
-        {
-            UE_LOG(LogFrontier, Display, TEXT("Hello"));
-            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
-            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
         }
     }
 }
@@ -115,15 +103,32 @@ void ABuilding::HideOutline()
 }
 
 
-bool ABuilding::Construct(float constructionAmount)
+bool ABuilding::Construct(float ConstructionAmount)
 {
-	ConstructionProgress += constructionAmount;
+	ConstructionProgress += ConstructionAmount;
 	if (ConstructionProgress >= MaxConstruct)
 	{
-		Built = true;
+		bBuilt = true;
 		Mesh->SetStaticMesh(BuildingMesh);
+
+        if (GetOwner())
+        {
+            auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+
+            if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+            {
+                UE_LOG(LogFrontier, Display, TEXT("Hello"));
+                auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
+                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
+            }
+        }
 	}
-	return Built;
+	return bBuilt;
+}
+
+void ABuilding::OnRep_Built()
+{
+    Mesh->SetStaticMesh(bBuilt ? BuildingMesh : ConstructionMesh);
 }
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -131,5 +136,6 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ABuilding, Cost);
+    DOREPLIFETIME(ABuilding, bBuilt);
     DOREPLIFETIME(ABuilding, Player);
 }

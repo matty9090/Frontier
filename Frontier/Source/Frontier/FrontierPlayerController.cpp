@@ -291,7 +291,7 @@ void AFrontierPlayerController::OnSelectUp()
 
             auto Building = Cast<ABuilding>(Hit.Actor);
 
-            if (!Selected && Building && Building->Player == PS)
+            if (!Selected && Building && Building->Player == PS && Building->bBuilt)
             {
                 UE_LOG(LogFrontier, Display, TEXT("Selected building"));
 

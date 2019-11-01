@@ -50,7 +50,7 @@ void AFogOfWar::PostInitializeComponents()
     {
         for (int x = 0; x < TextureSize; ++x)
         {
-            Pixels[y * TextureSize + x] = 255;
+            Pixels[y * TextureSize + x] = 150;
         }
     }
 
