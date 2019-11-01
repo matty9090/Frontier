@@ -14,19 +14,18 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-    Scale *= 2.0f;
+    Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("Fog"));
+    // Decal->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f).Quaternion());
+    Decal->DecalSize = FVector(Scale, Scale, Height);
 
-    Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
-    Plane->TranslucencySortPriority = 100;
-    Plane->SetRelativeScale3D(FVector(Scale, Scale, 1.0f));
-    Plane->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-    
-    RootComponent = Plane;
+    RootComponent = Decal;
 }
 
 void AFogOfWar::BeginPlay()
 {
     Super::BeginPlay();
+
+    MaterialInstance = Decal->CreateDynamicMaterialInstance();
 
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
@@ -40,9 +39,10 @@ void AFogOfWar::PostInitializeComponents()
 
     Texture = UTexture2D::CreateTransient(TextureSize, TextureSize, PF_G8);
     Texture->CompressionSettings = TextureCompressionSettings::TC_Grayscale;
-    Texture->SRGB = 0;
-    Texture->UpdateResource();
     Texture->MipGenSettings = TMGS_NoMipmaps;
+    Texture->SRGB = 0;
+    Texture->AddToRoot();
+    Texture->UpdateResource();
 
     Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
 
@@ -56,11 +56,9 @@ void AFogOfWar::PostInitializeComponents()
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 
-    if (Material)
+    if (MaterialInstance)
     {
-        MaterialInstance = UMaterialInstanceDynamic::Create(Material, this);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
-        Plane->SetMaterial(0, MaterialInstance);
     }
 }
 
