@@ -4,7 +4,6 @@
 
 #include "GameFramework/Actor.h"
 #include "RHI.h"
-#include "Components/DecalComponent.h"
 #include "FogOfWar.generated.h"
 
 class AFrontierPlayerState;
@@ -31,22 +30,19 @@ private:
     void UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
     UPROPERTY(EditAnywhere)
-    UDecalComponent* Decal;
+    UStaticMeshComponent* Plane;
 
     UPROPERTY(EditAnywhere)
     int32 Scale = 10000;
 
     UPROPERTY(EditAnywhere)
-    int32 Height = 300;
+    int32 TextureSize = 512;
 
     UPROPERTY(EditAnywhere)
-    int32 TextureSize = 512;
+    UMaterialInterface* Material = nullptr;
 
     UPROPERTY()
     UTexture2D* Texture = nullptr;
-    
-    UPROPERTY()
-    UMaterialInterface* Material = nullptr;
 
     UPROPERTY()
     UMaterialInstanceDynamic* MaterialInstance = nullptr;

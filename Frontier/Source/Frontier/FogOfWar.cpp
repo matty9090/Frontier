@@ -14,19 +14,19 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-    Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalFog"));
-    Decal->SetDecalMaterial(Material);
-    Decal->DecalSize = FVector(600.0f, Scale, Scale);
-    Decal->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
+    Scale *= 2.0f;
+
+    Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
+    Plane->TranslucencySortPriority = 100;
+    Plane->SetRelativeScale3D(FVector(Scale, Scale, 1.0f));
+    Plane->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
     
-    RootComponent = Decal;
+    RootComponent = Plane;
 }
 
 void AFogOfWar::BeginPlay()
 {
     Super::BeginPlay();
-
-    MaterialInstance = Decal->CreateDynamicMaterialInstance();
 
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
@@ -40,10 +40,9 @@ void AFogOfWar::PostInitializeComponents()
 
     Texture = UTexture2D::CreateTransient(TextureSize, TextureSize, PF_G8);
     Texture->CompressionSettings = TextureCompressionSettings::TC_Grayscale;
-    Texture->MipGenSettings = TMGS_NoMipmaps;
     Texture->SRGB = 0;
-    Texture->AddToRoot();
     Texture->UpdateResource();
+    Texture->MipGenSettings = TMGS_NoMipmaps;
 
     Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
 
@@ -57,10 +56,11 @@ void AFogOfWar::PostInitializeComponents()
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 
-    if (Decal)
+    if (Material)
     {
-        MaterialInstance = Decal->CreateDynamicMaterialInstance();
+        MaterialInstance = UMaterialInstanceDynamic::Create(Material, this);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
+        Plane->SetMaterial(0, MaterialInstance);
     }
 }
 
@@ -101,10 +101,7 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
     }
 
     if (dirty)
-    {
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
-        MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
-    }
 }
 
 void AFogOfWar::UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
