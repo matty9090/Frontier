@@ -92,9 +92,10 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
             {
                 auto BoxComponent = Cast<UBoxComponent>(HoveredBuilding->GetComponentByClass(UBoxComponent::StaticClass()));
-                float Z = BoxComponent->GetScaledBoxExtent().Z;
+                auto Extent = BoxComponent->GetScaledBoxExtent();
 
-                HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Z));
+                HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Extent.Z));
+                HoveredBuilding->SetCanPlace(FogOfWar->IsRevealedBox(HoveredBuilding->GetActorLocation(), Extent.X, Extent.Y));
             }
         }
     }
@@ -250,7 +251,7 @@ void AFrontierPlayerController::OnSelectUp()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuildingType) && HoveredBuilding && HoveredBuilding->bCanPlace)
+        if (PS->CanCreateBuilding(HoveredBuildingType) && HoveredBuilding && HoveredBuilding->CanPlace())
         {
             ControllerState = EControllerState::Idle;
             ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());

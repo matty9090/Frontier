@@ -18,6 +18,8 @@ public:
 	ADummyBuilding();
 
     void BeginPlay() override;
+    void SetCanPlace(bool bInCanPlace);
+    bool CanPlace() const { return bCanPlace && !bIsOverlapping; }
 
     UPROPERTY(EditAnywhere)
     UBoxComponent* Box = nullptr;
@@ -31,9 +33,6 @@ public:
     UPROPERTY()
     UMaterialInterface* HoverMaterialRed = nullptr;
 
-    UPROPERTY()
-    bool bCanPlace = false;
-
 private:
     UFUNCTION()
     void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -45,4 +44,10 @@ private:
 
     FScriptDelegate BeginOverlapDelegate;
     FScriptDelegate EndOverlapDelegate;
+
+    UPROPERTY()
+    bool bCanPlace = false;
+
+    UPROPERTY()
+    bool bIsOverlapping = false;
 };

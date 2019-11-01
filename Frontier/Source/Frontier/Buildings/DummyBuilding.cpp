@@ -50,6 +50,19 @@ void ADummyBuilding::BeginPlay()
     bCanPlace = true;
 }
 
+void ADummyBuilding::SetCanPlace(bool bInCanPlace)
+{
+    bCanPlace = bInCanPlace;
+
+    if (Mesh)
+    {
+        auto NumMaterials = Mesh->GetMaterials().Num();
+
+        for (int i = 0; i < NumMaterials; ++i)
+            Mesh->SetMaterial(i, (bCanPlace && !bIsOverlapping) ? HoverMaterialGreen : HoverMaterialRed);
+    }
+}
+
 void ADummyBuilding::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     if (Mesh && OtherActor != this)
@@ -60,7 +73,7 @@ void ADummyBuilding::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
             Mesh->SetMaterial(i, HoverMaterialRed);
 
         ++NumOverlapping;
-        bCanPlace = false;
+        bIsOverlapping = true;
     }
 }
 
@@ -74,10 +87,13 @@ void ADummyBuilding::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AAct
         {
             auto NumMaterials = Mesh->GetMaterials().Num();
 
-            for (int i = 0; i < NumMaterials; ++i)
-                Mesh->SetMaterial(i, HoverMaterialGreen);
+            if (bCanPlace)
+            {
+                for (int i = 0; i < NumMaterials; ++i)
+                    Mesh->SetMaterial(i, HoverMaterialGreen);
+            }
 
-            bCanPlace = true;
+            bIsOverlapping = false;
         }
     }
 }

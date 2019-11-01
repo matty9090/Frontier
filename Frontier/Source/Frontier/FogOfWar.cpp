@@ -47,11 +47,11 @@ void AFogOfWar::PostInitializeComponents()
 
     Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
 
-    for (int y = 0; y < TextureSize; ++y)
+    for (int Y = 0; Y < TextureSize; ++Y)
     {
-        for (int x = 0; x < TextureSize; ++x)
+        for (int X = 0; X < TextureSize; ++X)
         {
-            Pixels[y * TextureSize + x] = 150;
+            Pixels[Y * TextureSize + X] = 255;
         }
     }
 
@@ -66,10 +66,7 @@ void AFogOfWar::PostInitializeComponents()
 
 void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
 {
-    FVector2D Texel = FVector2D(Pos.X, Pos.Y) - FVector2D(GetActorLocation().X, GetActorLocation().Y);
-    Texel = Texel * TextureSize / Scale;
-    Texel += FVector2D(TextureSize / 2, TextureSize / 2);
-
+    auto Texel = WorldPositionToFog(Pos);
     float TexelRadius = Radius * TextureSize / Scale;
 
     int MinX = FMath::Clamp<int>(Texel.X - TexelRadius, 0, TextureSize - 1);
@@ -79,23 +76,23 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
 
     bool dirty = false;
 
-    for (int x = MinX; x < MaxX; ++x)
+    for (int X = MinX; X < MaxX; ++X)
     {
-        for (int y = MinY; y < MaxY; ++y)
+        for (int Y = MinY; Y < MaxY; ++Y)
         {
-            float distance = FVector2D::Distance(Texel, FVector2D(x, y));
+            float distance = FVector2D::Distance(Texel, FVector2D(X, Y));
             
             if (distance < TexelRadius)
             {
                 static float smoothPct = 0.7f;
 
-                uint8 oldVal = Pixels[y * TextureSize + x];
-                float lerp = FMath::GetMappedRangeValueClamped(FVector2D(smoothPct, 1.0f), FVector2D(0, 1), distance / TexelRadius);
-                uint8 newVal = lerp * 255;
-                newVal = FMath::Min(newVal, oldVal);
+                uint8 OldVal = Pixels[Y * TextureSize + X];
+                float Lerp = FMath::GetMappedRangeValueClamped(FVector2D(smoothPct, 1.0f), FVector2D(0, 1), distance / TexelRadius);
+                uint8 NewVal = Lerp * 255;
+                NewVal = FMath::Min(NewVal, OldVal);
 
-                Pixels[y * TextureSize + x] = newVal;
-                dirty = dirty || oldVal != newVal;
+                Pixels[Y * TextureSize + X] = NewVal;
+                dirty = dirty || OldVal != NewVal;
             }
         }
     }
@@ -105,6 +102,42 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
     }
+}
+
+bool AFogOfWar::IsRevealedBox(const FVector& Pos, float SizeX, float SizeY)
+{
+    auto Texel = WorldPositionToFog(Pos);
+    float Scaled = static_cast<float>(TextureSize) / Scale;
+    float TexelSizeX = SizeX * Scaled, TexelSizeY = SizeY * Scaled;
+
+    int MinX = FMath::Clamp<int>(Texel.X - TexelSizeX, 0, TextureSize - 1);
+    int MinY = FMath::Clamp<int>(Texel.Y - TexelSizeY, 0, TextureSize - 1);
+    int MaxX = FMath::Clamp<int>(Texel.X + TexelSizeX, 0, TextureSize - 1);
+    int MaxY = FMath::Clamp<int>(Texel.Y + TexelSizeY, 0, TextureSize - 1);
+
+    bool bResult = true;
+
+    for (int Y = MinY; Y < MaxY; ++Y)
+    {
+        for (int X = MinX; X < MaxX; ++X)
+        {
+            uint8 Pixel = Pixels[Y * TextureSize + X];
+
+            if (Pixel > 10)
+                return false;
+        }
+    }
+
+    return true;
+}
+
+FVector2D AFogOfWar::WorldPositionToFog(const FVector& Pos)
+{
+    FVector2D Texel = FVector2D(Pos.X, Pos.Y) - FVector2D(GetActorLocation().X, GetActorLocation().Y);
+    Texel = Texel * TextureSize / Scale;
+    Texel += FVector2D(TextureSize / 2, TextureSize / 2);
+
+    return Texel;
 }
 
 void AFogOfWar::UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
