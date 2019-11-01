@@ -14,14 +14,14 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-    Scale *= 2.0f;
+    // Scale *= 2.0f;
 
-    Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
-    Plane->TranslucencySortPriority = 100;
-    Plane->SetRelativeScale3D(FVector(Scale, Scale, 1.0f));
-    Plane->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+    Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalFog"));
+    Decal->SetDecalMaterial(Material);
+    Decal->DecalSize = FVector(600.0f, Scale, Scale);
+    Decal->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
     
-    RootComponent = Plane;
+    RootComponent = Decal;
 }
 
 void AFogOfWar::BeginPlay()
@@ -56,11 +56,10 @@ void AFogOfWar::PostInitializeComponents()
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 
-    if (Material)
+    if (Decal)
     {
-        MaterialInstance = UMaterialInstanceDynamic::Create(Material, this);
+        MaterialInstance = Decal->CreateDynamicMaterialInstance();
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
-        Plane->SetMaterial(0, MaterialInstance);
     }
 }
 
@@ -101,7 +100,10 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
     }
 
     if (dirty)
+    {
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
+        MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
+    }
 }
 
 void AFogOfWar::UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
