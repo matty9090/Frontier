@@ -358,6 +358,7 @@ void AFrontierPlayerController::OnSend()
     }
     else if (HoveredBuilding)
     {
+        ControllerState = EControllerState::Idle;
         HoveredBuilding->Destroy();
         HoveredBuilding = nullptr;
     }
