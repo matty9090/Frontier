@@ -105,6 +105,7 @@ void ABuilding::HideOutline()
 bool ABuilding::Construct(float ConstructionAmount)
 {
 	ConstructionProgress += ConstructionAmount;
+
 	if (ConstructionProgress >= MaxConstruct)
 	{
 		bBuilt = true;
@@ -121,7 +122,10 @@ bool ABuilding::Construct(float ConstructionAmount)
                 FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
             }
         }
+
+        OnBuildingConstructed();
 	}
+
 	return bBuilt;
 }
 

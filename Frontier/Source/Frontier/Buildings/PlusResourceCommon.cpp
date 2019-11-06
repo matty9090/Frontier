@@ -12,7 +12,6 @@ APlusResourceCommon::APlusResourceCommon()
     PlusResourceWidget->SetupAttachment(RootComponent);
     PlusResourceWidget->SetWidgetSpace(EWidgetSpace::Screen);
     PlusResourceWidget->SetDrawAtDesiredSize(true);
-    PlusResourceWidget->SetVisibility(false);
 
     static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_GenericFeedback"));
 
@@ -26,8 +25,6 @@ void APlusResourceCommon::BeginPlay()
 {
     Super::BeginPlay();
 
-    PlusResourceWidget->SetVisibility(true);
-
     auto ResWidget = Cast<UFeedbackWidget>(PlusResourceWidget->GetUserWidgetObject());
     ResWidget->Text  = "<Green>+" + FString::FromInt(Amount) + "</> ";
     ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
@@ -40,4 +37,9 @@ void APlusResourceCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 
     Player->AddSpecificResources(Amount, ResourceType);
+}
+
+void APlusResourceCommon::OnBuildingConstructed()
+{
+    Cast<UFeedbackWidget>(PlusResourceWidget->GetUserWidgetObject())->Play();
 }

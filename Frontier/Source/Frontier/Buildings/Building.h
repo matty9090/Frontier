@@ -48,8 +48,8 @@ public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
-    // Called when the game starts or when spawned
     virtual void BeginPlay() override;
+    virtual void OnBuildingConstructed() {}
 
     UPROPERTY(EditAnywhere)
     UWidgetComponent* Tooltip = nullptr;
@@ -93,6 +93,7 @@ public:
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
+
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);

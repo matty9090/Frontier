@@ -12,7 +12,6 @@ AResourceMultiplierCommon::AResourceMultiplierCommon()
     ResMultiplierWidget->SetupAttachment(RootComponent);
     ResMultiplierWidget->SetWidgetSpace(EWidgetSpace::Screen);
     ResMultiplierWidget->SetDrawAtDesiredSize(true);
-    ResMultiplierWidget->SetVisibility(false);
 
     static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_GenericFeedback"));
 
@@ -25,8 +24,6 @@ AResourceMultiplierCommon::AResourceMultiplierCommon()
 void AResourceMultiplierCommon::BeginPlay()
 {
     Super::BeginPlay();
-
-    ResMultiplierWidget->SetVisibility(true);
 
     auto ResWidget = Cast<UFeedbackWidget>(ResMultiplierWidget->GetUserWidgetObject());
     ResWidget->Text  = "<Green>+" + FString::FromInt(PercentIncrease) + "%</> ";
@@ -41,4 +38,9 @@ void AResourceMultiplierCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 
     Player->AddResourceMultiplier(-PercentIncrease / 100.0f, ResourceType);
+}
+
+void AResourceMultiplierCommon::OnBuildingConstructed()
+{
+    Cast<UFeedbackWidget>(ResMultiplierWidget->GetUserWidgetObject())->Play();
 }

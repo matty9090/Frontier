@@ -22,6 +22,7 @@ public:
 protected:
     void BeginPlay() override;
     void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+    void OnBuildingConstructed() override;
 
     UPROPERTY(EditAnywhere)
     UWidgetComponent* PlusResourceWidget = nullptr;

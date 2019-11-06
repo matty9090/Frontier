@@ -15,6 +15,9 @@ class FRONTIER_API UFeedbackWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+    UFUNCTION(BlueprintImplementableEvent)
+    void Play();
+
     UPROPERTY(BlueprintReadOnly)
     FString Text;
 };

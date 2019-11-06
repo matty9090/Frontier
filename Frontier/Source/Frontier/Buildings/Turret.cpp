@@ -22,6 +22,9 @@ void ATurret::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    if (!bBuilt)
+        return;
+
     Timer -= DeltaTime;
 
     if (Timer < 0.0f)
