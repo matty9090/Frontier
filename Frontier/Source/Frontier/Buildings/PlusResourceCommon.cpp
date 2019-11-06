@@ -28,8 +28,6 @@ void APlusResourceCommon::BeginPlay()
     auto ResWidget = Cast<UFeedbackWidget>(PlusResourceWidget->GetUserWidgetObject());
     ResWidget->Text  = "<Green>+" + FString::FromInt(Amount) + "</> ";
     ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
-
-    Player->AddSpecificResources(Amount, ResourceType);
 }
 
 void APlusResourceCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -42,4 +40,5 @@ void APlusResourceCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
 void APlusResourceCommon::OnBuildingConstructed()
 {
     Cast<UFeedbackWidget>(PlusResourceWidget->GetUserWidgetObject())->Play();
+    Player->AddSpecificResources(Amount, ResourceType);
 }

@@ -29,8 +29,6 @@ void AResourceMultiplierCommon::BeginPlay()
     ResWidget->Text  = "<Green>+" + FString::FromInt(PercentIncrease) + "%</> ";
     ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
     ResWidget->Text += " production";
-
-    Player->AddResourceMultiplier(PercentIncrease / 100.0f, ResourceType);
 }
 
 void AResourceMultiplierCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -43,4 +41,5 @@ void AResourceMultiplierCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
 void AResourceMultiplierCommon::OnBuildingConstructed()
 {
     Cast<UFeedbackWidget>(ResMultiplierWidget->GetUserWidgetObject())->Play();
+    Player->AddResourceMultiplier(PercentIncrease / 100.0f, ResourceType);
 }
