@@ -2,7 +2,7 @@
 
 #include "PlusResourceCommon.h"
 #include "ConstructorHelpers.h"
-#include "Widgets/PlusResourceWidget.h"
+#include "Widgets/FeedbackWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
 #include "FrontierPlayerState.h"
 
@@ -14,7 +14,7 @@ APlusResourceCommon::APlusResourceCommon()
     PlusResourceWidget->SetDrawAtDesiredSize(true);
     PlusResourceWidget->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_PlusResources"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_GenericFeedback"));
 
     if (ResWidget.Succeeded())
     {
@@ -28,9 +28,9 @@ void APlusResourceCommon::BeginPlay()
 
     PlusResourceWidget->SetVisibility(true);
 
-    auto ResWidget = Cast<UPlusResourceWidget>(PlusResourceWidget->GetUserWidgetObject());
-    ResWidget->Amount = Amount;
-    ResWidget->Resource = UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
+    auto ResWidget = Cast<UFeedbackWidget>(PlusResourceWidget->GetUserWidgetObject());
+    ResWidget->Text  = "<Green>+" + FString::FromInt(Amount) + "</> ";
+    ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
 
     Player->AddSpecificResources(Amount, ResourceType);
 }

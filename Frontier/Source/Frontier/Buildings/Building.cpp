@@ -12,7 +12,6 @@
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "Widgets/BuildingBaseWidget.h"
-#include "Widgets/PlusResourceWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
 #include "Frontier.h"
 

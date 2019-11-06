@@ -2,7 +2,7 @@
 
 #include "ResourceMultiplierCommon.h"
 #include "ConstructorHelpers.h"
-#include "Widgets/MultiplyResourceWidget.h"
+#include "Widgets/FeedbackWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
 #include "FrontierPlayerState.h"
 
@@ -14,7 +14,7 @@ AResourceMultiplierCommon::AResourceMultiplierCommon()
     ResMultiplierWidget->SetDrawAtDesiredSize(true);
     ResMultiplierWidget->SetVisibility(false);
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_MultiplyResources"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_GenericFeedback"));
 
     if (ResWidget.Succeeded())
     {
@@ -28,9 +28,10 @@ void AResourceMultiplierCommon::BeginPlay()
 
     ResMultiplierWidget->SetVisibility(true);
 
-    auto ResWidget = Cast<UMultiplyResourceWidget>(ResMultiplierWidget->GetUserWidgetObject());
-    ResWidget->Multiplier = PercentIncrease;
-    ResWidget->Resource = UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
+    auto ResWidget = Cast<UFeedbackWidget>(ResMultiplierWidget->GetUserWidgetObject());
+    ResWidget->Text  = "<Green>+" + FString::FromInt(PercentIncrease) + "%</> ";
+    ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(ResourceType);
+    ResWidget->Text += " production";
 
     Player->AddResourceMultiplier(PercentIncrease / 100.0f, ResourceType);
 }

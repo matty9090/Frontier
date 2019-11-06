@@ -4,20 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "PlusResourceWidget.generated.h"
+#include "FeedbackWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FRONTIER_API UPlusResourceWidget : public UUserWidget
+class FRONTIER_API UFeedbackWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
     UPROPERTY(BlueprintReadOnly)
-    int32 Amount;
-
-    UPROPERTY(BlueprintReadOnly)
-    FString Resource;
+    FString Text;
 };
