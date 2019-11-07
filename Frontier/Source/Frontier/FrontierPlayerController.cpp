@@ -246,6 +246,10 @@ void AFrontierPlayerController::OnSelectUp()
     HUD->EndSelect();
 
     SelectedUnits = HUD->GetCharactersInSelection();
+    
+    SelectedUnits.RemoveAll([&](AFrontierCharacter* Char) {
+        return Char->Player != PlayerState;
+    });
 
     if (SelectedUnits.Num() > 0)
     {
