@@ -6,6 +6,7 @@
 #include "Buildings/Building.h"
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
+#include "City.h"
 #include "FrontierCharacter.h"
 #include "Frontier.h"
 
@@ -73,7 +74,26 @@ bool AFrontierPlayerState::IsObjectResearched(TSubclassOf<AActor> Obj) const
     return AvailableObjects.Contains(Obj);
 }
 
-bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building) const
+bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building, const FVector& Position) const
+{
+    bool CanPlaceInCity = false;
+    auto BoxComponent = Cast<UBoxComponent>(Building.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+    auto BoxExtent = BoxComponent->GetScaledBoxExtent();
+    auto Extent = FMath::Max(BoxExtent.X, BoxExtent.Y);
+
+    for (auto& City : Cities)
+    {
+        if (City->CanPlaceBuilding(Building, Position, Extent))
+        {
+            CanPlaceInCity = true;
+            break;
+        }
+    }
+
+    return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building) && CanPlaceInCity;
+}
+
+bool AFrontierPlayerState::CanCreateBuildingUI(TSubclassOf<ABuilding> Building) const
 {
     return Resources >= Building.GetDefaultObject()->Cost && IsObjectResearched(Building);
 }
@@ -111,6 +131,7 @@ void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
     DOREPLIFETIME(AFrontierPlayerState, ResourceMultiplier);
     DOREPLIFETIME(AFrontierPlayerState, Team);
     DOREPLIFETIME(AFrontierPlayerState, Units);
+    DOREPLIFETIME(AFrontierPlayerState, Cities);
     DOREPLIFETIME(AFrontierPlayerState, MaxPopulation);
     DOREPLIFETIME(AFrontierPlayerState, ResearchRootNode);
     DOREPLIFETIME(AFrontierPlayerState, AvailableObjects);

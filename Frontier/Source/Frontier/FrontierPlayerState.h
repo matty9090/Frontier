@@ -9,6 +9,7 @@
 #include "Research.h"
 #include "FrontierPlayerState.generated.h"
 
+class ACity;
 class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
@@ -58,7 +59,10 @@ public:
     bool IsObjectResearched(TSubclassOf<AActor> Obj) const;
 
     UFUNCTION(BlueprintCallable)
-    bool CanCreateBuilding(TSubclassOf<ABuilding> Building) const;
+    bool CanCreateBuilding(TSubclassOf<ABuilding> Building, const FVector& Position) const;
+
+    UFUNCTION(BlueprintCallable)
+    bool CanCreateBuildingUI(TSubclassOf<ABuilding> Building) const;
 
     UFUNCTION(BlueprintCallable)
     bool CanResearchNode(UResearchNode* Node) const;
@@ -83,6 +87,9 @@ public:
 
     UPROPERTY(Replicated, BlueprintReadOnly)
     TArray<AFrontierCharacter*> Units;
+
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    TArray<ACity*> Cities;
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
 

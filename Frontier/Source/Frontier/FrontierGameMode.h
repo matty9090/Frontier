@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "FrontierGameMode.generated.h"
 
+class ACity;
 class ABuilding;
 class AFrontierCharacter;
 
@@ -25,10 +26,10 @@ private:
     void RestartPlayer(AController* NewPlayer) override;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<ABuilding> StartBuildingClass;
+    TSubclassOf<AFrontierCharacter> WorkerClass;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<AFrontierCharacter> WorkerClass;
+    TSubclassOf<ACity> CityClass;
 
     UPROPERTY()
     TArray<AController*> PlayerControllers;

@@ -67,7 +67,7 @@ void AFogOfWar::PostInitializeComponents()
 void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
 {
     auto Texel = WorldPositionToFog(Pos);
-    float TexelRadius = Radius * TextureSize / Scale;
+    float TexelRadius = Radius * TextureSize / (Scale * 0.75f);
 
     int MinX = FMath::Clamp<int>(Texel.X - TexelRadius, 0, TextureSize - 1);
     int MinY = FMath::Clamp<int>(Texel.Y - TexelRadius, 0, TextureSize - 1);

@@ -17,6 +17,7 @@
 #include "Buildings/UnitQueueCommon.h"
 #include "Buildings/DummyBuilding.h"
 #include "Research.h"
+#include "City.h"
 #include "Frontier.h"
 #include "Widgets/UI.h"
 #include "RoamPawn.h"
@@ -134,11 +135,12 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
     );
 
     HoveredBuilding->Box->SetRelativeTransform(BuildingDefaults->Box->GetRelativeTransform());
-    HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetUnscaledBoxExtent());
+    HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetScaledBoxExtent());
     HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->BuildingMesh);
     HoveredBuilding->Mesh->SetRelativeTransform(BuildingDefaults->Mesh->GetRelativeTransform());
     HoveredBuilding->HoverMaterialGreen = HoverMaterialGreen;
     HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
+    HoveredBuilding->BuildingType = BuildingType;
 
     UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
@@ -251,7 +253,7 @@ void AFrontierPlayerController::OnSelectUp()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuildingType) && HoveredBuilding && HoveredBuilding->CanPlace())
+        if (PS->CanCreateBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation()) && HoveredBuilding && HoveredBuilding->CanPlace())
         {
             ControllerState = EControllerState::Idle;
             ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
@@ -386,7 +388,7 @@ void AFrontierPlayerController::OnZoom(float Value)
 
 bool AFrontierPlayerController::ServerSpawnBuilding_Validate(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
 {
-    return Cast<AFrontierPlayerState>(PlayerState)->CanCreateBuilding(Type);
+    return Cast<AFrontierPlayerState>(PlayerState)->CanCreateBuilding(Type, Location);
 }
 
 void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<ABuilding> Type, FVector Location, FRotator Rotation)
@@ -407,9 +409,27 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
             ESpawnActorCollisionHandlingMethod::AlwaysSpawn
         );
 
+        auto Box = Cast<UBoxComponent>(Type.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+        auto BoxExtent = Box->GetScaledBoxExtent();
+        auto Extent = FMath::Max(BoxExtent.X, BoxExtent.Y);
+
+        ACity* AvailableCity = nullptr;
+
+        for (auto& City : PS->Cities)
+        {
+            if (City->CanPlaceBuilding(Type, Location, Extent))
+            {
+                AvailableCity = City;
+                break;
+            }
+        }
+
         PlacedBuilding->Player = PS;
+        PlacedBuilding->City = AvailableCity;
         PlacedBuilding->Box->SetMobility(EComponentMobility::Static);
         UGameplayStatics::FinishSpawningActor(PlacedBuilding, Transform);
+
+        AvailableCity->AddBuilding(PlacedBuilding);
     }
 }
 

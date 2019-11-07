@@ -9,6 +9,7 @@
 #include "Buildings/Building.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
+#include "City.h"
 #include "Frontier.h"
 
 AFrontierGameMode::AFrontierGameMode()
@@ -51,24 +52,24 @@ void AFrontierGameMode::InitPlayers()
         SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
         auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
-        auto BoxComponent = Cast<UBoxComponent>(StartBuildingClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
-        
-        float Z = BoxComponent->GetScaledBoxExtent().Z;
 
-        FTransform BuildingTransform(Location + FVector(0.0f, 0.0f, Z));
-        auto StartBuilding = GetWorld()->SpawnActorDeferred<ABuilding>(StartBuildingClass, BuildingTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-        StartBuilding->Player = PS;
-        StartBuilding->bBuilt = true;
+        FTransform CityTransform(Location);
+
+        auto City = GetWorld()->SpawnActorDeferred<ACity>(CityClass, CityTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+        City->Player = PS;
+        City->bInstantBuild = true;
 
         FTransform WorkerTransform(Location + FVector(300.0f, 0.0f, 100.0f));
         auto Worker = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(WorkerClass, WorkerTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
         Worker->Player = PS;
 
-        UGameplayStatics::FinishSpawningActor(StartBuilding, BuildingTransform);
+        UGameplayStatics::FinishSpawningActor(City, CityTransform);
         UGameplayStatics::FinishSpawningActor(Worker, WorkerTransform);
 
-        SpawnedStartActors.Add(StartBuilding);
+        SpawnedStartActors.Add(City);
         SpawnedStartActors.Add(Worker);
+
+        PS->Cities.Add(City);
     }
 
     UE_LOG(LogFrontier, Display, TEXT("Initialised world"));

@@ -11,6 +11,7 @@
 #include "TextureHolder.h"
 #include "Building.generated.h"
 
+class ACity;
 class AFrontierCharacter;
 class AFrontierPlayerState;
 class UBuildingBaseWidget;
@@ -93,6 +94,9 @@ public:
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
+
+    UPROPERTY(BlueprintReadOnly)
+	ACity* City;
 
 private:
     UFUNCTION()

@@ -1,11 +1,15 @@
 // Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "DummyBuilding.h"
+#include "City.h"
+#include "EngineUtils.h"
 #include "Frontier.h"
 
 // Sets default values
 ADummyBuilding::ADummyBuilding()
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
     Box->SetupAttachment(RootComponent);
     Box->SetBoxExtent(FVector(32.0f, 32.0f, 32.0f));
@@ -34,6 +38,8 @@ ADummyBuilding::ADummyBuilding()
 
 void ADummyBuilding::BeginPlay()
 {
+    Super::BeginPlay();
+
     if (!HasAuthority())
     {
         SetActorHiddenInGame(GetOwner() == nullptr);
@@ -50,28 +56,41 @@ void ADummyBuilding::BeginPlay()
     bCanPlace = true;
 }
 
-void ADummyBuilding::SetCanPlace(bool bInCanPlace)
+void ADummyBuilding::Tick(float DeltaTime)
 {
-    bCanPlace = bInCanPlace;
+    Super::Tick(DeltaTime);
+
+    auto BoxExtent = Box->GetScaledBoxExtent();
+    auto Extent = FMath::Max(BoxExtent.X, BoxExtent.Y);
+
+    bIsWithinCity = false;
+
+    for (TActorIterator<ACity> Itr(GetWorld(), ACity::StaticClass()); Itr; ++Itr)
+    {
+        if ((*Itr)->CanPlaceBuilding(BuildingType, GetActorLocation(), Extent))
+        {
+            bIsWithinCity = true;
+        }
+    }
 
     if (Mesh)
     {
         auto NumMaterials = Mesh->GetMaterials().Num();
 
         for (int i = 0; i < NumMaterials; ++i)
-            Mesh->SetMaterial(i, (bCanPlace && !bIsOverlapping) ? HoverMaterialGreen : HoverMaterialRed);
+            Mesh->SetMaterial(i, (bCanPlace && !bIsOverlapping && bIsWithinCity) ? HoverMaterialGreen : HoverMaterialRed);
     }
+}
+
+void ADummyBuilding::SetCanPlace(bool bInCanPlace)
+{
+    bCanPlace = bInCanPlace;
 }
 
 void ADummyBuilding::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (Mesh && OtherActor != this)
+    if (OtherActor != this)
     {
-        auto NumMaterials = Mesh->GetMaterials().Num();
-
-        for (int i = 0; i < NumMaterials; ++i)
-            Mesh->SetMaterial(i, HoverMaterialRed);
-
         ++NumOverlapping;
         bIsOverlapping = true;
     }
@@ -79,20 +98,12 @@ void ADummyBuilding::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AA
 
 void ADummyBuilding::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (Mesh && OtherActor != this)
+    if (OtherActor != this)
     {
         --NumOverlapping;
 
         if (NumOverlapping <= 0)
         {
-            auto NumMaterials = Mesh->GetMaterials().Num();
-
-            if (bCanPlace)
-            {
-                for (int i = 0; i < NumMaterials; ++i)
-                    Mesh->SetMaterial(i, HoverMaterialGreen);
-            }
-
             bIsOverlapping = false;
         }
     }

@@ -8,6 +8,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "DummyBuilding.generated.h"
 
+class ABuilding;
+
 UCLASS()
 class FRONTIER_API ADummyBuilding : public AActor
 {
@@ -18,6 +20,7 @@ public:
 	ADummyBuilding();
 
     void BeginPlay() override;
+    void Tick(float DeltaTime) override;
     void SetCanPlace(bool bInCanPlace);
     bool CanPlace() const { return bCanPlace && !bIsOverlapping; }
 
@@ -33,6 +36,9 @@ public:
     UPROPERTY()
     UMaterialInterface* HoverMaterialRed = nullptr;
 
+    UPROPERTY()
+    TSubclassOf<ABuilding> BuildingType;
+
 private:
     UFUNCTION()
     void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -45,9 +51,7 @@ private:
     FScriptDelegate BeginOverlapDelegate;
     FScriptDelegate EndOverlapDelegate;
 
-    UPROPERTY()
     bool bCanPlace = false;
-
-    UPROPERTY()
     bool bIsOverlapping = false;
+    bool bIsWithinCity = false;
 };

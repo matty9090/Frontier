@@ -78,6 +78,11 @@ void ABuilding::BeginPlay()
             Property->SetPropertyValue_InContainer(TooltipWidget, FText::FromString(BuildingName));
         }
     }
+
+    if (bBuilt)
+    {
+        OnBuildingConstructed();
+    }
 }
 
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)
@@ -117,7 +122,6 @@ bool ABuilding::Construct(float ConstructionAmount)
 
             if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
             {
-                UE_LOG(LogFrontier, Display, TEXT("Hello"));
                 auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
                 FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
             }
