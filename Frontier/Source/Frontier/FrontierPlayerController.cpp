@@ -67,6 +67,8 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 {
     Super::PlayerTick(DeltaTime);
 
+    CursorState = ECursorState::Default;
+
     float MX, MY;
     
     if (GetMousePosition(MX, MY))
@@ -97,6 +99,41 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
                 HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Extent.Z));
                 HoveredBuilding->SetCanPlace(FogOfWar->IsRevealedBox(HoveredBuilding->GetActorLocation(), Extent.X, Extent.Y));
+            }
+        }
+    }
+    else if (ControllerState == EControllerState::SelectedUnit)
+    {
+        FHitResult Hit;
+
+        TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+            EObjectTypeQuery::ObjectTypeQuery3, // Pawn
+            EObjectTypeQuery::ObjectTypeQuery7  // Terrain
+        };
+
+        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        {
+            auto PS = Cast<AFrontierPlayerState>(PlayerState);
+
+            if (Cast<AFrontierCharacter>(Hit.Actor))
+            {
+                if (Cast<AFrontierCharacter>(Hit.Actor)->Player->Team != PS->Team)
+                {
+                    CursorState = ECursorState::Attack;
+                }
+            }
+            else if (Cast<ABuilding>(Hit.Actor))
+            {
+                if (!Cast<ABuilding>(Hit.Actor)->bBuilt)
+                {
+                    CursorState = ECursorState::Build;
+                }
+            }
+            else
+            {
+                CursorState = ECursorState::Send;
             }
         }
     }
@@ -253,6 +290,8 @@ void AFrontierPlayerController::OnSelectUp()
 
     if (SelectedUnits.Num() > 0)
     {
+        ControllerState = EControllerState::SelectedUnit;
+
         for (auto Char : SelectedUnits)
         {
             Char->ShowOutline();
@@ -302,6 +341,7 @@ void AFrontierPlayerController::OnSelectUp()
                 Unit->ShowOutline();
 
                 Selected = true;
+                ControllerState = EControllerState::SelectedUnit;
             }
 
             auto Building = Cast<ABuilding>(Hit.Actor);
@@ -348,6 +388,7 @@ void AFrontierPlayerController::OnSelectUp()
             if (SelectedBuildingUI)  SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
 
             SelectedBuilding = nullptr, SelectedBuildingUI = nullptr;
+            ControllerState = EControllerState::Idle;
         }
     }
 }

@@ -22,8 +22,17 @@ UENUM(BlueprintType)
 enum class EControllerState : uint8
 {
     Idle                UMETA(DisplayName = "Idle"),
-    SelectedObject      UMETA(DisplayName = "SelectedObject"),
+    SelectedUnit        UMETA(DisplayName = "SelectedObject"),
     PlacingBuilding     UMETA(DisplayName = "PlacingBuilding")
+};
+
+UENUM(BlueprintType)
+enum class ECursorState : uint8
+{
+    Default             UMETA(DisplayName = "Default"),
+    Build               UMETA(DisplayName = "Build"),
+    Attack              UMETA(DisplayName = "Attack"),
+    Send                UMETA(DisplayName = "Send")
 };
 
 UCLASS(Blueprintable)
@@ -44,6 +53,9 @@ public:
 
     UPROPERTY()
     AFogOfWar* FogOfWar;
+
+    UPROPERTY(BlueprintReadOnly)
+    ECursorState CursorState = ECursorState::Default;
 
 protected:
     /** True if the controlled character should navigate to the mouse cursor. */

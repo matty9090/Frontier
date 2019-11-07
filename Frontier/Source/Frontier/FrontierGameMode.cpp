@@ -69,6 +69,7 @@ void AFrontierGameMode::InitPlayers()
         SpawnedStartActors.Add(City);
         SpawnedStartActors.Add(Worker);
 
+        PS->Cities.Empty();
         PS->Cities.Add(City);
     }
 
