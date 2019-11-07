@@ -16,9 +16,13 @@ void ATownHall::OnBuildingConstructed()
 {
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
-    if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+    if (FrontierController)
     {
-        UE_LOG(LogFrontier, Display, TEXT("%f"), City->Radius);
-        FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
+        FrontierController->GetCityBuiltEvent().Broadcast(City);
+
+        if (City && FrontierController->PlayerState && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+        {
+            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
+        }
     }
 }

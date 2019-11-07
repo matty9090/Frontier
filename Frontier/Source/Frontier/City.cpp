@@ -2,12 +2,15 @@
 
 #include "City.h"
 #include "FogOfWar.h"
+#include "UnrealNetwork.h"
 #include "Buildings/Building.h"
 #include "Buildings/TownHall.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/DecalComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Frontier.h"
 
 ACity::ACity()
 {
@@ -20,6 +23,11 @@ ACity::ACity()
     CityRadiusDecal->SetDecalMaterial(DecalMaterial);
 
     RootComponent = CityRadiusDecal;
+
+    CityNameWidget = CreateDefaultSubobject<UWidgetComponent>("CityNameWidget");
+    CityNameWidget->SetupAttachment(RootComponent);
+    CityNameWidget->SetWidgetSpace(EWidgetSpace::Screen);
+    CityNameWidget->SetDrawAtDesiredSize(true);
 }
 
 void ACity::BeginPlay()
@@ -28,6 +36,8 @@ void ACity::BeginPlay()
 
     CityRadiusDecal->DecalSize = FVector(16.0f, Radius, Radius);
     CityRadiusDecal->MarkRenderStateDirty();
+    CityRadiusDecal->SetVisibility(true);
+    CityNameWidget->SetVisibility(true);
 
     if (HasAuthority())
     {
@@ -36,7 +46,7 @@ void ACity::BeginPlay()
 
         FTransform BuildingTransform(GetActorLocation() + FVector(0.0f, 0.0f, Z));
         
-        ATownHall* StartBuilding = GetWorld()->SpawnActorDeferred<ATownHall>(MainBuildingClass, BuildingTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+        StartBuilding = GetWorld()->SpawnActorDeferred<ATownHall>(MainBuildingClass, BuildingTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
         StartBuilding->Player = Player;
         StartBuilding->City   = this;
         StartBuilding->bBuilt = bInstantBuild;
@@ -77,3 +87,9 @@ bool ACity::CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& Desired
            FVector::Distance(DesiredPosition, GetActorLocation()) < Radius - Bounds;
 }
 
+void ACity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ACity, StartBuilding);
+}

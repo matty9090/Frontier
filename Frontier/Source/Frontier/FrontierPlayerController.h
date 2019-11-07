@@ -9,11 +9,14 @@
 #include "FrontierPlayerController.generated.h"
 
 class UUI;
+class ACity;
 class AFogOfWar;
 class ABuilding;
 class UResearchNode;
 class ADummyBuilding;
 class UBuildingBaseWidget;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FCityBuiltEvent, ACity*);
 
 UENUM(BlueprintType)
 enum class EControllerState : uint8
@@ -33,6 +36,8 @@ public:
 
     void BeginPlay() override;
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    
+    FCityBuiltEvent GetCityBuiltEvent() { return CityBuiltEvent; }
 
     UFUNCTION(BlueprintCallable)
     void SetHoveredBuilding(TSubclassOf<ABuilding> BuildingType);
@@ -147,4 +152,6 @@ private:
 
     UPROPERTY()
     FWidgetAnimationDynamicEvent AnimationFinishedEvent;
+
+    FCityBuiltEvent CityBuiltEvent;
 };

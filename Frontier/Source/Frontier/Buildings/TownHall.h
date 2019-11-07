@@ -21,4 +21,7 @@ public:
 
 protected:
     void OnBuildingConstructed() override;
+
+private:
+
 };

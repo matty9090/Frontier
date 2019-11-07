@@ -95,8 +95,8 @@ public:
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
 
-    UPROPERTY(BlueprintReadOnly)
-	ACity* City;
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    ACity* City;
 
 private:
     UFUNCTION()

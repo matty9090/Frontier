@@ -144,5 +144,6 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 
     DOREPLIFETIME(ABuilding, Cost);
     DOREPLIFETIME(ABuilding, bBuilt);
+    DOREPLIFETIME(ABuilding, City);
     DOREPLIFETIME(ABuilding, Player);
 }

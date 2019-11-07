@@ -7,6 +7,8 @@
 #include "City.generated.h"
 
 class ABuilding;
+class ATownHall;
+class UWidgetComponent;
 class AFrontierPlayerState;
 
 UCLASS()
@@ -16,6 +18,7 @@ class FRONTIER_API ACity : public AActor
 	
 public:	
 	ACity();
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
 	void Tick(float DeltaTime) override;
     void AddBuilding(ABuilding* Building);
@@ -27,6 +30,9 @@ public:
 
     UPROPERTY(EditAnywhere)
     UMaterialInterface* DecalMaterial = nullptr;
+
+    UPROPERTY(EditAnywhere)
+    UWidgetComponent* CityNameWidget = nullptr;
 
     UPROPERTY(BlueprintReadOnly)
     TArray<ABuilding*> Buildings;
@@ -43,10 +49,13 @@ public:
     UPROPERTY()
     UDecalComponent* CityRadiusDecal = nullptr;
 
+    UPROPERTY(Replicated)
+    ATownHall* StartBuilding;
+
 protected:
 	void BeginPlay() override;
 
-private:	
+private:
     UPROPERTY(EditAnywhere)
     TMap<TSubclassOf<ABuilding>, int32> MaxBuildingNums;
 
