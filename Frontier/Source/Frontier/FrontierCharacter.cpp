@@ -57,7 +57,7 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
     {
         auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
-        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+        if (FrontierController && FrontierController->PlayerState && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
         {
             auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
             FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
