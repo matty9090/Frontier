@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Buildings/Building.h"
+#include "Buildings/UnitQueueCommon.h"
 #include "TownHall.generated.h"
 
 class USphereComponent;
@@ -12,7 +13,7 @@ class USphereComponent;
  * 
  */
 UCLASS()
-class FRONTIER_API ATownHall : public ABuilding
+class FRONTIER_API ATownHall : public AUnitQueueCommon
 {
 	GENERATED_BODY()
 	
