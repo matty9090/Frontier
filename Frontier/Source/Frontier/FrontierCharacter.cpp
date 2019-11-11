@@ -91,7 +91,7 @@ void AFrontierCharacter::HideOutline()
 }
 
 
-void AFrontierCharacter::TakeDamage(int Damage)
+void AFrontierCharacter::ReceiveDamage(int Damage)
 {
 	Health -= Damage;
 

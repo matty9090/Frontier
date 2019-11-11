@@ -48,6 +48,9 @@ public:
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION(BlueprintCallable)
+	void ReceiveDamage(int Damage);
+
 protected:
     virtual void BeginPlay() override;
     virtual void OnBuildingConstructed() {}
@@ -86,7 +89,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     EBuildingCategory BuildingCategory = EBuildingCategory::General;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
 	int32 HP;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Built)
