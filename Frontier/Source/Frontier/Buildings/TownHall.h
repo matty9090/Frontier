@@ -7,11 +7,9 @@
 #include "Buildings/UnitQueueCommon.h"
 #include "TownHall.generated.h"
 
+class ACity;
 class USphereComponent;
 
-/**
- * 
- */
 UCLASS()
 class FRONTIER_API ATownHall : public AUnitQueueCommon
 {
@@ -24,5 +22,6 @@ protected:
     void OnBuildingConstructed() override;
 
 private:
-
+    UPROPERTY(EditAnywhere)
+    TSubclassOf<ACity> CityClass;
 };

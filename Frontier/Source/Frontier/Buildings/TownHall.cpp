@@ -6,6 +6,7 @@
 #include "Frontier.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 ATownHall::ATownHall()
 {
@@ -14,6 +15,11 @@ ATownHall::ATownHall()
 
 void ATownHall::OnBuildingConstructed()
 {
+    FTransform CityTransform(GetActorLocation());
+    City = GetWorld()->SpawnActorDeferred<ACity>(CityClass, CityTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+    City->Player = Player;
+    UGameplayStatics::FinishSpawningActor(City, CityTransform);
+
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
     if (FrontierController)
@@ -25,4 +31,6 @@ void ATownHall::OnBuildingConstructed()
             FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
         }
     }
+
+    City->AddBuilding(this);
 }

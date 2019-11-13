@@ -18,7 +18,7 @@ ACity::ACity()
 	PrimaryActorTick.bCanEverTick = false;
 
     CityRadiusDecal = CreateDefaultSubobject<UDecalComponent>("CityRadiusDecal");
-    CityRadiusDecal->DecalSize = FVector(16.0f, Radius, Radius);
+    CityRadiusDecal->DecalSize = FVector(300.0f, Radius, Radius);
     CityRadiusDecal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
     CityRadiusDecal->SetDecalMaterial(DecalMaterial);
 
@@ -34,31 +34,12 @@ void ACity::BeginPlay()
 {
 	Super::BeginPlay();
 
-    CityRadiusDecal->DecalSize = FVector(16.0f, Radius, Radius);
+    CityRadiusDecal->DecalSize = FVector(300.0f, Radius, Radius);
     CityRadiusDecal->MarkRenderStateDirty();
     CityRadiusDecal->SetVisibility(true);
     CityNameWidget->SetVisibility(true);
 
-    if (HasAuthority())
-    {
-        auto BoxComponent = Cast<UBoxComponent>(MainBuildingClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
-        float Z = BoxComponent->GetScaledBoxExtent().Z;
-
-        FTransform BuildingTransform(GetActorLocation() + FVector(0.0f, 0.0f, Z));
-        
-        StartBuilding = GetWorld()->SpawnActorDeferred<ATownHall>(MainBuildingClass, BuildingTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-        StartBuilding->Player = Player;
-        StartBuilding->City   = this;
-        StartBuilding->bBuilt = bInstantBuild;
-
-        UGameplayStatics::FinishSpawningActor(StartBuilding, BuildingTransform);
-        Buildings.Add(StartBuilding);
-    }
-}
-
-void ACity::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+    Player->Cities.Add(this);
 }
 
 void ACity::AddBuilding(ABuilding* Building)
@@ -91,5 +72,6 @@ void ACity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ACity, StartBuilding);
+    DOREPLIFETIME(ACity, Player);
+    DOREPLIFETIME(ACity, Buildings);
 }

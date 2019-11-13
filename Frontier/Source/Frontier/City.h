@@ -20,7 +20,6 @@ public:
 	ACity();
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
-	void Tick(float DeltaTime) override;
     void AddBuilding(ABuilding* Building);
     void RemoveBuilding(ABuilding* Building);
     bool CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& DesiredPosition, float Bounds) const;
@@ -34,23 +33,17 @@ public:
     UPROPERTY(EditAnywhere)
     UWidgetComponent* CityNameWidget = nullptr;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<ABuilding*> Buildings;
 
-    UPROPERTY(BlueprintReadOnly)
+    UPROPERTY(BlueprintReadOnly, Replicated)
     AFrontierPlayerState* Player;
 
     UPROPERTY(BlueprintReadWrite)
     FString CityName;
 
-    UPROPERTY()
-    bool bInstantBuild = false;
-
-    UPROPERTY()
+    UPROPERTY(EditAnywhere)
     UDecalComponent* CityRadiusDecal = nullptr;
-
-    UPROPERTY(Replicated)
-    ATownHall* StartBuilding;
 
 protected:
 	void BeginPlay() override;

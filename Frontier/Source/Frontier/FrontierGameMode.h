@@ -6,8 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "FrontierGameMode.generated.h"
 
-class ACity;
 class ABuilding;
+class ATownHall;
 class AFrontierCharacter;
 
 UCLASS(MinimalAPI)
@@ -29,7 +29,7 @@ private:
     TSubclassOf<AFrontierCharacter> WorkerClass;
 
     UPROPERTY(EditAnywhere)
-    TSubclassOf<ACity> CityClass;
+    TSubclassOf<ATownHall> TownHallClass;
 
     UPROPERTY()
     TArray<AController*> PlayerControllers;
