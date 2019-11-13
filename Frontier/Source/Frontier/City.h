@@ -30,7 +30,7 @@ public:
     UPROPERTY(EditAnywhere)
     UMaterialInterface* DecalMaterial = nullptr;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UWidgetComponent* CityNameWidget = nullptr;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
@@ -49,6 +49,15 @@ protected:
 	void BeginPlay() override;
 
 private:
+    UPROPERTY(EditAnywhere)
+    int32 VillageNameMin = 1;
+
+    UPROPERTY(EditAnywhere)
+    int32 VillageNameMax = 6;
+
+    UFUNCTION(BlueprintCallable)
+    FString GetRandomCityName() const;
+
     UPROPERTY(EditAnywhere)
     TMap<TSubclassOf<ABuilding>, int32> MaxBuildingNums;
 

@@ -42,6 +42,39 @@ void ACity::BeginPlay()
     Player->Cities.Add(this);
 }
 
+FString ACity::GetRandomCityName() const
+{
+    FString S = "BCDFGHJKLMNPQRSTVWXYZ";
+    FString L = "AEIOU";
+    FString C = "bcdfghjklmnpqrstvwxyz";
+    FString V = "aeiou";
+
+    FString PX[4] = { "ton", "ville", "forth", "ford" };
+
+    int Len = FMath::RandRange(VillageNameMin, VillageNameMax);
+    FString Out = "";
+
+    bool Sv = FMath::RandBool();
+
+    if (Sv == true)
+        Out += S[FMath::Rand() % 21];
+    else
+        Out += L[FMath::Rand() % 5];
+
+    for (int i = 0; i < Len; i++) {
+        Sv = !Sv;
+
+        if (Sv == true)
+            Out += C[FMath::Rand() % 21];
+        else
+            Out += V[FMath::Rand() % 5];
+    }
+
+    Out += PX[FMath::Rand() % 4];
+
+    return Out;
+}
+
 void ACity::AddBuilding(ABuilding* Building)
 {
     Buildings.Add(Building);
