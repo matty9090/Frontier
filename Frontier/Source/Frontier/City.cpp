@@ -15,6 +15,8 @@
 ACity::ACity()
 {
     bReplicates = true;
+    bAlwaysRelevant = true;
+    bNetLoadOnClient = true;
 	PrimaryActorTick.bCanEverTick = false;
 
     CityRadiusDecal = CreateDefaultSubobject<UDecalComponent>("CityRadiusDecal");
@@ -23,7 +25,7 @@ ACity::ACity()
     CityRadiusDecal->SetDecalMaterial(DecalMaterial);
 
     RootComponent = CityRadiusDecal;
-
+    
     CityNameWidget = CreateDefaultSubobject<UWidgetComponent>("CityNameWidget");
     CityNameWidget->SetupAttachment(RootComponent);
     CityNameWidget->SetWidgetSpace(EWidgetSpace::Screen);
@@ -32,14 +34,39 @@ ACity::ACity()
 
 void ACity::BeginPlay()
 {
-	Super::BeginPlay();
+    UE_LOG(LogFrontier, Verbose, TEXT("City begin play"));
+
+    if (HasAuthority())
+    {
+        CityName = GetRandomCityName();
+        UE_LOG(LogFrontier, Display, TEXT("Generating city: %s"), *CityName);
+    }
 
     CityRadiusDecal->DecalSize = FVector(300.0f, Radius, Radius);
     CityRadiusDecal->MarkRenderStateDirty();
-    CityRadiusDecal->SetVisibility(true);
-    CityNameWidget->SetVisibility(true);
 
-    Player->Cities.Add(this);
+    UE_LOG(LogFrontier, Display, TEXT("Set widget visibility %s, %s"), *CityName, *GetName());
+
+    if (Player)
+    {
+        Player->Cities.Add(this);
+    }
+    else
+    {
+        UE_LOG(LogFrontier, Warning, TEXT("City: Null player state!"));
+    }
+
+	Super::BeginPlay();
+}
+
+void ACity::EndPlay(const EEndPlayReason::Type Reason)
+{
+    Player->Cities.Remove(this);
+}
+
+void ACity::OnRep_CityName()
+{
+    UpdateCityLabel();
 }
 
 FString ACity::GetRandomCityName() const
@@ -106,5 +133,6 @@ void ACity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePro
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ACity, Player);
+    DOREPLIFETIME(ACity, CityName);
     DOREPLIFETIME(ACity, Buildings);
 }

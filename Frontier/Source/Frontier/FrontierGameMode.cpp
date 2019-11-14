@@ -10,6 +10,7 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Buildings/TownHall.h"
+#include "City.h"
 #include "Frontier.h"
 
 AFrontierGameMode::AFrontierGameMode()
@@ -79,7 +80,10 @@ void AFrontierGameMode::ClearMap()
 {
     for (auto Actor : SpawnedStartActors)
     {
-        Actor->Destroy();
+        if (Actor)
+        {
+            Actor->Destroy();
+        }
     }
 
     SpawnedStartActors.Empty();

@@ -15,22 +15,48 @@ ATownHall::ATownHall()
 
 void ATownHall::OnBuildingConstructed()
 {
-    FTransform CityTransform(GetActorLocation());
-    City = GetWorld()->SpawnActorDeferred<ACity>(CityClass, CityTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    City->Player = Player;
-    UGameplayStatics::FinishSpawningActor(City, CityTransform);
+    UE_LOG(LogFrontier, Verbose, TEXT("Town hall constructed"));
+
+    if (HasAuthority())
+    {
+        FTransform CityTransform(GetActorLocation());
+        City = GetWorld()->SpawnActorDeferred<ACity>(CityClass, CityTransform, Player, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+        City->Player = Player;
+        City->AddBuilding(this);
+        UGameplayStatics::FinishSpawningActor(City, CityTransform);
+    }
 
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
     if (FrontierController)
     {
-        FrontierController->GetCityBuiltEvent().Broadcast(City);
-
-        if (City && FrontierController->PlayerState && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+        if (City && FrontierController->PlayerState)
         {
-            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
+            if (Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+            {
+                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
+            }
+            else
+            {
+                City->CityNameWidget->SetVisibility(false);
+                City->CityRadiusDecal->SetVisibility(false);
+            }
+        }
+        else
+        {
+            UE_LOG(LogFrontier, Display, TEXT("TownHall: player state or city is null!"));
         }
     }
+    else
+    {
+        UE_LOG(LogFrontier, Display, TEXT("TownHall: Controller is null!"));
+    }
+}
 
-    City->AddBuilding(this);
+void ATownHall::EndPlay(const EEndPlayReason::Type Reason)
+{
+    if (City)
+    {
+        City->Destroy();
+    }
 }

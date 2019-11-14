@@ -37,16 +37,23 @@ public:
     TArray<ABuilding*> Buildings;
 
     UPROPERTY(BlueprintReadOnly, Replicated)
-    AFrontierPlayerState* Player;
+    AFrontierPlayerState* Player = nullptr;
 
-    UPROPERTY(BlueprintReadWrite)
-    FString CityName;
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere, ReplicatedUsing=OnRep_CityName)
+    FString CityName = "";
 
     UPROPERTY(EditAnywhere)
     UDecalComponent* CityRadiusDecal = nullptr;
 
 protected:
 	void BeginPlay() override;
+    void EndPlay(const EEndPlayReason::Type Reason);
+
+    UFUNCTION()
+    void OnRep_CityName();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void UpdateCityLabel();
 
 private:
     UPROPERTY(EditAnywhere)
@@ -55,7 +62,6 @@ private:
     UPROPERTY(EditAnywhere)
     int32 VillageNameMax = 6;
 
-    UFUNCTION(BlueprintCallable)
     FString GetRandomCityName() const;
 
     UPROPERTY(EditAnywhere)

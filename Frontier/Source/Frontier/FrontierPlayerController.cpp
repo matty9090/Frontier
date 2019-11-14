@@ -149,14 +149,6 @@ void AFrontierPlayerController::ClientCreateUI_Implementation()
     }
 
     AnimationFinishedEvent.BindUFunction(this, "BuildingUIAnimationFinished");
-
-    CityBuiltEvent.AddLambda([&](ACity* City) {
-        if (City && City->Player != PlayerState)
-        {
-            City->CityRadiusDecal->SetVisibility(false);
-            City->CityNameWidget->SetVisibility(false);
-        }
-    });
 }
 
 void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> BuildingType)
