@@ -94,6 +94,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Built)
     bool bBuilt = false;
+
+    UPROPERTY()
+    bool bRevealed = false;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;

@@ -1,6 +1,7 @@
 // Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "FogOfWar.h"
+#include "EngineUtils.h"
 #include "Engine/Texture2D.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/CollisionProfile.h"
@@ -8,6 +9,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
+#include "Buildings/TownHall.h"
+#include "City.h"
 #include "Frontier.h"
 
 AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
@@ -101,6 +104,19 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
     {
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
+
+        // TODO: Generalise
+        for (TActorIterator<ATownHall> It(GetWorld()); It; ++It)
+        {
+            auto TH = *It;
+            auto Dist = FVector::DistSquared(TH->GetActorLocation(), Pos);
+
+            if (!TH->bRevealed && Dist < Radius * Radius)
+            {
+                TH->bRevealed = true;
+                TH->City->CityNameWidget->SetVisibility(true);
+            }
+        }
     }
 }
 
