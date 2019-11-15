@@ -23,6 +23,18 @@ void AFrontierGameMode::BeginPlay()
 
 }
 
+void AFrontierGameMode::DebugCheats()
+{
+    bCheats = true;
+
+    FResources Res(99999, 99999, 99999, 99999, 99999, -1, 99999);
+
+    for (TObjectIterator<APlayerState> It; It; ++It)
+    {
+        Cast<AFrontierPlayerState>(*It)->AddResources(Res);
+    }
+}
+
 void AFrontierGameMode::InitPlayers()
 {
     TArray<FVector> AvailableSpots;

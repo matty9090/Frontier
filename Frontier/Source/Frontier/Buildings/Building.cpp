@@ -2,9 +2,11 @@
 
 
 #include "Building.h"
+#include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
 #include "FogOfWar.h"
 #include "ConstructorHelpers.h"
+#include "FrontierGameMode.h"
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Kismet/GameplayStatics.h"
@@ -109,6 +111,14 @@ void ABuilding::HideOutline()
 
 bool ABuilding::Construct(float ConstructionAmount)
 {
+    if (HasAuthority())
+    {
+        auto GM = Cast<AFrontierGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+        if (GM->bCheats)
+            ConstructionAmount *= 9999.0f;
+    }
+
 	ConstructionProgress += ConstructionAmount;
 
 	if (ConstructionProgress >= MaxConstruct)

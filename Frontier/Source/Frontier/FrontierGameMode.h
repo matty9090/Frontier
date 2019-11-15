@@ -20,6 +20,12 @@ public:
 
     void BeginPlay() override;
 
+    // Commands
+    UFUNCTION(Exec, Category="ExecFunctions")
+    void DebugCheats();
+
+    bool bCheats = false;
+
 private:
     void InitPlayers();
     void ClearMap();
