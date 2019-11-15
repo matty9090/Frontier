@@ -23,6 +23,7 @@ public:
     void AddBuilding(ABuilding* Building);
     void RemoveBuilding(ABuilding* Building);
     bool CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& DesiredPosition, float Bounds) const;
+    void FinaliseCityPlayerWidgets();
 
     UPROPERTY(EditAnywhere)
     float Radius = 1600.0f;
@@ -36,7 +37,7 @@ public:
     UPROPERTY(BlueprintReadOnly, Replicated)
     TArray<ABuilding*> Buildings;
 
-    UPROPERTY(BlueprintReadOnly, Replicated)
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Player)
     AFrontierPlayerState* Player = nullptr;
 
     UPROPERTY(BlueprintReadWrite, VisibleAnywhere, ReplicatedUsing=OnRep_CityName)
@@ -48,6 +49,9 @@ public:
 protected:
 	void BeginPlay() override;
     void EndPlay(const EEndPlayReason::Type Reason);
+
+    UFUNCTION()
+    void OnRep_Player();
 
     UFUNCTION()
     void OnRep_CityName();

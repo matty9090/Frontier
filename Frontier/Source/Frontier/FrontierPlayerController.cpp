@@ -3,6 +3,7 @@
 #include "FrontierPlayerController.h"
 
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "EngineUtils.h"
 #include "AIController.h"
 #include "UserWidget.h"
 #include "Engine/World.h"
@@ -199,6 +200,8 @@ void AFrontierPlayerController::BuildingUIAnimationFinished()
 void AFrontierPlayerController::OnRep_PlayerState()
 {
     Super::OnRep_PlayerState();
+
+    UE_LOG(LogFrontier, Display, TEXT("Controller: Received player state"));
 
     if (UI)
         UI->RemoveFromParent();

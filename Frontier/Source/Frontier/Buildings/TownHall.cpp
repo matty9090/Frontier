@@ -26,30 +26,9 @@ void ATownHall::OnBuildingConstructed()
         UGameplayStatics::FinishSpawningActor(City, CityTransform);
     }
 
-    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-
-    if (FrontierController)
+    if (City)
     {
-        if (City && FrontierController->PlayerState)
-        {
-            if (Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
-            {
-                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), City->Radius);
-            }
-            else
-            {
-                City->CityNameWidget->SetVisibility(false);
-                City->CityRadiusDecal->SetVisibility(false);
-            }
-        }
-        else
-        {
-            UE_LOG(LogFrontier, Display, TEXT("TownHall: player state or city is null!"));
-        }
-    }
-    else
-    {
-        UE_LOG(LogFrontier, Display, TEXT("TownHall: Controller is null!"));
+        City->FinaliseCityPlayerWidgets();
     }
 }
 

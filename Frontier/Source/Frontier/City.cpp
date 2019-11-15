@@ -64,6 +64,11 @@ void ACity::EndPlay(const EEndPlayReason::Type Reason)
     Player->Cities.Remove(this);
 }
 
+void ACity::OnRep_Player()
+{
+    FinaliseCityPlayerWidgets();
+}
+
 void ACity::OnRep_CityName()
 {
     UpdateCityLabel();
@@ -126,6 +131,37 @@ bool ACity::CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& Desired
 
     return Total < MaxBuildingNums[Type] &&
            FVector::Distance(DesiredPosition, GetActorLocation()) < Radius - Bounds;
+}
+
+void ACity::FinaliseCityPlayerWidgets()
+{
+    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+
+    if (FrontierController)
+    {
+        if (FrontierController->PlayerState)
+        {
+            if (Player->Team == FrontierController->GetPlayerState<AFrontierPlayerState>()->Team)
+            {
+                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), Radius);
+                CityNameWidget->SetVisibility(true);
+                CityRadiusDecal->SetVisibility(true);
+            }
+            else
+            {
+                CityNameWidget->SetVisibility(false);
+                CityRadiusDecal->SetVisibility(false);
+            }
+        }
+        else
+        {
+            UE_LOG(LogFrontier, Display, TEXT("TownHall: player state or city is null!"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogFrontier, Display, TEXT("TownHall: Controller is null!"));
+    }
 }
 
 void ACity::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
