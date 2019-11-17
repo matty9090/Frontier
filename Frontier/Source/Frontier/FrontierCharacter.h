@@ -10,6 +10,8 @@
 
 class ABuilding;
 class AFrontierPlayerState;
+class UHealthComponent;
+class UWidgetComponent;
 
 UCLASS(Blueprintable)
 class AFrontierCharacter : public ACharacter
@@ -23,6 +25,8 @@ public:
 
     // Called every frame.
     virtual void Tick(float DeltaSeconds) override;
+
+	void BeginPlay() override;
 
     UFUNCTION()
     void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
@@ -81,6 +85,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FResources Cost;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UHealthComponent* HealthComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UWidgetComponent* HealthBar;
 private:
     FScriptDelegate ActorHitDelegate;
 };

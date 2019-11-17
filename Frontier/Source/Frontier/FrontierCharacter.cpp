@@ -8,6 +8,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/HealthComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Widgets/HealthBarWidget.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "UnrealNetwork.h"
@@ -40,6 +43,11 @@ AFrontierCharacter::AFrontierCharacter()
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECR_Block);
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECR_Overlap);
     
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthBar		= CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+
+	HealthBar->SetupAttachment(RootComponent);
+
     // Activate ticking in order to update the cursor every frame.
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -63,6 +71,19 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
             FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
         }
     }
+}
+
+void AFrontierCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
+		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
+		HealthBarWidget->ChangeHealthPercentage(Health);
+
+		if (Health <= 0)
+			Destroy();
+	});
 }
 
 void AFrontierCharacter::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
