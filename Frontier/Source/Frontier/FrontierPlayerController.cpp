@@ -182,6 +182,13 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
 
     UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
+    auto PS = GetPlayerState<AFrontierPlayerState>();
+
+    for (auto City : PS->Cities)
+    {
+        City->CityRadiusDecal->SetVisibility(true);
+    }
+
     ControllerState = EControllerState::PlacingBuilding;
 }
 
@@ -304,6 +311,11 @@ void AFrontierPlayerController::OnSelectUp()
             ControllerState = EControllerState::Idle;
             ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
 
+            for (auto City : PS->Cities)
+            {
+                City->CityRadiusDecal->SetVisibility(false);
+            }
+
             if (HasAuthority())
             {
                 HoveredBuilding->Destroy();
@@ -411,6 +423,11 @@ void AFrontierPlayerController::OnSend()
         ControllerState = EControllerState::Idle;
         HoveredBuilding->Destroy();
         HoveredBuilding = nullptr;
+
+        for (auto City : GetPlayerState<AFrontierPlayerState>()->Cities)
+        {
+            City->CityRadiusDecal->SetVisibility(false);
+        }
     }
 }
 
