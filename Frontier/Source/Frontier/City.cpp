@@ -44,8 +44,7 @@ void ACity::BeginPlay()
 
     CityRadiusDecal->DecalSize = FVector(300.0f, Radius, Radius);
     CityRadiusDecal->MarkRenderStateDirty();
-
-    UE_LOG(LogFrontier, Display, TEXT("Set widget visibility %s, %s"), *CityName, *GetName());
+    CityRadiusDecal->SetVisibility(false);
 
     if (Player)
     {
@@ -145,12 +144,10 @@ void ACity::FinaliseCityPlayerWidgets()
             {
                 FrontierController->FogOfWar->RevealCircle(GetActorLocation(), Radius);
                 CityNameWidget->SetVisibility(true);
-                CityRadiusDecal->SetVisibility(true);
             }
             else
             {
                 CityNameWidget->SetVisibility(false);
-                CityRadiusDecal->SetVisibility(false);
             }
         }
         else
