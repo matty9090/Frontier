@@ -250,7 +250,10 @@ void AFrontierPlayerController::OnMoveRight(float Value)
 
 void AFrontierPlayerController::OnSelectDown()
 {
-    Cast<AFrontierHUD>(GetHUD())->BeginSelect();
+    if (ControllerState != EControllerState::PlacingBuilding)
+    {
+        Cast<AFrontierHUD>(GetHUD())->BeginSelect();
+    }
 }
 
 void AFrontierPlayerController::OnSelectUp()
@@ -285,13 +288,11 @@ void AFrontierPlayerController::OnSelectUp()
     HUD->EndSelect();
 
     SelectedUnits = HUD->GetCharactersInSelection();
-    
-    SelectedUnits.RemoveAll([&](AFrontierCharacter* Char) {
-        return Char->Player != PlayerState;
-    });
+    SelectedUnits.RemoveAll([&](AFrontierCharacter* Char) { return Char->Player != PlayerState; });
 
     if (SelectedUnits.Num() > 0)
     {
+        DeselectBuilding();
         ControllerState = EControllerState::SelectedUnit;
 
         for (auto Char : SelectedUnits)
@@ -402,7 +403,7 @@ void AFrontierPlayerController::OnSelectUp()
 
 void AFrontierPlayerController::OnSend()
 {
-    if (SelectedUnits.Num() > 0)
+    if (ControllerState == EControllerState::SelectedUnit)
     {
         FHitResult Hit;
 
@@ -418,7 +419,7 @@ void AFrontierPlayerController::OnSend()
             ServerMoveAIToLocation(SelectedUnits, Hit.Location, Hit.Actor.Get());
         }
     }
-    else if (HoveredBuilding)
+    else if (ControllerState == EControllerState::PlacingBuilding)
     {
         ControllerState = EControllerState::Idle;
         HoveredBuilding->Destroy();
