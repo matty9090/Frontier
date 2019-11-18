@@ -14,6 +14,7 @@ void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UHealthComponent, Health);
 }
 
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
