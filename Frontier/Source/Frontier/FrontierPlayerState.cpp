@@ -3,7 +3,6 @@
 #include "FrontierPlayerState.h"
 #include "CoreMinimal.h"
 #include "UnrealNetwork.h"
-#include "Buildings/Building.h"
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "City.h"

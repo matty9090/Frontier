@@ -10,6 +10,9 @@
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/HealthComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Widgets/HealthBarWidget.h"
 #include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
@@ -18,7 +21,7 @@
 #include "Frontier.h"
 
 // Sets default values
-ABuilding::ABuilding() : Super()
+ABuilding::ABuilding() 
 {
     bReplicates = true;
     bAlwaysRelevant = true;
@@ -47,12 +50,26 @@ ABuilding::ABuilding() : Super()
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     Mesh->SetupAttachment(Box);
 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBar->SetupAttachment(RootComponent);
+	HealthBar->SetDrawAtDesiredSize(true);
+	HealthBar->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthBar->AddRelativeLocation(FVector(0.0f, 0.0f, 150.0f));
+
     Tooltip = CreateDefaultSubobject<UWidgetComponent>(TEXT("Tooltip"));
     Tooltip->SetupAttachment(RootComponent);
     Tooltip->AddRelativeLocation(FVector(0.0f, 0.0f, 200.0f));
     Tooltip->SetWidgetSpace(EWidgetSpace::Screen);
     Tooltip->SetDrawAtDesiredSize(true);
     Tooltip->SetVisibility(false);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> BarClass(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_HealthBar"));
+
+	if (BarClass.Succeeded())
+	{
+		HealthBar->SetWidgetClass(BarClass.Class);
+	}
 
     static ConstructorHelpers::FClassFinder<UUserWidget> TooltipClass(TEXT("/Game/Frontier/Blueprints/Widgets/Tooltips/WBP_Tooltip_BuildingHover"));
 
@@ -85,6 +102,14 @@ void ABuilding::BeginPlay()
     {
         OnBuildingConstructed();
     }
+
+	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
+		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
+		HealthBarWidget->ChangeHealthPercentage(Health);
+
+		if (Health <= 0)
+			Destroy();
+	});
 }
 
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)
