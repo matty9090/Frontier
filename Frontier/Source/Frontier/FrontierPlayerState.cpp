@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "City.h"
+#include "Buildings/Building.h"
 #include "FrontierCharacter.h"
 #include "Frontier.h"
 

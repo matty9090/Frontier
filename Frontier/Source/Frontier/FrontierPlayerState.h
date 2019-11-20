@@ -5,13 +5,12 @@
 #include "DelegateCombinations.h"
 #include "Containers/Queue.h"
 #include "GameFramework/PlayerState.h"
-#include "Buildings/Building.h"
 #include "Resources.h"
 #include "Research.h"
 #include "FrontierPlayerState.generated.h"
 
 class ACity;
-//class ABuilding;
+class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
 

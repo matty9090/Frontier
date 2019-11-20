@@ -65,7 +65,7 @@ void ATurret::FindTarget()
     if (!Player)
         return;
 
-    TArray<AActor*> EnemyUnits;
+    TArray<AFrontierCharacter*> EnemyUnits;
     
     for (TObjectIterator<AFrontierCharacter> It; It; ++It)
     {
@@ -75,7 +75,7 @@ void ATurret::FindTarget()
         }
     }
 
-    auto Closest = UFrontierHelperFunctionLibrary::GetClosestObject(GetActorLocation(), EnemyUnits);
+    auto Closest = UFrontierHelperFunctionLibrary::GetClosestCharacter(GetActorLocation(), Player, EnemyUnits);
 
     if (Closest && FVector::Distance(Closest->GetActorLocation(), GetActorLocation()) < Range)
     {
