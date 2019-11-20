@@ -43,7 +43,7 @@ public:
     void HideOutline();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsConstructed() const { return bBuilt; }
+	bool IsConstructed() const;
 
 	UFUNCTION(BlueprintCallable)
 	bool Construct(float ConstructionAmount);
@@ -55,6 +55,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type Reason) override;
     virtual void OnBuildingConstructed() {}
 
     UPROPERTY(EditAnywhere)
@@ -111,6 +112,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBar;
+
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);

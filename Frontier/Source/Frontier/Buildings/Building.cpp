@@ -4,6 +4,7 @@
 #include "Building.h"
 #include "Kismet/GameplayStatics.h"
 #include "UnrealNetwork.h"
+#include "City.h"
 #include "FogOfWar.h"
 #include "ConstructorHelpers.h"
 #include "FrontierGameMode.h"
@@ -112,6 +113,14 @@ void ABuilding::BeginPlay()
 	});
 }
 
+void ABuilding::EndPlay(const EEndPlayReason::Type Reason)
+{
+    if (City)
+    {
+        City->RemoveBuilding(this);
+    }
+}
+
 void ABuilding::BeginMouseOver(UPrimitiveComponent* TouchedComponent)
 {
     if(Player && Player->GetOwner() == GetWorld()->GetFirstPlayerController())
@@ -131,6 +140,11 @@ void ABuilding::ShowOutline()
 void ABuilding::HideOutline()
 {
     Mesh->SetRenderCustomDepth(false);
+}
+
+bool ABuilding::IsConstructed() const
+{
+    return bBuilt;
 }
 
 
