@@ -7,8 +7,10 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Research.h"
 #include "Resources.h"
+#include "BaseResource.h"
 #include "Buildings/Building.h"
 #include "FrontierCharacter.h"
+#include "FrontierPlayerState.h"
 #include "FrontierHelperFunctionLibrary.generated.h"
 
 /**
@@ -78,6 +80,20 @@ public:
         return "";
     }
 
+    UFUNCTION(BlueprintCallable)
+    static AFrontierPlayerState* TryGetFrontierObjectPlayer(AActor* Obj)
+    {
+        if (!Obj) return nullptr;
+        
+        auto Building = Cast<ABuilding>(Obj);
+        if (Building) return Building->Player;
+
+        auto Unit = Cast<AFrontierCharacter>(Obj);
+        if (Unit) return Unit->Player;
+
+        return nullptr;
+    }
+
     UFUNCTION(BlueprintPure)
     static FString GetResourcesAvailableString(FResources Target, FResources Current)
     {
@@ -103,9 +119,29 @@ public:
     static FString GetResourceName(EResource Res);
 
 	UFUNCTION(BlueprintPure)
-	static AActor* GetClosestObject(FVector Position, TArray<AActor*> Objects)
+	static ABuilding* GetClosestBuilding(FVector Position, AFrontierPlayerState* Player, TArray<ABuilding*> Objects, bool bConstructed = true)
 	{
-		AActor* Closest = nullptr;
+        ABuilding* Closest = nullptr;
+		float Distance = MAX_FLT;
+
+		for (auto Actor : Objects)
+		{
+			float TmpDistance = FVector::DistSquared(Position, Actor->GetActorLocation());
+
+            if (TmpDistance < Distance && Player == Actor->Player && bConstructed == Actor->bBuilt)
+			{
+				Distance = TmpDistance;
+				Closest = Actor;
+			}
+		}
+
+		return Closest;
+	}
+
+    UFUNCTION(BlueprintPure)
+	static ABaseResource* GetClosestResource(FVector Position, AFrontierPlayerState* Player, TArray<ABaseResource*> Objects)
+	{
+        ABaseResource* Closest = nullptr;
 		float Distance = MAX_FLT;
 
 		for (auto Actor : Objects)
@@ -113,6 +149,26 @@ public:
 			float TmpDistance = FVector::DistSquared(Position, Actor->GetActorLocation());
 
 			if (TmpDistance < Distance)
+			{
+				Distance = TmpDistance;
+				Closest = Actor;
+			}
+		}
+
+		return Closest;
+	}
+
+    UFUNCTION(BlueprintPure)
+	static AFrontierCharacter* GetClosestCharacter(FVector Position, AFrontierPlayerState* Player, TArray<AFrontierCharacter*> Characters)
+	{
+        AFrontierCharacter* Closest = nullptr;
+		float Distance = MAX_FLT;
+
+		for (auto Actor : Characters)
+		{
+			float TmpDistance = FVector::DistSquared(Position, Actor->GetActorLocation());
+
+			if (TmpDistance < Distance && Player == Actor->Player)
 			{
 				Distance = TmpDistance;
 				Closest = Actor;
