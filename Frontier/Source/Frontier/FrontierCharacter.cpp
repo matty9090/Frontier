@@ -86,21 +86,6 @@ void AFrontierCharacter::BeginPlay()
 	});
 }
 
-void AFrontierCharacter::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-    auto Projectile = Cast<AProjectile>(OtherActor);
-
-    if (Projectile)
-    {
-        Health -= Projectile->Damage;
-
-        if (Health <= 0)
-        {
-            Destroy();
-        }
-    }
-}
-
 void AFrontierCharacter::ShowOutline()
 {
     GetMesh()->SetRenderCustomDepth(true);
@@ -111,29 +96,9 @@ void AFrontierCharacter::HideOutline()
     GetMesh()->SetRenderCustomDepth(false);
 }
 
-
-void AFrontierCharacter::ReceiveDamage(int Damage)
-{
-	Health -= Damage;
-
-	if (Health <= 0)
-	{
-		Destroy();
-	}
-}
-
-void AFrontierCharacter::OnRep_Health()
-{
-    if (Health <= 0)
-    {
-        Destroy();
-    }
-}
-
 void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(AFrontierCharacter, Player);
-    DOREPLIFETIME(AFrontierCharacter, Health);
 }

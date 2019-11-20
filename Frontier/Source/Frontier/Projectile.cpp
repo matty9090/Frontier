@@ -2,6 +2,7 @@
 
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/HealthComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -26,6 +27,12 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
+	auto Component = OtherActor->GetComponentByClass(UHealthComponent::StaticClass());
+	if (Component != nullptr)
+	{
+		auto OtherActorHealth = Cast<UHealthComponent>(Component);
+		OtherActorHealth->ReceiveDamage(Damage);
+	}
     Destroy();
 }
 

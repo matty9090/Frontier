@@ -142,7 +142,7 @@ void ACity::FinaliseCityPlayerWidgets()
         {
             if (Player->Team == FrontierController->GetPlayerState<AFrontierPlayerState>()->Team)
             {
-                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), Radius);
+                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), FogRadius);
                 CityNameWidget->SetVisibility(true);
             }
             else

@@ -28,6 +28,9 @@ public:
     UPROPERTY(EditAnywhere)
     float Radius = 1600.0f;
 
+	UPROPERTY(EditAnywhere)
+	float FogRadius = 1800.0f;
+
     UPROPERTY(EditAnywhere)
     UMaterialInterface* DecalMaterial = nullptr;
 
