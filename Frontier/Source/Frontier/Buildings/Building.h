@@ -16,6 +16,8 @@ class AFrontierCharacter;
 class AFrontierPlayerState;
 class UBuildingBaseWidget;
 class UStaticMeshComponent;
+class UHealthComponent;
+class UWidgetComponent;
 
 UENUM(BlueprintType)
 enum class EBuildingCategory : uint8
@@ -104,6 +106,11 @@ public:
     UPROPERTY(BlueprintReadOnly, Replicated)
     ACity* City;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UWidgetComponent* HealthBar;
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);
