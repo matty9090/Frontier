@@ -159,7 +159,7 @@ public:
 	}
 
     UFUNCTION(BlueprintPure)
-	static AFrontierCharacter* GetClosestCharacter(FVector Position, AFrontierPlayerState* Player, TArray<AFrontierCharacter*> Characters)
+	static AFrontierCharacter* GetClosestEnemy(FVector Position, AFrontierPlayerState* Player, TArray<AFrontierCharacter*> Characters)
 	{
         AFrontierCharacter* Closest = nullptr;
 		float Distance = MAX_FLT;
@@ -168,7 +168,7 @@ public:
 		{
 			float TmpDistance = FVector::DistSquared(Position, Actor->GetActorLocation());
 
-			if (TmpDistance < Distance && Player == Actor->Player)
+			if (TmpDistance < Distance && Player->Team != Actor->Player->Team)
 			{
 				Distance = TmpDistance;
 				Closest = Actor;

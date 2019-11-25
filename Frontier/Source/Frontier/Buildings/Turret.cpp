@@ -75,7 +75,7 @@ void ATurret::FindTarget()
         }
     }
 
-    auto Closest = UFrontierHelperFunctionLibrary::GetClosestCharacter(GetActorLocation(), Player, EnemyUnits);
+    auto Closest = UFrontierHelperFunctionLibrary::GetClosestEnemy(GetActorLocation(), Player, EnemyUnits);
 
     if (Closest && FVector::Distance(Closest->GetActorLocation(), GetActorLocation()) < Range)
     {
