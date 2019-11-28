@@ -47,6 +47,21 @@ void AFrontierPlayerController::BeginPlay()
         FogOfWar = GetWorld()->SpawnActorDeferred<AFogOfWar>(FogOfWarClass, Transform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
         FogOfWar->Player = Cast<AFrontierPlayerState>(PlayerState);
         UGameplayStatics::FinishSpawningActor(FogOfWar, Transform);
+
+        PlayerKilledEvent.BindLambda([&](AFrontierCharacter* C) {
+            for (auto Selected : SelectedUnits)
+            {
+                if (Selected == C)
+                {
+                    SelectedUnits.Remove(C);
+
+                    if (SelectedUnits.Num() <= 0)
+                        ControllerState = EControllerState::Idle;
+
+                    break;
+                }
+            }
+        });
     }
 }
 
@@ -516,8 +531,11 @@ bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(const TArray<AFr
 
 void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(const TArray<AFrontierCharacter*>& AI, FVector Location, AActor* Object)
 {
-    for(auto Unit : AI)
-        Unit->MoveToLocation(Location, Object);
+    if (Object && !Object->IsPendingKill())
+    {
+        for(auto Unit : AI)
+            Unit->MoveToLocation(Location, Object);
+    }
 }
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)

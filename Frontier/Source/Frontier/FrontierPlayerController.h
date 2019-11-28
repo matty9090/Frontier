@@ -16,6 +16,7 @@ class UResearchNode;
 class ADummyBuilding;
 class UBuildingBaseWidget;
 
+DECLARE_DELEGATE_OneParam(FPlayerKilledEvent, AFrontierCharacter*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCityBuiltEvent, ACity*);
 
 UENUM(BlueprintType)
@@ -56,6 +57,8 @@ public:
 
     UPROPERTY(BlueprintReadOnly)
     ECursorState CursorState = ECursorState::Default;
+
+    FPlayerKilledEvent PlayerKilledEvent;
 
 protected:
     /** True if the controlled character should navigate to the mouse cursor. */

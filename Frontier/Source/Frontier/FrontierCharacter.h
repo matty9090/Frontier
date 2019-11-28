@@ -27,6 +27,7 @@ public:
     virtual void Tick(float DeltaSeconds) override;
 
 	void BeginPlay() override;
+	void EndPlay(EEndPlayReason::Type Reason) override;
 
     UFUNCTION(BlueprintCallable)
     void ShowOutline();
@@ -78,6 +79,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBar;
+
 private:
     FScriptDelegate ActorHitDelegate;
 };
