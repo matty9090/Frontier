@@ -89,7 +89,11 @@ void AFrontierCharacter::BeginPlay()
 void AFrontierCharacter::EndPlay(EEndPlayReason::Type Reason)
 {
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-    FrontierController->PlayerKilledEvent.ExecuteIfBound(this);
+
+    if (FrontierController)
+    {
+        FrontierController->PlayerKilledEvent.ExecuteIfBound(this);
+    }
 }
 
 void AFrontierCharacter::ShowOutline()
