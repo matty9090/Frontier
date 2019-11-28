@@ -127,9 +127,19 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             }
             else if (Cast<ABuilding>(Hit.Actor))
             {
-                if (!Cast<ABuilding>(Hit.Actor)->bBuilt)
+                auto Building = Cast<ABuilding>(Hit.Actor);
+
+                if (Building->Player == PS)
                 {
-                    CursorState = ECursorState::Build;
+                    if (!Building->bBuilt &&
+                        SelectedUnits.ContainsByPredicate([](const AFrontierCharacter* C) { return C->bCanGather; }))
+                    {
+                        CursorState = ECursorState::Build;
+                    }
+                }
+                else if (Building->Player != PS)
+                {
+                    CursorState = ECursorState::Attack;
                 }
             }
             else

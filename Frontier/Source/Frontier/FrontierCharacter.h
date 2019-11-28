@@ -56,7 +56,7 @@ public:
     float AttackStrength = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool CanGather = false;
+    bool bCanGather = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int32 GatherSpeed = 10;
