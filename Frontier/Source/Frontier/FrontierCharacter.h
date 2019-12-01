@@ -27,6 +27,7 @@ public:
     virtual void Tick(float DeltaSeconds) override;
 
 	void BeginPlay() override;
+	void EndPlay(EEndPlayReason::Type Reason) override;
 
     UFUNCTION(BlueprintCallable)
     void ShowOutline();
@@ -56,7 +57,7 @@ public:
     float AttackStrength = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    bool CanGather = false;
+    bool bCanGather = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int32 GatherSpeed = 10;
@@ -78,6 +79,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBar;
+
 private:
     FScriptDelegate ActorHitDelegate;
 };
