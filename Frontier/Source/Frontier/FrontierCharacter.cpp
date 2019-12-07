@@ -155,7 +155,7 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 			if (MoveObject->GetClass() == ALandscape::StaticClass())
 				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToLocation(Location, 60.f, false,true,false,true,0,true);
 			else
-				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, 60.f,false);
+				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, 70.f,false);
 		}
 	}
 }
@@ -393,7 +393,7 @@ void AFrontierCharacter::MoveTo(AActor* Actor)
 	if (IsValid(GetController()))
 	{
 		MoveObject = Actor;
-		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject,60);
+		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject,70.f);
 		State = ECharacterStates::Moving;
 	}
 }
@@ -412,4 +412,5 @@ void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
     DOREPLIFETIME(AFrontierCharacter, Player); 
 	DOREPLIFETIME(AFrontierCharacter, State); 
 	DOREPLIFETIME(AFrontierCharacter, MoveObject);
+	DOREPLIFETIME(AFrontierCharacter, HarvestObject);
 }

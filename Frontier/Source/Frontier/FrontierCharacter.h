@@ -171,7 +171,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
 	AActor* MoveObject;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
 	ABaseResource* HarvestObject;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
