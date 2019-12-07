@@ -100,6 +100,9 @@ public:
 
     UPROPERTY()
     bool bRevealed = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bCanDeposit = false;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
