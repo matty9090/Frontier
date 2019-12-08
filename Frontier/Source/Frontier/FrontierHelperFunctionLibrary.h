@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Research.h"
 #include "Resources.h"
 #include "BaseResource.h"
@@ -176,5 +177,12 @@ public:
 		}
 
 		return Closest;
+	}
+
+	UFUNCTION(BlueprintPure)
+	static FRotator LookAt(FVector Position, FVector Target)
+	{
+		FRotator r = UKismetMathLibrary::FindLookAtRotation(Position,Target);
+		return FRotator(0, r.Yaw,0);
 	}
 };

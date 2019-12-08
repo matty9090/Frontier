@@ -26,3 +26,14 @@ void ABaseResource::Tick(float DeltaTime)
 
 }
 
+int ABaseResource::Harvest(int GatherSpeed)
+{
+	ResourceAmount -= GatherSpeed;
+	if (ResourceAmount <= 0)
+	{
+		Destroy();
+		return (GatherSpeed + ResourceAmount);
+	}
+	else
+		return GatherSpeed;
+}

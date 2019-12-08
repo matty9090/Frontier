@@ -38,4 +38,7 @@ public:
     
     UFUNCTION(BlueprintCallable)
     int32 GetRemainingResources() const { return ResourceAmount; }
+
+	UFUNCTION(BlueprintCallable)
+	int Harvest(int GatherSpeed);
 };
