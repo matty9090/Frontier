@@ -75,6 +75,7 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
             auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
             FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
         }
+
 		UpdateNav();
 
 		switch (State)
@@ -111,10 +112,12 @@ void AFrontierCharacter::BeginPlay()
 		if (Health <= 0)
 			Destroy();
 	});
+
 	if (HasAuthority())
 	{
 		MoveCompleteDelegate.BindUFunction(this, "OnMoveCompleted");
 		auto cont = GetController();
+
 		if (cont != NULL)
 		{
 			auto ai = UAIBlueprintHelperLibrary::GetAIController(cont);
@@ -149,6 +152,7 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 	{
 		MoveObject = Object;
 		PauseTimerFunctions();
+
 		if (HasAuthority())
 		{
 			State = ECharacterStates::Moving;
@@ -168,41 +172,40 @@ void AFrontierCharacter::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingR
 	switch (State)
 	{
 	case ECharacterStates::Moving:
-
-		if (MoveObject->GetClass()->IsChildOf(AFrontierCharacter::StaticClass()))
+		if (IsValid(MoveObject))
 		{
-			if (Player != UFrontierHelperFunctionLibrary::TryGetFrontierObjectPlayer(MoveObject))
-				SetAttack();
+			if (MoveObject->GetClass()->IsChildOf(AFrontierCharacter::StaticClass()))
+			{
+				if (Player != UFrontierHelperFunctionLibrary::TryGetFrontierObjectPlayer(MoveObject))
+					SetAttack();
+				else
+					State = ECharacterStates::Idle;
+
+			}
+			else if (MoveObject->GetClass()->IsChildOf(ABaseResource::StaticClass()))
+			{
+				SetHarvest();
+			}
+			else if (MoveObject->GetClass()->IsChildOf(ABuilding::StaticClass()))
+			{
+				if (Player != UFrontierHelperFunctionLibrary::TryGetFrontierObjectPlayer(MoveObject))
+					SetAttack();
+				else
+				{
+					auto building = Cast<ABuilding>(MoveObject);
+					if (!building->bBuilt)
+						SetBuild();
+					else if (building->bCanDeposit)
+						FinishDeposit();
+				}
+			}
 			else
 				State = ECharacterStates::Idle;
-			
 		}
-		else if (MoveObject->GetClass()->IsChildOf(ABaseResource::StaticClass()))
-		{
-			SetHarvest();
-		}
-		else if (MoveObject->GetClass()->IsChildOf(ABuilding::StaticClass()))
-		{
-			if (Player != UFrontierHelperFunctionLibrary::TryGetFrontierObjectPlayer(MoveObject))
-				SetAttack();
-			else
-			{
-				auto building = Cast<ABuilding>(MoveObject);
-				if (!building->bBuilt)
-					SetBuild();
-				else if (building->bCanDeposit)
-					FinishDeposit();
-			}
-		}
-		else
-			State = ECharacterStates::Idle;
 		break;
 
 	case ECharacterStates::Depositing:
 		FinishDeposit();
-		break;
-
-	default:
 		break;
 	}
 }
@@ -238,13 +241,15 @@ void AFrontierCharacter::StateHarvest()
 	{
 		GetWorldTimerManager().ClearTimer(HarvestTimerHandler);
 		TArray<ABuilding*> Buildings;
+
 		for (TObjectIterator<ABuilding> It; It; ++It)
 		{
-			if  (!(*It)->IsPendingKill()) //check this and add storage checking
+			if (IsValid(*It) && (*It)->bCanDeposit)
 			{
 				Buildings.Add(*It);
 			}
 		}
+
 		MoveTo(UFrontierHelperFunctionLibrary::GetClosestBuilding(GetActorLocation(), Player, Buildings));
 		State = ECharacterStates::Depositing;
 	}
@@ -275,16 +280,17 @@ void AFrontierCharacter::StateBuilding()
 }
 
 void AFrontierCharacter::StateMoving()
-{}
+{
+
+}
 
 void AFrontierCharacter::SetHarvest()
 {
 	if (bCanGather)
 	{
-		State = ECharacterStates::Harvesting;
 		auto resource = Cast<ABaseResource>(MoveObject);
-		if (resource)
-			HarvestObject = resource;
+		HarvestObject = resource;
+		State = ECharacterStates::Harvesting;
 	}
 }
 
@@ -292,6 +298,7 @@ void AFrontierCharacter::FinishDeposit()
 {
 	Player->AddSpecificResources(HeldResources, HeldResourceType);
 	HeldResources = 0.f;
+
 	if (IsValid(HarvestObject))
 		MoveTo(HarvestObject);
 	else
@@ -307,6 +314,7 @@ void AFrontierCharacter::HarvestResource()
 			HeldResources = 0;
 			HeldResourceType = HarvestObject->ResourceType;
 		}
+
 		HeldResources += HarvestObject->Harvest(GatherSpeed);
 	}
 	else
@@ -321,6 +329,7 @@ void AFrontierCharacter::SetBuild()
 	if (IsValid(MoveObject))
 	{
 		auto building = Cast<ABuilding>(MoveObject);
+
 		if (!building->IsConstructed() && bCanGather)
 		{
 			State = ECharacterStates::Building;
@@ -345,6 +354,7 @@ void AFrontierCharacter::Construct()
 	if (IsValid(MoveObject))
 	{
 		auto building = Cast<ABuilding>(MoveObject);
+
 		if (building->Construct(BuildSpeed))
 		{
 			GetWorldTimerManager().ClearTimer(ConstructTimerHandler);
@@ -362,6 +372,7 @@ void AFrontierCharacter::Attack()
 	auto actorObject = Cast<AActor>(MoveObject);
 
 	UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); // check this
+
 	if (IsValid(MoveObject))
 	{
 		healthComponent->ReceiveDamage((int)AttackStrength);
@@ -371,6 +382,7 @@ void AFrontierCharacter::Attack()
 void AFrontierCharacter::FindNewHarvest()
 {
 	TArray<ABaseResource*> Resources;
+
 	for (TObjectIterator<ABaseResource> It; It; ++It)
 	{
 		if (It->GetClass() == HarvestObject->GetClass() && !(*It)->IsPendingKill()) //check this
