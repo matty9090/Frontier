@@ -111,7 +111,7 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
             auto TH = *It;
             auto Dist = FVector::DistSquared(TH->GetActorLocation(), Pos);
 
-            if (!TH->bRevealed && Dist < Radius * Radius)
+            if (TH && TH->City && !TH->bRevealed && Dist < Radius * Radius)
             {
                 TH->bRevealed = true;
                 TH->City->CityNameWidget->SetVisibility(true);

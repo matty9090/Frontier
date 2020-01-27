@@ -60,7 +60,10 @@ void ACity::BeginPlay()
 
 void ACity::EndPlay(const EEndPlayReason::Type Reason)
 {
-    Player->Cities.Remove(this);
+    if (Player)
+    {
+        Player->Cities.Remove(this);
+    }
 }
 
 void ACity::OnRep_Player()
