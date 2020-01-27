@@ -49,6 +49,12 @@ void AFrontierGameMode::InitPlayers()
 
     for (auto Player : PlayerControllers)
     {
+        if (Player == NULL || Player->PlayerState == NULL)
+        {
+            PlayerControllers.Remove(Player);
+            continue;
+        }
+
         if (AvailableSpots.Num() <= 0)
         {
             Logout(Player);
@@ -60,9 +66,6 @@ void AFrontierGameMode::InitPlayers()
         Location.Z = 0;
 
         Player->GetPawn()->SetActorLocation(Location);
-
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
         auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
 
