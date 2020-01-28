@@ -24,6 +24,7 @@
 #include "RoamPawn.h"
 #include "BaseResource.h"
 #include "FogOfWar.h"
+#include "Widgets/UnitSelected.h"
 #include "Widgets/BuildingBaseWidget.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
@@ -129,7 +130,11 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             EObjectTypeQuery::ObjectTypeQuery7  // Terrain
         };
 
-        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        if (UI->UnitSelected->IsHovered())
+        {
+            CursorState = ECursorState::Default;
+        }
+        else if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
         {
             auto PS = Cast<AFrontierPlayerState>(PlayerState);
 
@@ -318,6 +323,12 @@ void AFrontierPlayerController::OnSelectUp()
     if (SelectedUnits.Num() > 0)
     {
         DeselectBuilding();
+
+        UI->UnitSelected->SetSelectedUnits(SelectedUnits);
+
+        if (ControllerState != EControllerState::SelectedUnit)
+            UI->ShowUnitUI();
+
         ControllerState = EControllerState::SelectedUnit;
 
         for (auto Char : SelectedUnits)
@@ -373,6 +384,11 @@ void AFrontierPlayerController::OnSelectUp()
                 SelectedUnits.Add(Unit);
                 Unit->ShowOutline();
 
+                UI->UnitSelected->SetSelectedUnits(SelectedUnits);
+
+                if (ControllerState != EControllerState::SelectedUnit)
+                    UI->ShowUnitUI();
+
                 Selected = true;
                 ControllerState = EControllerState::SelectedUnit;
             }
@@ -419,6 +435,9 @@ void AFrontierPlayerController::OnSelectUp()
 
             if (SelectedBuilding)    SelectedBuilding->HideOutline();
             if (SelectedBuildingUI)  SelectedBuildingUI->PlayAnimationForward(SelectedBuildingUI->GetHideAnimation());
+
+            if (ControllerState == EControllerState::SelectedUnit)
+                UI->HideUnitUI();
 
             SelectedBuilding = nullptr, SelectedBuildingUI = nullptr;
             ControllerState = EControllerState::Idle;

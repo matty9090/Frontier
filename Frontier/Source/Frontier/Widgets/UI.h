@@ -9,6 +9,8 @@
 #include "Research.h"
 #include "UI.generated.h"
 
+class UUnitSelected;
+
 /**
  * 
  */
@@ -26,8 +28,17 @@ public:
     UFUNCTION(BlueprintImplementableEvent)
     void HideUI();
 
+    UFUNCTION(BlueprintImplementableEvent)
+    void ShowUnitUI();
+
+    UFUNCTION(BlueprintImplementableEvent)
+    void HideUnitUI();
+
     UPROPERTY(BlueprintReadWrite)
     bool bIsHidden = false;
+
+    UPROPERTY(Meta=(BindWidget))
+    UUnitSelected* UnitSelected;
 
 protected:
     void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);

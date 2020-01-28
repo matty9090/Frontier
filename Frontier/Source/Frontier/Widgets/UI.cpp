@@ -4,6 +4,7 @@
 #include "UI.h"
 #include "Frontier.h"
 #include "FrontierPlayerState.h"
+#include "Widgets/UnitSelected.h"
 
 bool UUI::Initialize()
 {
