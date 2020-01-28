@@ -2,6 +2,7 @@
 
 
 #include "UI.h"
+#include "Frontier.h"
 #include "FrontierPlayerState.h"
 
 bool UUI::Initialize()
@@ -24,7 +25,27 @@ bool UUI::Initialize()
 void UUI::ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node)
 {
     Buildings = GetOwningPlayerState<AFrontierPlayerState>()->GetResearchedBuildings();
+    
+    UpdateFilters();
     UpdateBuildingList();
+}
+
+void UUI::UpdateFilters()
+{
+    bool hasGeneral = false, hasRes = false, hasCombat = false;
+
+    for (auto Building : Buildings)
+    {
+        auto DefaultObj = Building.GetDefaultObject();
+
+        hasGeneral |= DefaultObj->BuildingCategory == EBuildingCategory::General;
+        hasRes |= DefaultObj->BuildingCategory == EBuildingCategory::Resource;
+        hasCombat |= DefaultObj->BuildingCategory == EBuildingCategory::Combat;
+    }
+
+    FilterGeneral->SetVisibility(hasGeneral ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    FilterResources->SetVisibility(hasRes ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    FilterCombat->SetVisibility(hasCombat ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 }
 
 void UUI::UpdateBuildingList()

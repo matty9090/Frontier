@@ -31,6 +31,7 @@ public:
 
 protected:
     void ResearchTreeChanged(EResearchTreeChangedType Type, UResearchNode* Node);
+    void UpdateFilters();
 
     UFUNCTION(BlueprintCallable)
     void UpdateBuildingList();
@@ -46,6 +47,15 @@ protected:
 
     UPROPERTY(Meta=(BindWidget))
     UScrollBox* BuildingsContainer;
+
+    UPROPERTY(Meta=(BindWidget))
+    UWidget* FilterGeneral;
+
+    UPROPERTY(Meta=(BindWidget))
+    UWidget* FilterResources;
+
+    UPROPERTY(Meta=(BindWidget))
+    UWidget* FilterCombat;
 
     UPROPERTY(BlueprintReadWrite)
     EBuildingCategory ActiveCategory = EBuildingCategory::General;
