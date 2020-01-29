@@ -56,7 +56,7 @@ protected:
     UPROPERTY(EditAnywhere)
     TSubclassOf<UUserWidget> BuildingWidget;
 
-    UPROPERTY(Meta=(BindWidget))
+    UPROPERTY(BlueprintReadWrite, Meta=(BindWidget))
     UScrollBox* BuildingsContainer;
 
     UPROPERTY(Meta=(BindWidget))

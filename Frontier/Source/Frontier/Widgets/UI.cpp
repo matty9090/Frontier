@@ -66,4 +66,6 @@ void UUI::UpdateBuildingList()
         BindBuildingSelectedEvent(Widget, Building);
         BuildingsContainer->AddChild(Widget);
     }
+
+    BuildingsContainer->IsHovered();
 }

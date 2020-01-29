@@ -392,6 +392,11 @@ void AFrontierPlayerController::OnSelectUp()
                 Selected = true;
                 ControllerState = EControllerState::SelectedUnit;
             }
+            else
+            {
+                if (ControllerState == EControllerState::SelectedUnit)
+                    UI->HideUnitUI();
+            }
 
             auto Building = Cast<ABuilding>(Hit.Actor);
 
@@ -414,6 +419,7 @@ void AFrontierPlayerController::OnSelectUp()
                     SelectedBuildingUI->BindToAnimationFinished(SelectedBuildingUI->GetHideAnimation(), AnimationFinishedEvent);
                 }
 
+                ControllerState = EControllerState::SelectedBuilding;
                 Selected = true;
             }
 

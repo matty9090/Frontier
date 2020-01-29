@@ -24,6 +24,7 @@ enum class EControllerState : uint8
 {
     Idle                UMETA(DisplayName = "Idle"),
     SelectedUnit        UMETA(DisplayName = "SelectedObject"),
+    SelectedBuilding    UMETA(DisplayName = "SelectedBuilding"),
     PlacingBuilding     UMETA(DisplayName = "PlacingBuilding")
 };
 
