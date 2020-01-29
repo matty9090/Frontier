@@ -2,6 +2,12 @@
 
 #include "UnitSelected.h"
 #include "FrontierCharacter.h"
+#include "UnitQueueItemWidget.h"
+
+UUnitSelected::UUnitSelected()
+{
+    UnitClickedHandler.BindUFunction(this, "OnUnitClicked");
+}
 
 void UUnitSelected::SetSelectedUnits(const TArray<AFrontierCharacter*> SelectedUnits)
 {
@@ -13,7 +19,14 @@ void UUnitSelected::SetSelectedUnits(const TArray<AFrontierCharacter*> SelectedU
         
     for (auto Unit : SelectedUnits)
     {
-        UWidget* Widget = CreateWidget<UUserWidget>(GetOwningPlayer(), UnitWidget);
+        auto Widget = CreateWidget<UUnitQueueItemWidget>(GetOwningPlayer(), UnitWidget);
+        Widget->Unit = Unit->GetClass();
+        Widget->UnitClickedEvent.Add(UnitClickedHandler);
         UnitList->AddChildToWrapBox(Widget);
     }
+}
+
+void UUnitSelected::OnUnitClicked(int Index, TSubclassOf<AFrontierCharacter> Unit)
+{
+    TxtUnitType->SetText(FText::FromString(Unit.GetDefaultObject()->UnitName));
 }

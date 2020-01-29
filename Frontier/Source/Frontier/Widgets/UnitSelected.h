@@ -9,6 +9,7 @@
 #include "UnitSelected.generated.h"
 
 class AFrontierCharacter;
+class UUnitQueueItemWidget;
 
 /**
  * 
@@ -19,11 +20,13 @@ class FRONTIER_API UUnitSelected : public UBuildingBaseWidget
 	GENERATED_BODY()
 	
 public:
+    UUnitSelected();
+
     void SetSelectedUnits(const TArray<AFrontierCharacter*> SelectedUnits);
 
 protected:
     UPROPERTY(EditAnywhere)
-    TSubclassOf<UUserWidget> UnitWidget;
+    TSubclassOf<UUnitQueueItemWidget> UnitWidget;
 
     UPROPERTY(Meta=(BindWidget))
     UTextBlock* Num;
@@ -36,4 +39,10 @@ protected:
 
     UPROPERTY(BlueprintReadOnly)
     TArray<AFrontierCharacter*> Units;
+
+private:
+    UFUNCTION()
+    void OnUnitClicked(int Index, TSubclassOf<AFrontierCharacter> Unit);
+
+    FScriptDelegate UnitClickedHandler;
 };
