@@ -159,7 +159,7 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 			if (MoveObject->GetClass() == ALandscape::StaticClass())
 				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToLocation(Location, 60.f, false,true,false,true,0,true);
 			else
-				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, 70.f,false);
+				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange,false);
 		}
 	}
 }
@@ -260,7 +260,7 @@ void AFrontierCharacter::StateAttacking()
 	if (IsValid(MoveObject))
 	{
 		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
-		if (GetDistanceTo(MoveObject) > 200) //change to range
+		if (GetDistanceTo(MoveObject) > AttackRange) //change to range
 		{
 			GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 			MoveTo(MoveObject);
@@ -369,13 +369,29 @@ void AFrontierCharacter::Construct()
 
 void AFrontierCharacter::Attack()
 {
-	auto actorObject = Cast<AActor>(MoveObject);
-
-	UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); // check this
-
 	if (IsValid(MoveObject))
 	{
-		healthComponent->ReceiveDamage((int)AttackStrength);
+		if (bIsArcher)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+			FVector FirePoint = GetActorLocation() + GetActorForwardVector() * 100;
+			auto Rotator = (MoveObject->GetActorLocation() - FirePoint).Rotation();
+
+			GetWorld()->SpawnActor<AProjectile>(
+				ProjectileClass,
+				FirePoint,
+				Rotator,
+				SpawnParams
+				);
+		}
+		else
+		{
+			auto actorObject = Cast<AActor>(MoveObject);
+			UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); // check this
+			healthComponent->ReceiveDamage((int)AttackStrength);
+		}
 	}
 }
 
@@ -405,7 +421,7 @@ void AFrontierCharacter::MoveTo(AActor* Actor)
 	if (IsValid(GetController()))
 	{
 		MoveObject = Actor;
-		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject,70.f);
+		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange);
 		State = ECharacterStates::Moving;
 	}
 }

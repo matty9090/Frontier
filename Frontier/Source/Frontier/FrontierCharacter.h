@@ -8,6 +8,7 @@
 #include "TextureHolder.h"
 #include "BaseResource.h"
 #include "AIController.h"
+#include "Projectile.h"
 #include "FrontierCharacter.generated.h"
 
 class ABuilding;
@@ -135,8 +136,20 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float AttackStrength = 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackRange = 200;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MoveRange = 70;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     bool bCanGather = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsArcher = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AProjectile> ProjectileClass = AProjectile::StaticClass();
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     int32 GatherSpeed = 10;
