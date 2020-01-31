@@ -268,7 +268,6 @@ void AFrontierCharacter::StateAttacking()
 	}
 	else
 	{
-		UE_LOG(LogFrontier, Display, TEXT("yo"));
 		GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 		State = ECharacterStates::Idle; //change idle to find new target. on fail then go idle
 	}
@@ -345,7 +344,7 @@ void AFrontierCharacter::SetAttack()
 	{
 		State = ECharacterStates::Attacking;
 		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
-		GetWorldTimerManager().SetTimer(AttackTimerHandler, this, &AFrontierCharacter::Attack, 1.0f, true); // check
+		GetWorldTimerManager().SetTimer(AttackTimerHandler, this, &AFrontierCharacter::Attack, AttackTime, true); // check
 	}
 }
 
@@ -384,7 +383,7 @@ void AFrontierCharacter::Attack()
 				FirePoint,
 				Rotator,
 				SpawnParams
-				);
+			);
 		}
 		else
 		{

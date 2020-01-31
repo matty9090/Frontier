@@ -140,6 +140,9 @@ public:
 	float AttackRange = 200;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackTime = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MoveRange = 70;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
