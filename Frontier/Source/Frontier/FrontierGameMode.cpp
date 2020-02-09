@@ -113,3 +113,10 @@ void AFrontierGameMode::RestartPlayer(AController* NewPlayer)
     ClearMap();
     InitPlayers();
 }
+
+void AFrontierGameMode::GameOver()
+{
+	auto world = GetWorld();
+	if(world)
+		world->ServerTravel("GameOver",true);
+}

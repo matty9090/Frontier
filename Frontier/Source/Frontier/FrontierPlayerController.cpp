@@ -434,7 +434,7 @@ void AFrontierPlayerController::OnSelectUp()
 
         if (!Selected)
         {
-            if (UI->bIsHidden)
+            if (UI && UI->bIsHidden)
                 UI->ShowUI();
 
             DeselectUnits();
