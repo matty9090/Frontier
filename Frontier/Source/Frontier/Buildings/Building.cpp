@@ -35,7 +35,7 @@ ABuilding::ABuilding()
     Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
     Box->SetupAttachment(RootComponent);
     Box->SetBoxExtent(FVector(32.0f, 32.0f, 32.0f));
-    Box->CanCharacterStepUpOn = ECB_No;
+    Box->CanCharacterStepUpOn = ECB_Yes;
     
     Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
     Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);

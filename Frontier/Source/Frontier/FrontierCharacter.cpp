@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -124,6 +125,11 @@ void AFrontierCharacter::BeginPlay()
 			ai->ReceiveMoveCompleted.Add(MoveCompleteDelegate);
 		}
 	}
+
+	auto Path = Cast<UCrowdFollowingComponent>(UAIBlueprintHelperLibrary::GetAIController(this)->GetPathFollowingComponent());
+	Path->SetCrowdAnticipateTurns(true);
+	Path->SetCrowdSlowdownAtGoal(false);
+	Path->SetCrowdOptimizeTopology(true);
 }
 
 void AFrontierCharacter::EndPlay(EEndPlayReason::Type Reason)
@@ -157,7 +163,7 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 		{
 			State = ECharacterStates::Moving;
 			if (MoveObject->GetClass() == ALandscape::StaticClass())
-				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToLocation(Location, 60.f, false,true,false,true,0,true);
+				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToLocation(Location, -1.0f);
 			else
 				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange,false);
 		}
@@ -212,7 +218,7 @@ void AFrontierCharacter::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingR
 
 void AFrontierCharacter::UpdateNav()
 {
-	SetCanAffectNavigationGeneration(GetVelocity().Size() < 20.f);
+	// SetCanAffectNavigationGeneration(GetVelocity().Size() < 20.f);
 }
 
 void AFrontierCharacter::StateIdle()
