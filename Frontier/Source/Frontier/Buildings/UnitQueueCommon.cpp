@@ -10,6 +10,8 @@
 AUnitQueueCommon::AUnitQueueCommon() : Super()
 {
     PrimaryActorTick.bCanEverTick = true;
+
+	SpawnArea = CreateDefaultSubobject<UBoxComponent>("SpawnArea");
 }
 
 void AUnitQueueCommon::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
@@ -21,7 +23,7 @@ void AUnitQueueCommon::QueueUnit(TSubclassOf<AFrontierCharacter> Unit)
         FUnitQueueItem Item;
         Item.Unit = Unit;
         Item.TimeRemaining = DefaultUnit->TrainTime;
-        Item.SpawnLocation = GetActorLocation();
+		Item.SpawnLocation = (SpawnArea->GetRelativeTransform() * GetTransform()).GetLocation();
 
         Player->Resources -= DefaultUnit->Cost;
         UnitQueue.Push(Item);

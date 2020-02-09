@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Building.h"
+#include "Components/BoxComponent.h"
 #include "UnitQueueCommon.generated.h"
 
 class AFrontierCharacter;
@@ -53,6 +54,10 @@ public:
 
     UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_UnitQueue)
     TArray<FUnitQueueItem> UnitQueue;
+
+protected:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UBoxComponent* SpawnArea;
 
 private:
     UFUNCTION()
