@@ -116,7 +116,8 @@ void AFrontierGameMode::RestartPlayer(AController* NewPlayer)
 
 void AFrontierGameMode::GameOver()
 {
-	auto world = GetWorld();
-	if(world)
-		world->ServerTravel("GameOver",true);
+    if (GetWorld())
+    {
+        GetWorld()->SeamlessTravel("GameOver", true);
+    }
 }
