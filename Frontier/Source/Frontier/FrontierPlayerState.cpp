@@ -5,8 +5,9 @@
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
+#include "Kismet/GameplayStatics.h"
+#include "FrontierGameMode.h"
 #include "City.h"
-#include "Buildings/Building.h"
 #include "FrontierCharacter.h"
 #include "Frontier.h"
 
@@ -121,6 +122,16 @@ TArray<TSubclassOf<ABuilding>> AFrontierPlayerState::GetResearchedBuildings() co
     }
 
     return Buildings;
+}
+
+void AFrontierPlayerState::RemoveCity(ACity* city)
+{
+	Cities.Remove(city);
+
+	if (Cities.Num() <= 0 && HasAuthority())
+	{
+		Cast<AFrontierGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GameOver();
+	}
 }
 
 void AFrontierPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

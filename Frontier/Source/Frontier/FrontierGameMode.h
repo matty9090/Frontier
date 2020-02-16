@@ -26,6 +26,7 @@ public:
 
     bool bCheats = false;
 
+	void GameOver();
 private:
     void InitPlayers();
     void ClearMap();

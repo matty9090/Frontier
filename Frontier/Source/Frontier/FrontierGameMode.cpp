@@ -113,3 +113,11 @@ void AFrontierGameMode::RestartPlayer(AController* NewPlayer)
     ClearMap();
     InitPlayers();
 }
+
+void AFrontierGameMode::GameOver()
+{
+    if (GetWorld())
+    {
+        GetWorld()->SeamlessTravel("GameOver", true);
+    }
+}

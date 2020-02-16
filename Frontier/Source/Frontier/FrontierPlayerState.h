@@ -6,6 +6,7 @@
 #include "Containers/Queue.h"
 #include "GameFramework/PlayerState.h"
 #include "Resources.h"
+#include "Buildings/Building.h"
 #include "Research.h"
 #include "FrontierPlayerState.generated.h"
 
@@ -15,7 +16,6 @@ class AFrontierCharacter;
 class UResearchNode;
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnResearchTreeChangedEvent, EResearchTreeChangedType, UResearchNode*);
-
 /**
  * 
  */
@@ -70,6 +70,8 @@ public:
     UFUNCTION(BlueprintCallable)
     TArray<TSubclassOf<ABuilding>> GetResearchedBuildings() const;
 
+	void RemoveCity(ACity* city);
+
     UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
     FResources Resources;
 
@@ -92,7 +94,6 @@ public:
     TArray<ACity*> Cities;
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
-
 private:
     UPROPERTY(Replicated)
     TArray<TSubclassOf<AActor>> AvailableObjects;
