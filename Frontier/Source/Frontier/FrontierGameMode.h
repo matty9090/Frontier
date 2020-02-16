@@ -27,17 +27,17 @@ public:
 
     bool bCheats = false;
 
+protected:
+    UFUNCTION(BlueprintCallable)
+    void SetupPlayer(AController* Player, FVector Location);
+
 private:
-    void RestartPlayer(AController* NewPlayer) override;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<AFrontierCharacter> WorkerClass;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<ATownHall> TownHallClass;
-
-    UPROPERTY()
-    TArray<AController*> PlayerControllers;
 
     UPROPERTY()
     TArray<FVector> AvailableSpots;

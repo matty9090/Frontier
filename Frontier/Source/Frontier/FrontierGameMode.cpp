@@ -20,13 +20,7 @@ AFrontierGameMode::AFrontierGameMode()
 
 void AFrontierGameMode::BeginPlay()
 {
-    for (TObjectIterator<APlayerStart> It; It; ++It)
-    {
-        if (!AvailableSpots.Contains((*It)->GetActorLocation()))
-        {
-            AvailableSpots.Add((*It)->GetActorLocation());
-        }
-    }
+    
 }
 
 void AFrontierGameMode::DebugCheats()
@@ -41,22 +35,9 @@ void AFrontierGameMode::DebugCheats()
     }
 }
 
-void AFrontierGameMode::RestartPlayer(AController* Player)
+void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
 {
-    Super::RestartPlayer(Player);
-
-    PlayerControllers.Add(Player);
-
-    /*if (AvailableSpots.Num() <= 0)
-    {
-        Logout(Player);
-        UE_LOG(LogFrontier, Warning, TEXT("Not enough start spots! Kicking player."));
-        return;
-    }*/
-
-    auto Location = AvailableSpots.Pop();
     Location.Z = 0;
-
     Player->GetPawn()->SetActorLocation(Location);
 
     auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
