@@ -46,7 +46,7 @@ void AFogOfWar::PostInitializeComponents()
     Texture->CompressionSettings = TextureCompressionSettings::TC_Grayscale;
     Texture->SRGB = 0;
     Texture->UpdateResource();
-    Texture->MipGenSettings = TMGS_NoMipmaps;
+    // Texture->MipGenSettings = TMGS_NoMipmaps; // Only available in Development mode?
 
     Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
 

@@ -20,7 +20,13 @@ AFrontierGameMode::AFrontierGameMode()
 
 void AFrontierGameMode::BeginPlay()
 {
-
+    for (TObjectIterator<APlayerStart> It; It; ++It)
+    {
+        if (!AvailableSpots.Contains((*It)->GetActorLocation()))
+        {
+            AvailableSpots.Add((*It)->GetActorLocation());
+        }
+    }
 }
 
 void AFrontierGameMode::DebugCheats()
@@ -35,83 +41,40 @@ void AFrontierGameMode::DebugCheats()
     }
 }
 
-void AFrontierGameMode::InitPlayers()
+void AFrontierGameMode::RestartPlayer(AController* Player)
 {
-    TArray<FVector> AvailableSpots;
+    Super::RestartPlayer(Player);
 
-    for (TObjectIterator<APlayerStart> It; It; ++It)
+    PlayerControllers.Add(Player);
+
+    /*if (AvailableSpots.Num() <= 0)
     {
-        if (!AvailableSpots.Contains((*It)->GetActorLocation()))
-        {
-            AvailableSpots.Add((*It)->GetActorLocation());
-        }
-    }
+        Logout(Player);
+        UE_LOG(LogFrontier, Warning, TEXT("Not enough start spots! Kicking player."));
+        return;
+    }*/
 
-    for (auto Player : PlayerControllers)
-    {
-        if (Player == NULL || Player->PlayerState == NULL)
-        {
-            PlayerControllers.Remove(Player);
-            continue;
-        }
+    auto Location = AvailableSpots.Pop();
+    Location.Z = 0;
 
-        if (AvailableSpots.Num() <= 0)
-        {
-            Logout(Player);
-            UE_LOG(LogFrontier, Warning, TEXT("Not enough start spots! Kicking player."));
-            break;
-        }
+    Player->GetPawn()->SetActorLocation(Location);
 
-        auto Location = AvailableSpots.Pop();
-        Location.Z = 0;
+    auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
 
-        Player->GetPawn()->SetActorLocation(Location);
+    auto BoxComponent = Cast<UBoxComponent>(TownHallClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+    float Z = BoxComponent->GetScaledBoxExtent().Z;
+    FTransform TownHallTransform(Location + FVector(0.0f, 0.0f, Z));
 
-        auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
+    auto TownHall = GetWorld()->SpawnActorDeferred<ATownHall>(TownHallClass, TownHallTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+    TownHall->Player = PS;
+    TownHall->bBuilt = true;
 
-        auto BoxComponent = Cast<UBoxComponent>(TownHallClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
-        float Z = BoxComponent->GetScaledBoxExtent().Z;
-        FTransform TownHallTransform(Location + FVector(0.0f, 0.0f, Z));
+    FTransform WorkerTransform(Location + FVector(300.0f, 0.0f, 100.0f));
+    auto Worker = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(WorkerClass, WorkerTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+    Worker->Player = PS;
 
-        auto TownHall = GetWorld()->SpawnActorDeferred<ATownHall>(TownHallClass, TownHallTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-        TownHall->Player = PS;
-        TownHall->bBuilt = true;
-
-        FTransform WorkerTransform(Location + FVector(300.0f, 0.0f, 100.0f));
-        auto Worker = GetWorld()->SpawnActorDeferred<AFrontierCharacter>(WorkerClass, WorkerTransform, PS, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-        Worker->Player = PS;
-
-        UGameplayStatics::FinishSpawningActor(TownHall, TownHallTransform);
-        UGameplayStatics::FinishSpawningActor(Worker, WorkerTransform);
-
-        SpawnedStartActors.Add(TownHall);
-        SpawnedStartActors.Add(Worker);
-    }
-
-    UE_LOG(LogFrontier, Display, TEXT("Initialised world"));
-}
-
-void AFrontierGameMode::ClearMap()
-{
-    for (auto Actor : SpawnedStartActors)
-    {
-        if (Actor)
-        {
-            Actor->Destroy();
-        }
-    }
-
-    SpawnedStartActors.Empty();
-}
-
-void AFrontierGameMode::RestartPlayer(AController* NewPlayer)
-{
-    Super::RestartPlayer(NewPlayer);
-
-    PlayerControllers.Add(NewPlayer);
-
-    ClearMap();
-    InitPlayers();
+    UGameplayStatics::FinishSpawningActor(TownHall, TownHallTransform);
+    UGameplayStatics::FinishSpawningActor(Worker, WorkerTransform);
 }
 
 void AFrontierGameMode::GameOver()

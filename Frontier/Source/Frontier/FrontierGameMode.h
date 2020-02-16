@@ -19,6 +19,7 @@ public:
     AFrontierGameMode();
 
     void BeginPlay() override;
+	void GameOver();
 
     // Commands
     UFUNCTION(Exec, Category="ExecFunctions")
@@ -26,10 +27,7 @@ public:
 
     bool bCheats = false;
 
-	void GameOver();
 private:
-    void InitPlayers();
-    void ClearMap();
     void RestartPlayer(AController* NewPlayer) override;
 
     UPROPERTY(EditAnywhere)
@@ -42,5 +40,5 @@ private:
     TArray<AController*> PlayerControllers;
 
     UPROPERTY()
-    TArray<AActor*> SpawnedStartActors;
+    TArray<FVector> AvailableSpots;
 };

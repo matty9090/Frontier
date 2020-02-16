@@ -35,6 +35,7 @@ class AFrontierCharacter : public ACharacter
 public:
     AFrontierCharacter();
 
+	void PostInitializeComponents() override;
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     // Called every frame.
