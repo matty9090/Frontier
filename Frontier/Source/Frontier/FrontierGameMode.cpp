@@ -60,7 +60,7 @@ void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
 
 void AFrontierGameMode::GameOver()
 {
-    if (GetWorld())
+    if (IsValid(GetWorld()))
     {
         GetWorld()->SeamlessTravel("GameOver", true);
     }

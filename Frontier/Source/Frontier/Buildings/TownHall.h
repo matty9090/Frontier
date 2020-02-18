@@ -20,7 +20,8 @@ public:
 
 protected:
     void OnBuildingConstructed() override;
-    void EndPlay(const EEndPlayReason::Type Reason) override;
+    void OnBuildingDestroyed() override;
+
 
 private:
     UPROPERTY(EditAnywhere)

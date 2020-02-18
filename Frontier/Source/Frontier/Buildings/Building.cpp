@@ -202,11 +202,11 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 
 void ABuilding::ReceiveDamage(int Damage)
 {
-	
 	HP -= Damage;
 
 	if (HP <= 0)
 	{
+        OnBuildingDestroyed();
 		Destroy();
 	}
 }
