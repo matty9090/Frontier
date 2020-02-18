@@ -5,7 +5,6 @@
 #include "DelegateCombinations.h"
 #include "Containers/Queue.h"
 #include "GameFramework/Actor.h"
-#include "Buildings/Building.h"
 #include "SubclassOf.h"
 #include "GameFramework/PlayerState.h"
 #include "Resources.h"

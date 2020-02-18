@@ -27,7 +27,6 @@ void UHealthComponent::ReceiveDamage(int Damage)
 {
 	Health -= Damage;
 	HealthChangeEvent.Broadcast(GetOwner(), Health / MaxHealth);
-	
 }
 
 void UHealthComponent::OnRep_Health()

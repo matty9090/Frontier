@@ -108,8 +108,11 @@ void ABuilding::BeginPlay()
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
 
-		if (Health <= 0)
+        if (Health <= 0)
+        {
+            OnBuildingDestroyed();
 			Destroy();
+        }
 	});
 }
 

@@ -62,6 +62,6 @@ void AFrontierGameMode::GameOver()
 {
     if (IsValid(GetWorld()))
     {
-        GetWorld()->SeamlessTravel("GameOver", true);
+        GetWorld()->ServerTravel("GameOver");
     }
 }
