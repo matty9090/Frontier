@@ -34,13 +34,15 @@ void ATownHall::OnBuildingConstructed()
 
 void ATownHall::EndPlay(const EEndPlayReason::Type Reason)
 {
-    if (IsValid(Player) && IsValid(City))
+    Super::EndPlay(Reason);
+
+    if (IsValid(Player))
     {
         Player->RemoveCity(City);
+    }
 
-        if (City)
-        {
-            City->Destroy();
-        }
+    if (IsValid(City))
+    {
+        City->Destroy();
     }
 }

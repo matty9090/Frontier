@@ -4,9 +4,10 @@
 
 #include "DelegateCombinations.h"
 #include "Containers/Queue.h"
+#include "GameFramework/Actor.h"
+#include "SubclassOf.h"
 #include "GameFramework/PlayerState.h"
 #include "Resources.h"
-#include "Buildings/Building.h"
 #include "Research.h"
 #include "FrontierPlayerState.generated.h"
 
@@ -94,6 +95,7 @@ public:
     TArray<ACity*> Cities;
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
+
 private:
     UPROPERTY(Replicated)
     TArray<TSubclassOf<AActor>> AvailableObjects;

@@ -115,7 +115,9 @@ void ABuilding::BeginPlay()
 
 void ABuilding::EndPlay(const EEndPlayReason::Type Reason)
 {
-    if (City)
+    Super::EndPlay(Reason);
+
+    if (IsValid(City))
     {
         City->RemoveBuilding(this);
     }

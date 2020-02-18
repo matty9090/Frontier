@@ -60,7 +60,9 @@ void ACity::BeginPlay()
 
 void ACity::EndPlay(const EEndPlayReason::Type Reason)
 {
-    if (Player)
+    Super::EndPlay(Reason);
+
+    if (IsValid(Player))
     {
         Player->Cities.Remove(this);
     }
@@ -141,12 +143,13 @@ void ACity::FinaliseCityPlayerWidgets()
 
     if (FrontierController)
     {
-        if (FrontierController->PlayerState)
+        if (Player && FrontierController->PlayerState)
         {
             if (Player->Team == FrontierController->GetPlayerState<AFrontierPlayerState>()->Team)
             {
 				if(FrontierController->FogOfWar)
 					FrontierController->FogOfWar->RevealCircle(GetActorLocation(), FogRadius);
+
                 CityNameWidget->SetVisibility(true);
             }
             else

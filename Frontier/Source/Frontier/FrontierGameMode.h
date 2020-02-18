@@ -32,7 +32,6 @@ protected:
     void SetupPlayer(AController* Player, FVector Location);
 
 private:
-
     UPROPERTY(EditAnywhere)
     TSubclassOf<AFrontierCharacter> WorkerClass;
 

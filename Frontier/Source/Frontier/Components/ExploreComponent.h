@@ -32,7 +32,10 @@ private:
     void OnMoveComplete(FAIRequestID RequestID, const FPathFollowingResult& Result);
 
     bool bExploring = true;
+
+    UPROPERTY()
     AAIController* AIController;
+
     FDelegateHandle OnMoveCompleteDelegate;
 
     UPROPERTY(Replicated)

@@ -38,6 +38,7 @@ protected:
 private:
     void FindTarget();
 
+    UPROPERTY()
     AActor* CurrentTarget = nullptr;
 
     bool bCanFire = true;

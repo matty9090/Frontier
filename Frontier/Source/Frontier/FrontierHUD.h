@@ -43,5 +43,6 @@ private:
     float SelStartX, SelStartY;
     float SelEndX, SelEndY;
 
+    UPROPERTY()
     TArray<AFrontierCharacter*> SelectedCharacters;
 };

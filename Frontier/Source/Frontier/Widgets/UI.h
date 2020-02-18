@@ -74,5 +74,6 @@ protected:
 private:
     FDelegateHandle ResearchTreeChangedHandle;
 
+    UPROPERTY()
     TArray<TSubclassOf<ABuilding>> Buildings;
 };

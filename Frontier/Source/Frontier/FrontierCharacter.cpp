@@ -129,9 +129,11 @@ void AFrontierCharacter::BeginPlay()
 
 void AFrontierCharacter::EndPlay(EEndPlayReason::Type Reason)
 {
+	Super::EndPlay(Reason);
+
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
-    if (FrontierController)
+    if (IsValid(FrontierController))
     {
         FrontierController->PlayerKilledEvent.ExecuteIfBound(this);
     }

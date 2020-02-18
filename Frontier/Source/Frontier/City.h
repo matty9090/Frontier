@@ -69,11 +69,11 @@ private:
     UPROPERTY(EditAnywhere)
     int32 VillageNameMax = 6;
 
-    FString GetRandomCityName() const;
-
     UPROPERTY(EditAnywhere)
     TMap<TSubclassOf<ABuilding>, int32> MaxBuildingNums;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<ABuilding> MainBuildingClass;
+    
+    FString GetRandomCityName() const;
 };

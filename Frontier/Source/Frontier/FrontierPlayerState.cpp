@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
 #include "Kismet/GameplayStatics.h"
+#include "Buildings/Building.h"
 #include "FrontierGameMode.h"
 #include "City.h"
 #include "FrontierCharacter.h"

@@ -199,6 +199,5 @@ public:
 
 private:
     FScriptDelegate ActorHitDelegate;
-
 	FScriptDelegate MoveCompleteDelegate;
 };

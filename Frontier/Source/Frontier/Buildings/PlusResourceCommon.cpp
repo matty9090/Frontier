@@ -34,7 +34,10 @@ void APlusResourceCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     Super::EndPlay(EndPlayReason);
 
-    Player->AddSpecificResources(Amount, ResourceType);
+    if (IsValid(Player))
+    {
+        Player->AddSpecificResources(Amount, ResourceType);
+    }
 }
 
 void APlusResourceCommon::OnBuildingConstructed()

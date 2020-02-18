@@ -33,11 +33,7 @@ public:
 	void OnRep_Health();
 
 	FHealthChangedEvent HealthChangeEvent;
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
-private:	
-	
-		
+protected:
+	virtual void BeginPlay() override;
 };

@@ -35,7 +35,10 @@ void AResourceMultiplierCommon::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     Super::EndPlay(EndPlayReason);
 
-    Player->AddResourceMultiplier(-PercentIncrease / 100.0f, ResourceType);
+    if (IsValid(Player))
+    {
+        Player->AddResourceMultiplier(-PercentIncrease / 100.0f, ResourceType);
+    }
 }
 
 void AResourceMultiplierCommon::OnBuildingConstructed()
