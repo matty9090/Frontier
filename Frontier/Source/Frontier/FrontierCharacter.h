@@ -191,6 +191,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
 	ABaseResource* HarvestObject;
 
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	UClass* LastHarvestClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HeldResources;
 

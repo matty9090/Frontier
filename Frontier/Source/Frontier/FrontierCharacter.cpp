@@ -263,7 +263,7 @@ void AFrontierCharacter::StateAttacking()
 	if (IsValid(MoveObject))
 	{
 		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
-		if (GetDistanceTo(MoveObject) > AttackRange) //change to range
+		if (GetDistanceTo(MoveObject) > AttackRange) 
 		{
 			GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 			MoveTo(MoveObject);
@@ -292,6 +292,7 @@ void AFrontierCharacter::SetHarvest()
 	{
 		auto resource = Cast<ABaseResource>(MoveObject);
 		HarvestObject = resource;
+		LastHarvestClass = HarvestObject->GetClass();
 		State = ECharacterStates::Harvesting;
 	}
 }
@@ -391,7 +392,7 @@ void AFrontierCharacter::Attack()
 		else
 		{
 			auto actorObject = Cast<AActor>(MoveObject);
-			UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); // check this
+			UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); 
 			healthComponent->ReceiveDamage((int)AttackStrength);
 		}
 	}
@@ -399,23 +400,28 @@ void AFrontierCharacter::Attack()
 
 void AFrontierCharacter::FindNewHarvest()
 {
-	TArray<ABaseResource*> Resources;
-
-	for (TObjectIterator<ABaseResource> It; It; ++It)
+	if (IsValid(LastHarvestClass))
 	{
-		if (It->GetClass() == HarvestObject->GetClass() && !(*It)->IsPendingKill()) //check this
+		TArray<ABaseResource*> Resources;
+
+		for (TObjectIterator<ABaseResource> It; It; ++It)
 		{
-			Resources.Add(*It);
+			if (It->GetClass() == LastHarvestClass && !(*It)->IsPendingKill()) //check this
+			{
+				Resources.Add(*It);
+			}
+		}
+
+		if (Resources.Num() > 0)
+		{
+			auto closestResource = UFrontierHelperFunctionLibrary::GetClosestResource(GetActorLocation(), Player, Resources);
+			auto building = Cast<ABaseResource>(closestResource);
+			HarvestObject = closestResource;
+			MoveTo(HarvestObject);
 		}
 	}
-
-	if (Resources.Num() > 0)
-	{
-		auto closestResource = UFrontierHelperFunctionLibrary::GetClosestResource(GetActorLocation(), Player, Resources);
-		auto building = Cast<ABaseResource>(closestResource);
-		HarvestObject = closestResource;
-		MoveTo(HarvestObject);
-	}
+	else
+		State = ECharacterStates::Idle;
 }
 
 void AFrontierCharacter::MoveTo(AActor* Actor)
@@ -458,4 +464,5 @@ void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AFrontierCharacter, State); 
 	DOREPLIFETIME(AFrontierCharacter, MoveObject);
 	DOREPLIFETIME(AFrontierCharacter, HarvestObject);
+	DOREPLIFETIME(AFrontierCharacter, LastHarvestClass);
 }
