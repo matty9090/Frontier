@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/Texture2D.h"
 #include "Blueprint/UserWidget.h"
 #include "UnitQueueItemWidget.generated.h"
 
@@ -27,6 +28,9 @@ public:
 
     UPROPERTY(BlueprintReadWrite, Meta=(ExposeOnSpawn))
     int Index;
+
+	UPROPERTY(BlueprintReadWrite, Meta=(ExposeOnSpawn))
+    UTexture2D* Icon;
 
     UPROPERTY(BlueprintAssignable)
     FUnitQueueItemClicked UnitClickedEvent;

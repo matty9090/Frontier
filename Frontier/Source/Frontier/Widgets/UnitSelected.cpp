@@ -21,6 +21,7 @@ void UUnitSelected::SetSelectedUnits(const TArray<AFrontierCharacter*> SelectedU
     {
         auto Widget = CreateWidget<UUnitQueueItemWidget>(GetOwningPlayer(), UnitWidget);
         Widget->Unit = Unit->GetClass();
+		Widget->Icon = Unit->Icon.Texture;
         Widget->UnitClickedEvent.Add(UnitClickedHandler);
         UnitList->AddChildToWrapBox(Widget);
     }
