@@ -34,7 +34,8 @@ enum class ECursorState : uint8
     Default             UMETA(DisplayName = "Default"),
     Build               UMETA(DisplayName = "Build"),
     Attack              UMETA(DisplayName = "Attack"),
-    Send                UMETA(DisplayName = "Send")
+    Send                UMETA(DisplayName = "Send"),
+    Harvest             UMETA(DisplayName = "Harvest")
 };
 
 UCLASS(Blueprintable)
