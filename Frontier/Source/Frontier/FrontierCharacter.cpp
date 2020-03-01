@@ -106,6 +106,8 @@ void AFrontierCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UnitTypeComponent = Cast<UUnitTypeComponent>(GetComponentByClass(UUnitTypeComponent::StaticClass()));
+
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
@@ -393,7 +395,15 @@ void AFrontierCharacter::Attack()
 		{
 			auto actorObject = Cast<AActor>(MoveObject);
 			UHealthComponent* healthComponent = Cast<UHealthComponent>(actorObject->GetComponentByClass(UHealthComponent::StaticClass())); 
-			healthComponent->ReceiveDamage((int)AttackStrength);
+
+			UUnitTypeComponent* typeComponent = Cast<UUnitTypeComponent>(actorObject->GetComponentByClass(UUnitTypeComponent::StaticClass()));
+
+			auto damage = AttackStrength;
+
+			if(typeComponent)
+				damage = UnitTypeComponent->AffectDamage(AttackStrength, typeComponent);
+
+			healthComponent->ReceiveDamage((int)damage);
 		}
 	}
 }

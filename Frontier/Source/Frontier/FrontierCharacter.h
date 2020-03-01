@@ -9,6 +9,7 @@
 #include "BaseResource.h"
 #include "AIController.h"
 #include "Projectile.h"
+#include "Components/UnitTypeComponent.h"
 #include "FrontierCharacter.generated.h"
 
 class ABuilding;
@@ -178,6 +179,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UHealthComponent* HealthComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UUnitTypeComponent* UnitTypeComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBar;
