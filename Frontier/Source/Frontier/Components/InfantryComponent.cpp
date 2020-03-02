@@ -13,11 +13,11 @@ void UInfantryComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-int UInfantryComponent::AffectDamage(int damage, UUnitTypeComponent* TargetType)
+int UInfantryComponent::AffectDamage(int Damage, UUnitTypeComponent* TargetType)
 {
 	if (TargetType->GetClass() == UAntiCavalryComponent::StaticClass())
-		return damage * damageMultiplier;
+		return Damage * DamageMultiplier;
 
-	return damage;
+	return Damage;
 }
 

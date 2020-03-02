@@ -21,7 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-	float damageMultiplier = 2;
+	float DamageMultiplier = 2;
 
 public:	
 	virtual int AffectDamage(int damage, UUnitTypeComponent* TargetType);

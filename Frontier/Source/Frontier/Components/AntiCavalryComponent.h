@@ -20,5 +20,5 @@ protected:
 
 public:
 	// Called every frame
-	virtual int AffectDamage(int damage, UUnitTypeComponent* TargetType) override;
+	virtual int AffectDamage(int Damage, UUnitTypeComponent* TargetType) override;
 };

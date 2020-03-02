@@ -13,9 +13,9 @@ void UUnitTypeComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-int UUnitTypeComponent::AffectDamage(int damage, UUnitTypeComponent* TargetType)
+int UUnitTypeComponent::AffectDamage(int Damage, UUnitTypeComponent* TargetType)
 {
-	return damage;
+	return Damage;
 }
 
 
