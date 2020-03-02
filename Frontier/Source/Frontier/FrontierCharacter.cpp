@@ -381,15 +381,17 @@ void AFrontierCharacter::Attack()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			FVector FirePoint = GetActorLocation() + GetActorForwardVector() * 100;
-			auto Rotator = (MoveObject->GetActorLocation() - FirePoint).Rotation();
+			FVector FirePoint = LaunchPosition->GetComponentLocation();
+			auto Rotator = LaunchPosition->GetComponentRotation();
 
-			GetWorld()->SpawnActor<AProjectile>(
+			auto Projectile = GetWorld()->SpawnActor<AProjectile>(
 				ProjectileClass,
 				FirePoint,
 				Rotator,
 				SpawnParams
 			);
+
+            Projectile->MovementComponent->HomingTargetComponent = MoveObject->GetRootComponent();
 		}
 		else
 		{

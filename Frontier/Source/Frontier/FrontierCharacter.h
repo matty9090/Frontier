@@ -171,6 +171,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     FTextureHolder Icon;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    USceneComponent* LaunchPosition;
+
     UPROPERTY(BlueprintReadWrite, Meta=(ExposeOnSpawn), Replicated)
     AFrontierPlayerState* Player = nullptr;
 
