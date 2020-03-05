@@ -15,7 +15,7 @@
 
 AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
     Scale *= 2.0f;
 
@@ -67,6 +67,15 @@ void AFogOfWar::PostInitializeComponents()
     }
 }
 
+void AFogOfWar::Tick(float DeltaTime)
+{
+    // TODO: Dirty flag
+
+    HandleActors<ABuilding>();
+    HandleActors<ABaseResource>();
+    HandleActors<AFrontierCharacter>();
+}
+
 void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
 {
     auto Texel = WorldPositionToFog(Pos);
@@ -106,7 +115,7 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
 
         // TODO: Generalise
-        for (TActorIterator<ATownHall> It(GetWorld()); It; ++It)
+        /*for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
         {
             auto TH = *It;
             auto Dist = FVector::DistSquared(TH->GetActorLocation(), Pos);
@@ -116,7 +125,7 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
                 TH->bRevealed = true;
                 TH->City->CityNameWidget->SetVisibility(true);
             }
-        }
+        }*/
     }
 }
 

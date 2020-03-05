@@ -13,6 +13,16 @@ ATownHall::ATownHall()
 
 }
 
+void ATownHall::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (City && City->CityNameWidget)
+    {
+        City->CityNameWidget->SetVisibility(bRevealed);
+    }
+}
+
 void ATownHall::OnBuildingConstructed()
 {
     UE_LOG(LogFrontier, Verbose, TEXT("Town hall constructed"));

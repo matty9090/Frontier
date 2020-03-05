@@ -207,6 +207,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EResource HeldResourceType;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bRevealed = false;
+
 private:
     FScriptDelegate ActorHitDelegate;
 	FScriptDelegate MoveCompleteDelegate;

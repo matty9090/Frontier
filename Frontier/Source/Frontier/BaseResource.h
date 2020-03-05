@@ -41,4 +41,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	int Harvest(int GatherSpeed);
+
+    UPROPERTY()
+    bool bRevealed = false;
 };

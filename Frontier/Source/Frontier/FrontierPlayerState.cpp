@@ -5,7 +5,6 @@
 #include "UnrealNetwork.h"
 #include "Engine/World.h"
 #include "Engine/ActorChannel.h"
-#include "Buildings/Building.h"
 #include "Kismet/GameplayStatics.h"
 #include "FrontierGameMode.h"
 #include "City.h"

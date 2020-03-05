@@ -36,6 +36,8 @@ public:
     // Sets default values for this actor's properties
     ABuilding();
 
+    void Tick(float DeltaTime) override;
+
     UFUNCTION(BlueprintCallable)
     void ShowOutline();
 

@@ -140,7 +140,9 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
             if (Cast<AFrontierCharacter>(Hit.Actor))
             {
-                if (Cast<AFrontierCharacter>(Hit.Actor)->Player->Team != PS->Team)
+                auto Char = Cast<AFrontierCharacter>(Hit.Actor);
+
+                if (Char->Player->Team != PS->Team && Char->bRevealed)
                 {
                     CursorState = ECursorState::Attack;
                 }
@@ -157,12 +159,12 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
                         CursorState = ECursorState::Build;
                     }
                 }
-                else if (Building->Player != PS)
+                else if (Building->Player != PS && Building->bRevealed)
                 {
                     CursorState = ECursorState::Attack;
                 }
             }
-            else if (Cast<ABaseResource>(Hit.Actor))
+            else if (Cast<ABaseResource>(Hit.Actor) && Cast<ABaseResource>(Hit.Actor)->bRevealed)
             {
                 CursorState = ECursorState::Harvest;
             }

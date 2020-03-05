@@ -137,6 +137,13 @@ void ABuilding::EndMouseOver(UPrimitiveComponent* TouchedComponent)
     Tooltip->SetVisibility(false);
 }
 
+void ABuilding::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    SetActorHiddenInGame(!bRevealed);
+}
+
 void ABuilding::ShowOutline()
 {
     Mesh->SetRenderCustomDepth(true);

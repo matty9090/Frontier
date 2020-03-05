@@ -18,10 +18,11 @@ class FRONTIER_API ATownHall : public AUnitQueueCommon
 public:
     ATownHall();
 
+    void Tick(float DeltaTime) override;
+
 protected:
     void OnBuildingConstructed() override;
     void OnBuildingDestroyed() override;
-
 
 private:
     UPROPERTY(EditAnywhere)

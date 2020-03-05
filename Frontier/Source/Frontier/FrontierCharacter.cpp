@@ -67,6 +67,8 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+	SetActorHiddenInGame(!bRevealed);
+
     if (GetOwner())
     {
         auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();

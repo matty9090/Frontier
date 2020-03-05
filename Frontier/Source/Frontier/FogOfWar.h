@@ -18,11 +18,12 @@ public:
 	AFogOfWar();
     ~AFogOfWar() { FMemory::Free(Pixels); }
 
-    UPROPERTY()
-    AFrontierPlayerState* Player;
-
+    void Tick(float DeltaTime) override;
     void RevealCircle(const FVector& Pos, float Radius);
     bool IsRevealedBox(const FVector& Pos, float SizeX, float SizeY);
+
+    UPROPERTY()
+    AFrontierPlayerState* Player;
 
 protected:
     virtual void BeginPlay() override;
@@ -52,4 +53,39 @@ private:
 
     uint8* Pixels;
     FUpdateTextureRegion2D WholeTexRegion;
+
+    template <class T>
+    void HandleActors();
 };
+
+template<class T>
+inline void AFogOfWar::HandleActors()
+{
+    for (TActorIterator<T> It(GetWorld()); It; ++It)
+    {
+        auto Actor = *It;
+        auto Texel = WorldPositionToFog(Actor->GetActorLocation());
+        auto TexelRadius = 20.0f * TextureSize / (Scale * 0.75f);
+
+        int MinX = FMath::Clamp<int>(Texel.X - TexelRadius, 0, TextureSize - 1);
+        int MinY = FMath::Clamp<int>(Texel.Y - TexelRadius, 0, TextureSize - 1);
+        int MaxX = FMath::Clamp<int>(Texel.X + TexelRadius, 0, TextureSize - 1);
+        int MaxY = FMath::Clamp<int>(Texel.Y + TexelRadius, 0, TextureSize - 1);
+
+        bool Visible = true;
+
+        for (int X = MinX; X < MaxX && Visible; ++X)
+        {
+            for (int Y = MinY; Y < MaxY; ++Y)
+            {
+                if (Pixels[Y * TextureSize + X] >= 200)
+                {
+                    Visible = false;
+                    break;
+                }
+            }
+        }
+
+        Actor->bRevealed = Visible;
+    }
+}
