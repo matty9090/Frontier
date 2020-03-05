@@ -27,7 +27,7 @@ ABuilding::ABuilding()
     bReplicates = true;
     bAlwaysRelevant = true;
     bNetLoadOnClient = true;
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     BeginMouseOverDelegate.BindUFunction(this, "BeginMouseOver");
     EndMouseOverDelegate.BindUFunction(this, "EndMouseOver");
@@ -143,6 +143,17 @@ void ABuilding::Tick(float DeltaTime)
 
     SetActorHiddenInGame(!bRevealed);
     SetActorEnableCollision(bRevealed);
+
+    if (GetOwner())
+    {
+        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+
+        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+        {
+            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
+            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), bOverrideRadius ? FogRadius : GS->FowRevealRadius);
+        }
+    }
 }
 
 void ABuilding::ShowOutline()
@@ -177,17 +188,6 @@ bool ABuilding::Construct(float ConstructionAmount)
 	{
 		bBuilt = true;
 		Mesh->SetStaticMesh(BuildingMesh);
-
-        if (GetOwner())
-        {
-            auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-
-            if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
-            {
-                auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
-                FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
-            }
-        }
 
         OnBuildingConstructed();
 	}

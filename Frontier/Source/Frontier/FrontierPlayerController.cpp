@@ -137,15 +137,11 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
         else if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
         {
             auto PS = Cast<AFrontierPlayerState>(PlayerState);
+            auto Char = Cast<AFrontierCharacter>(Hit.Actor);
 
             if (Cast<AFrontierCharacter>(Hit.Actor))
             {
-                auto Char = Cast<AFrontierCharacter>(Hit.Actor);
-
-                if (Char->Player->Team != PS->Team && Char->bRevealed)
-                {
-                    CursorState = ECursorState::Attack;
-                }
+                Char->Player->Team != PS->Team && Char->bRevealed ? CursorState = ECursorState::Attack : CursorState = ECursorState::Send;
             }
             else if (Cast<ABuilding>(Hit.Actor))
             {

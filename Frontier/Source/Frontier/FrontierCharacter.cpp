@@ -68,7 +68,6 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 
 	SetActorHiddenInGame(!bRevealed);
-	SetActorEnableCollision(bRevealed);
 
     if (GetOwner())
     {

@@ -55,11 +55,11 @@ private:
     FUpdateTextureRegion2D WholeTexRegion;
 
     template <class T>
-    void HandleActors();
+    void UpdateActorsVisibility(bool bRemainVisible);
 };
 
 template<class T>
-inline void AFogOfWar::HandleActors()
+inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
 {
     for (TActorIterator<T> It(GetWorld()); It; ++It)
     {
@@ -78,7 +78,7 @@ inline void AFogOfWar::HandleActors()
         {
             for (int Y = MinY; Y < MaxY; ++Y)
             {
-                if (Pixels[Y * TextureSize + X] >= 200)
+                if (Pixels[Y * TextureSize + X] >= 50)
                 {
                     Visible = false;
                     break;
@@ -86,6 +86,6 @@ inline void AFogOfWar::HandleActors()
             }
         }
 
-        Actor->bRevealed = Visible;
+        bRemainVisible ? Actor->bRevealed |= Visible : Actor->bRevealed = Visible;
     }
 }

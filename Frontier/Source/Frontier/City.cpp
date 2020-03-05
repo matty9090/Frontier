@@ -17,7 +17,7 @@ ACity::ACity()
     bReplicates = true;
     bAlwaysRelevant = true;
     bNetLoadOnClient = true;
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
     CityRadiusDecal = CreateDefaultSubobject<UDecalComponent>("CityRadiusDecal");
     CityRadiusDecal->DecalSize = FVector(300.0f, Radius, Radius);
@@ -147,9 +147,6 @@ void ACity::FinaliseCityPlayerWidgets()
         {
             if (Player->Team == FrontierController->GetPlayerState<AFrontierPlayerState>()->Team)
             {
-				if(FrontierController->FogOfWar)
-					FrontierController->FogOfWar->RevealCircle(GetActorLocation(), FogRadius);
-
                 CityNameWidget->SetVisibility(true);
             }
             else

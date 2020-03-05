@@ -70,11 +70,23 @@ void AFogOfWar::PostInitializeComponents()
 
 void AFogOfWar::Tick(float DeltaTime)
 {
-    // TODO: Dirty flag
+    UpdateActorsVisibility<ABuilding>(true);
+    UpdateActorsVisibility<ABaseResource>(true);
+    UpdateActorsVisibility<AFrontierCharacter>(false);
 
-    HandleActors<ABuilding>();
-    HandleActors<ABaseResource>();
-    HandleActors<AFrontierCharacter>();
+    for (int Y = 0; Y < TextureSize; ++Y)
+    {
+        for (int X = 0; X < TextureSize; ++X)
+        {
+            auto i = Y * TextureSize + X;
+            
+            if (Pixels[i] < 50)
+            {
+                Pixels[i] = 50;
+            }
+        }
+    }
+    UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 }
 
 void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)

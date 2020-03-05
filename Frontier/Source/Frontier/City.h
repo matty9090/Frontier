@@ -18,6 +18,7 @@ class FRONTIER_API ACity : public AActor
 	
 public:	
 	ACity();
+
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const;
 
     void AddBuilding(ABuilding* Building);
@@ -27,9 +28,6 @@ public:
 
     UPROPERTY(EditAnywhere)
     float Radius = 1600.0f;
-
-	UPROPERTY(EditAnywhere)
-	float FogRadius = 1800.0f;
 
     UPROPERTY(EditAnywhere)
     UMaterialInterface* DecalMaterial = nullptr;
