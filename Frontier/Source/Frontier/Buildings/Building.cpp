@@ -142,6 +142,7 @@ void ABuilding::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     SetActorHiddenInGame(!bRevealed);
+    SetActorEnableCollision(bRevealed);
 }
 
 void ABuilding::ShowOutline()

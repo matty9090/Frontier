@@ -25,6 +25,7 @@ void ABaseResource::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
 	// SetActorHiddenInGame(!bRevealed);
+	// SetActorEnableCollision(bRevealed);
 }
 
 int ABaseResource::Harvest(int GatherSpeed)

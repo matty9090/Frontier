@@ -9,8 +9,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
-#include "Buildings/TownHall.h"
 #include "City.h"
+#include "FrontierCharacter.h"
+#include "Buildings/Building.h"
 #include "Frontier.h"
 
 AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
