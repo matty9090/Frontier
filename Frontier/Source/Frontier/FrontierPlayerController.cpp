@@ -129,7 +129,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             {
                 auto BoxComponent = Cast<UBoxComponent>(HoveredBuilding->GetComponentByClass(UBoxComponent::StaticClass()));
                 auto Extent = BoxComponent->GetScaledBoxExtent();
-
+                
                 HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Extent.Z));
                 HoveredBuilding->SetCanPlace(FogOfWar->IsRevealedBox(HoveredBuilding->GetActorLocation(), Extent.X, Extent.Y));
             }
@@ -221,12 +221,14 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
     );
 
     HoveredBuilding->Box->SetRelativeTransform(BuildingDefaults->Box->GetRelativeTransform());
-    HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetScaledBoxExtent());
+    HoveredBuilding->Box->SetBoxExtent(BuildingDefaults->Box->GetUnscaledBoxExtent());
     HoveredBuilding->Mesh->SetStaticMesh(BuildingDefaults->BuildingMesh);
     HoveredBuilding->Mesh->SetRelativeTransform(BuildingDefaults->Mesh->GetRelativeTransform());
     HoveredBuilding->HoverMaterialGreen = HoverMaterialGreen;
     HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
     HoveredBuilding->BuildingType = BuildingType;
+
+    UE_LOG(LogFrontier, Display, TEXT("Extent Y: %f"), BuildingDefaults->Box->GetScaledBoxExtent().Z);
 
     UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
