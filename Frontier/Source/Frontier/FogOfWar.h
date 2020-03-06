@@ -25,6 +25,9 @@ public:
     UPROPERTY()
     AFrontierPlayerState* Player;
 
+    UPROPERTY(EditAnywhere)
+    int32 Scale = 10000;
+
 protected:
     virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
@@ -35,9 +38,6 @@ private:
 
     UPROPERTY(EditAnywhere)
     UDecalComponent* Decal;
-
-    UPROPERTY(EditAnywhere)
-    int32 Scale = 10000;
 
     UPROPERTY(EditAnywhere)
     int32 TextureSize = 1024;

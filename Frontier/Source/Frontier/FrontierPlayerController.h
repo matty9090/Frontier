@@ -60,6 +60,9 @@ public:
     UPROPERTY(BlueprintReadOnly)
     ECursorState CursorState = ECursorState::Default;
 
+    UPROPERTY(BlueprintReadOnly)
+    UTextureRenderTarget2D* MinimapTarget;
+
     FPlayerKilledEvent PlayerKilledEvent;
 
 protected:
@@ -130,6 +133,9 @@ private:
 
     UPROPERTY(EditAnywhere)
     UCurveFloat* ZoomCurve = nullptr;
+
+    UPROPERTY(EditAnywhere)
+    float MinimapSize = 20400.0f;
 
     UPROPERTY(EditAnywhere)
     TSubclassOf<UUI> UIClass;

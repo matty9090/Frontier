@@ -24,6 +24,10 @@
 #include "RoamPawn.h"
 #include "BaseResource.h"
 #include "FogOfWar.h"
+#include "Landscape.h"
+#include "Engine/SceneCapture2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+#include "Components/SceneCaptureComponent2D.h"
 #include "Widgets/UnitSelected.h"
 #include "Widgets/BuildingBaseWidget.h"
 
@@ -42,12 +46,24 @@ void AFrontierPlayerController::BeginPlay()
 
     if (!IsRunningDedicatedServer())
     {
-        ClientCreateUI();
-
         FTransform Transform(FVector(0.0f, 0.0f, 260.0f));
         FogOfWar = GetWorld()->SpawnActorDeferred<AFogOfWar>(FogOfWarClass, Transform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
         FogOfWar->Player = Cast<AFrontierPlayerState>(PlayerState);
         UGameplayStatics::FinishSpawningActor(FogOfWar, Transform);
+
+        MinimapTarget = NewObject<UTextureRenderTarget2D>();
+        MinimapTarget->InitAutoFormat(512, 512);
+
+        auto Landscape = UGameplayStatics::GetActorOfClass(GetWorld(), ALandscape::StaticClass());
+
+        FTransform CapTransform(FRotator(-90.0f, 0.0f, 0.0f), FVector(0.0f, 0.0f, 1000.0f));
+        ASceneCapture2D* SceneCapture = GetWorld()->SpawnActor<ASceneCapture2D>(ASceneCapture2D::StaticClass(), CapTransform);
+        auto Capture = SceneCapture->GetCaptureComponent2D();
+        Capture->TextureTarget = MinimapTarget;
+        Capture->OrthoWidth = FMath::Abs(Landscape->GetActorLocation().X) * 2.0f;
+        Capture->ProjectionType = ECameraProjectionMode::Orthographic;
+        
+        ClientCreateUI();
 
         PlayerKilledEvent.BindLambda([&](AFrontierCharacter* C) {
             for (auto Selected : SelectedUnits)
@@ -243,7 +259,9 @@ void AFrontierPlayerController::OnRep_PlayerState()
     UE_LOG(LogFrontier, Display, TEXT("Controller: Received player state"));
 
     if (UI)
+    {
         UI->RemoveFromParent();
+    }
 
     ClientCreateUI();
 }
