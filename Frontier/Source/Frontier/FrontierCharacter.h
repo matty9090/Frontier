@@ -210,6 +210,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bRevealed = false;
 
+	UPROPERTY()
+    UWidgetComponent* ResourceDepositWidget = nullptr;
+
 private:
     FScriptDelegate ActorHitDelegate;
 	FScriptDelegate MoveCompleteDelegate;

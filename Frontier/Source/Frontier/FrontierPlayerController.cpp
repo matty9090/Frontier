@@ -228,8 +228,6 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
     HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
     HoveredBuilding->BuildingType = BuildingType;
 
-    UE_LOG(LogFrontier, Display, TEXT("Extent Y: %f"), BuildingDefaults->Box->GetScaledBoxExtent().Z);
-
     UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
     auto PS = GetPlayerState<AFrontierPlayerState>();

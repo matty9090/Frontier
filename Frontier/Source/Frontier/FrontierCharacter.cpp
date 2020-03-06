@@ -12,6 +12,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Widgets/HealthBarWidget.h"
+#include "Widgets/FeedbackWidget.h"
 #include "FrontierHelperFunctionLibrary.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Materials/Material.h"
@@ -61,6 +62,19 @@ AFrontierCharacter::AFrontierCharacter()
     SetActorEnableCollision(true);
     ActorHitDelegate.BindUFunction(this, "OnHit");
     OnActorHit.Add(ActorHitDelegate);
+
+	// Set up resource deposit widget
+	ResourceDepositWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlusResourceWidget"));
+	// ResourceDepositWidget->SetupAttachment(RootComponent);
+	ResourceDepositWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	ResourceDepositWidget->SetDrawAtDesiredSize(true);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> ResWidget(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_GenericFeedback"));
+
+	if (ResWidget.Succeeded())
+	{
+		ResourceDepositWidget->SetWidgetClass(ResWidget.Class);
+	}
 }
 
 void AFrontierCharacter::Tick(float DeltaSeconds)
@@ -303,6 +317,16 @@ void AFrontierCharacter::SetHarvest()
 
 void AFrontierCharacter::FinishDeposit()
 {
+	if (HeldResources > 0.0f)
+	{
+		auto ResWidget = Cast<UFeedbackWidget>(ResourceDepositWidget->GetUserWidgetObject());
+		ResWidget->Text = "<Green>+" + FString::FromInt(HeldResources) + "</> ";
+		ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(HeldResourceType);
+		ResWidget->Play();
+
+		ResourceDepositWidget->SetWorldLocation(MoveObject->GetActorLocation() + FVector::UpVector * 60.0f);
+	}
+
 	Player->AddSpecificResources(HeldResources, HeldResourceType);
 	HeldResources = 0.f;
 
