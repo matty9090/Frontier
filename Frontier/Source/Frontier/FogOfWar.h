@@ -43,6 +43,9 @@ private:
     int32 TextureSize = 1024;
 
     UPROPERTY(EditAnywhere)
+    int32 KnownOpacity = 55;
+
+    UPROPERTY(EditAnywhere)
     UMaterialInterface* Material = nullptr;
 
     UPROPERTY()
@@ -58,7 +61,7 @@ private:
     void UpdateActorsVisibility(bool bRemainVisible);
 };
 
-template<class T>
+template <class T>
 inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
 {
     for (TActorIterator<T> It(GetWorld()); It; ++It)
@@ -78,7 +81,7 @@ inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
         {
             for (int Y = MinY; Y < MaxY; ++Y)
             {
-                if (Pixels[Y * TextureSize + X] >= 50)
+                if (Pixels[Y * TextureSize + X] >= KnownOpacity)
                 {
                     Visible = false;
                     break;

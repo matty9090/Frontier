@@ -80,12 +80,13 @@ void AFogOfWar::Tick(float DeltaTime)
         {
             auto i = Y * TextureSize + X;
             
-            if (Pixels[i] < 50)
+            if (Pixels[i] < KnownOpacity)
             {
-                Pixels[i] = 50;
+                Pixels[i] = KnownOpacity;
             }
         }
     }
+
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 }
 
