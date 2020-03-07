@@ -15,6 +15,7 @@ class ABuilding;
 class UResearchNode;
 class ADummyBuilding;
 class UBuildingBaseWidget;
+class UResourcesContainerWidget;
 
 DECLARE_DELEGATE_OneParam(FPlayerKilledEvent, AFrontierCharacter*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCityBuiltEvent, ACity*);
@@ -83,6 +84,8 @@ private:
     UFUNCTION()
     void OnRep_PlacedBuilding();
 
+    void ShowResourceContainsWidget(ABaseResource* Res, int MX, int MY);
+
     // Begin Input
     void OnMoveUp(float Value);
     void OnMoveRight(float Value);
@@ -141,6 +144,9 @@ private:
     TSubclassOf<UUI> UIClass;
 
     UPROPERTY(EditAnywhere)
+    TSubclassOf<UResourcesContainerWidget> ResourcesContainerClass;
+
+    UPROPERTY(EditAnywhere)
     UMaterialInterface* HoverMaterialGreen = nullptr;
 
     UPROPERTY(EditAnywhere)
@@ -175,6 +181,9 @@ private:
 
     UPROPERTY()
     FWidgetAnimationDynamicEvent AnimationFinishedEvent;
+
+    UPROPERTY()
+    UResourcesContainerWidget* ResourcesContainerWidget;
 
     FCityBuiltEvent CityBuiltEvent;
 };

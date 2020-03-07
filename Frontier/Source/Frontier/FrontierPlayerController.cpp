@@ -30,6 +30,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Widgets/UnitSelected.h"
 #include "Widgets/BuildingBaseWidget.h"
+#include "Widgets/ResourcesContainerWidget.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
 {
@@ -101,6 +102,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
     Super::PlayerTick(DeltaTime);
 
     CursorState = ECursorState::Default;
+    ResourcesContainerWidget->SetVisibility(ESlateVisibility::Collapsed);
 
     float MX, MY;
     
@@ -179,10 +181,30 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             else if (Cast<ABaseResource>(Hit.Actor) && Cast<ABaseResource>(Hit.Actor)->bRevealed)
             {
                 CursorState = ECursorState::Harvest;
+                ShowResourceContainsWidget(Cast<ABaseResource>(Hit.Actor), MX, MY);
             }
             else
             {
                 CursorState = ECursorState::Send;
+            }
+        }
+    }
+    else
+    {
+        FHitResult Hit;
+
+        TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
+            EObjectTypeQuery::ObjectTypeQuery1, // WorldStatic
+            EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
+        };
+
+        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        {
+            auto Res = Cast<ABaseResource>(Hit.Actor);
+
+            if (Res && Res->bRevealed)
+            {
+                ShowResourceContainsWidget(Res, MX, MY);
             }
         }
     }
@@ -195,6 +217,15 @@ void AFrontierPlayerController::ClientCreateUI_Implementation()
     if (UI)
     {
         UI->AddToViewport();
+    }
+
+    ResourcesContainerWidget = CreateWidget<UResourcesContainerWidget>(this, ResourcesContainerClass, "ResourcesContainer");
+
+    if (ResourcesContainerWidget)
+    {
+        ResourcesContainerWidget->AddToViewport();
+        ResourcesContainerWidget->SetDesiredSizeInViewport(ResourcesContainerWidget->GetDesiredSize());
+        ResourcesContainerWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 
     AnimationFinishedEvent.BindUFunction(this, "BuildingUIAnimationFinished");
@@ -272,6 +303,14 @@ void AFrontierPlayerController::OnRep_PlacedBuilding()
     {
         HoveredBuilding->Destroy();
     }
+}
+
+void AFrontierPlayerController::ShowResourceContainsWidget(ABaseResource* Res, int MX, int MY)
+{
+    ResourcesContainerWidget->SetPositionInViewport(FVector2D(MX, MY));
+    ResourcesContainerWidget->SetVisibility(ESlateVisibility::Visible);
+    ResourcesContainerWidget->Amount->SetText(FText::FromString(FString::FromInt(Res->GetRemainingResources())));
+    ResourcesContainerWidget->Label->SetText(FText::FromString(Res->ResourceName));
 }
 
 void AFrontierPlayerController::OnMoveUp(float Value)

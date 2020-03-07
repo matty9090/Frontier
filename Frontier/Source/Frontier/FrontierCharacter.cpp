@@ -65,7 +65,6 @@ AFrontierCharacter::AFrontierCharacter()
 
 	// Set up resource deposit widget
 	ResourceDepositWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PlusResourceWidget"));
-	// ResourceDepositWidget->SetupAttachment(RootComponent);
 	ResourceDepositWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	ResourceDepositWidget->SetDrawAtDesiredSize(true);
 
