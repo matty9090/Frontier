@@ -102,6 +102,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
     Super::PlayerTick(DeltaTime);
 
     CursorState = ECursorState::Default;
+	if(ResourcesContainerWidget)
     ResourcesContainerWidget->SetVisibility(ESlateVisibility::Collapsed);
 
     float MX, MY;
