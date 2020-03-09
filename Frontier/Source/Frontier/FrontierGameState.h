@@ -30,7 +30,4 @@ public:
 
     UPROPERTY(BlueprintReadOnly, Replicated)
     int32 NumTeams = 0;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    float FowRevealRadius = 900.0f;
 };
