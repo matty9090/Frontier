@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/RevealFogComponent.h"
 #include "Widgets/HealthBarWidget.h"
 #include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
@@ -64,6 +65,8 @@ ABuilding::ABuilding()
     Tooltip->SetWidgetSpace(EWidgetSpace::Screen);
     Tooltip->SetDrawAtDesiredSize(true);
     Tooltip->SetVisibility(false);
+
+    RevealFogComponent = CreateDefaultSubobject<URevealFogComponent>(TEXT("RevealFog"));
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> BarClass(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_HealthBar"));
 
@@ -143,17 +146,6 @@ void ABuilding::Tick(float DeltaTime)
 
     SetActorHiddenInGame(!bRevealed);
     SetActorEnableCollision(bRevealed);
-
-    if (GetOwner())
-    {
-        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-
-        if (FrontierController && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
-        {
-            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
-            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), bOverrideRadius ? FogRadius : GS->FowRevealRadius);
-        }
-    }
 }
 
 void ABuilding::ShowOutline()

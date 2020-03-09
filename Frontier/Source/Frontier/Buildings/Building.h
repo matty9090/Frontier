@@ -18,6 +18,7 @@ class UBuildingBaseWidget;
 class UStaticMeshComponent;
 class UHealthComponent;
 class UWidgetComponent;
+class URevealFogComponent;
 
 UENUM(BlueprintType)
 enum class EBuildingCategory : uint8
@@ -106,12 +107,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool bCanDeposit = false;
-
-    UPROPERTY(EditAnywhere)
-	bool bOverrideRadius = false;
-
-    UPROPERTY(EditAnywhere)
-	float FogRadius = 1800.0f;
     
     UPROPERTY(BlueprintReadWrite, Replicated, Meta=(ExposeOnSpawn))
     AFrontierPlayerState* Player;
@@ -124,6 +119,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UWidgetComponent* HealthBar;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	URevealFogComponent* RevealFogComponent;
 
 private:
     UFUNCTION()

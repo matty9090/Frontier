@@ -19,7 +19,6 @@ public:
     ~AFogOfWar() { FMemory::Free(Pixels); }
 
     void Tick(float DeltaTime) override;
-    void RevealCircle(const FVector& Pos, float Radius);
     bool IsRevealedBox(const FVector& Pos, float SizeX, float SizeY);
 
     UPROPERTY()
@@ -34,6 +33,7 @@ protected:
 
 private:
     FVector2D WorldPositionToFog(const FVector& Pos);
+    void RevealCircle(const FVector& Pos, float Radius);
     void UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
     UPROPERTY(EditAnywhere)

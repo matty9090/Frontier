@@ -7,6 +7,7 @@
 #include "Engine/CollisionProfile.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/RevealFogComponent.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "City.h"
@@ -87,6 +88,27 @@ void AFogOfWar::Tick(float DeltaTime)
         }
     }
 
+    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+    
+    for (TObjectIterator<URevealFogComponent> It; It; ++It)
+    {
+        auto Actor = It->GetOwner();
+        auto Prop = Actor->GetClass()->FindPropertyByName("Player");
+
+        if (Prop)
+        {
+            UObject* Obj = Cast<UObjectPropertyBase>(Prop)->GetObjectPropertyValue_InContainer(Actor);
+
+            if (Obj && Cast<AFrontierPlayerState>(Obj) && FrontierController->PlayerState)
+            {
+                if (Cast<AFrontierPlayerState>(Obj)->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+                {
+                    RevealCircle(Actor->GetActorLocation(), It->FogRadius);
+                }
+            }
+        }
+    }
+
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 }
 
@@ -127,19 +149,6 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
     {
         UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
-
-        // TODO: Generalise
-        /*for (TActorIterator<ABuilding> It(GetWorld()); It; ++It)
-        {
-            auto TH = *It;
-            auto Dist = FVector::DistSquared(TH->GetActorLocation(), Pos);
-
-            if (TH && TH->City && !TH->bRevealed && Dist < Radius * Radius)
-            {
-                TH->bRevealed = true;
-                TH->City->CityNameWidget->SetVisibility(true);
-            }
-        }*/
     }
 }
 

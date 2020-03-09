@@ -16,6 +16,7 @@ class ABuilding;
 class AFrontierPlayerState;
 class UHealthComponent;
 class UWidgetComponent;
+class URevealFogComponent;
 
 UENUM(BlueprintType)
 enum class ECharacterStates : uint8
@@ -212,6 +213,9 @@ public:
 
 	UPROPERTY()
     UWidgetComponent* ResourceDepositWidget = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    URevealFogComponent* RevealFogComponent;
 
 private:
     FScriptDelegate ActorHitDelegate;

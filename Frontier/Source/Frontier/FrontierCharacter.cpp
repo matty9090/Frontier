@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/RevealFogComponent.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -50,8 +51,9 @@ AFrontierCharacter::AFrontierCharacter()
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECR_Block);
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECR_Overlap);
     
-	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	HealthBar		= CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthComponent    = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	HealthBar		   = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+    RevealFogComponent = CreateDefaultSubobject<URevealFogComponent>(TEXT("RevealFog"));
 
 	HealthBar->SetupAttachment(RootComponent);
 
@@ -84,14 +86,6 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
 
     if (GetOwner())
     {
-        auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-
-        if (FrontierController && FrontierController->PlayerState && Player->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
-        {
-            auto GS = Cast<AFrontierGameState>(UGameplayStatics::GetGameState(GetWorld()));
-            FrontierController->FogOfWar->RevealCircle(GetActorLocation(), GS->FowRevealRadius);
-        }
-
 		UpdateNav();
 
 		switch (State)
