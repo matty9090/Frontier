@@ -94,6 +94,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FindNewHarvest();
 
+	UFUNCTION(BlueprintCallable)
+	void FindNewEnemy();
+
 	//build functions
 	UFUNCTION(BlueprintCallable)
 	void SetBuild();

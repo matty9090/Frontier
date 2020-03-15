@@ -283,7 +283,7 @@ void AFrontierCharacter::StateAttacking()
 	else
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimerHandler);
-		State = ECharacterStates::Idle; //change idle to find new target. on fail then go idle
+		FindNewEnemy();
 	}
 }
 
@@ -453,6 +453,26 @@ void AFrontierCharacter::FindNewHarvest()
 	}
 	else
 		State = ECharacterStates::Idle;
+}
+
+void AFrontierCharacter::FindNewEnemy()
+{
+	if (HasAuthority())
+	{
+		TArray<AFrontierCharacter*> characters;
+
+		for (TObjectIterator<AFrontierCharacter> It; It; ++It)
+		{
+			if(It->Player && !(*It)->IsPendingKill())
+				characters.Add(*It);
+		}
+
+		auto closestCharacter = UFrontierHelperFunctionLibrary::GetClosestEnemy(GetActorLocation(),Player, characters);
+		if (closestCharacter)
+			MoveTo(closestCharacter);
+		else
+			State = ECharacterStates::Idle;
+	}
 }
 
 void AFrontierCharacter::MoveTo(AActor* Actor)
