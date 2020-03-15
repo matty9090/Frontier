@@ -88,14 +88,14 @@ void AFrontierHUD::GetCharactersInSelectionRectangle(const FVector2D& FirstPoint
 
     const FVector BoundsPointMapping[8] =
     {
-        FVector(1.f, 1.f, 0.0f),
-        FVector(1.f, 1.f, 0.0f),
-        FVector(1.f, -1.f, 0.0f),
-        FVector(1.f, -1.f, 0.0f),
-        FVector(-1.f, 1.f, 0.0f),
-        FVector(-1.f, 1.f, 0.0f),
-        FVector(-1.f, -1.f, 0.0f),
-        FVector(-1.f, -1.f, 0.0f)
+        FVector(1.f, 1.f, 1.f),
+		FVector(1.f, 1.f, -1.f),
+		FVector(1.f, -1.f, 1.f),
+		FVector(1.f, -1.f, -1.f),
+		FVector(-1.f, 1.f, 1.f),
+		FVector(-1.f, 1.f, -1.f),
+		FVector(-1.f, -1.f, 1.f),
+		FVector(-1.f, -1.f, -1.f)
     };
 
     for (TActorIterator<AFrontierCharacter> Itr(GetWorld(), AFrontierCharacter::StaticClass()); Itr; ++Itr)
@@ -104,7 +104,7 @@ void AFrontierHUD::GetCharactersInSelectionRectangle(const FVector2D& FirstPoint
 
         const FBox EachActorBounds = EachActor->GetRootComponent()->Bounds.GetBox();
         const FVector BoxCenter = EachActorBounds.GetCenter();
-        const FVector BoxExtents = EachActorBounds.GetExtent();
+        const FVector BoxExtents = EachActorBounds.GetExtent() / 2.0f;
 
         FBox2D ActorBox2D(ForceInit);
 
@@ -119,7 +119,7 @@ void AFrontierHUD::GetCharactersInSelectionRectangle(const FVector2D& FirstPoint
         Draw2DLine(ActorBox2D.Min.X, ActorBox2D.Min.Y, ActorBox2D.Min.X, ActorBox2D.Max.Y, FColor::Red);
         Draw2DLine(ActorBox2D.Max.X, ActorBox2D.Max.Y, ActorBox2D.Min.X, ActorBox2D.Max.Y, FColor::Red);*/
 
-        if (SelectionRectangle.IsInside(ActorBox2D))
+        if (SelectionRectangle.Intersect(ActorBox2D))
         {
             OutActors.Add(EachActor);
         }
