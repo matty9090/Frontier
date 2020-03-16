@@ -283,7 +283,7 @@ void AFrontierCharacter::StateAttacking()
 	else
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimerHandler);
-		State = ECharacterStates::Idle; //change idle to find new target. on fail then go idle
+		FindNewEnemy();
 	}
 }
 
@@ -455,13 +455,36 @@ void AFrontierCharacter::FindNewHarvest()
 		State = ECharacterStates::Idle;
 }
 
+void AFrontierCharacter::FindNewEnemy()
+{
+	if (HasAuthority())
+	{
+		TArray<AFrontierCharacter*> Characters;
+
+        for (TActorIterator<AFrontierCharacter> It(GetWorld(), AFrontierCharacter::StaticClass()); It; ++It)
+		{
+            if (IsValid(*It) && IsValid(It->Player) && *It != this)
+            {
+                Characters.Add(*It);
+            }
+		}
+
+		auto ClosestCharacter = UFrontierHelperFunctionLibrary::GetClosestEnemy(GetActorLocation(), Player, Characters);
+
+		if (ClosestCharacter)
+			MoveTo(ClosestCharacter);
+		else
+			State = ECharacterStates::Idle;
+	}
+}
+
 void AFrontierCharacter::MoveTo(AActor* Actor)
 {
 	if (IsValid(GetController()))
 	{
 		MoveObject = Actor;
-		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange);
 		State = ECharacterStates::Moving;
+		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange);
 	}
 }
 
