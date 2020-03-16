@@ -459,17 +459,20 @@ void AFrontierCharacter::FindNewEnemy()
 {
 	if (HasAuthority())
 	{
-		TArray<AFrontierCharacter*> characters;
+		TArray<AFrontierCharacter*> Characters;
 
-		for (TObjectIterator<AFrontierCharacter> It; It; ++It)
+        for (TActorIterator<AFrontierCharacter> It(GetWorld(), AFrontierCharacter::StaticClass()); It; ++It)
 		{
-			if(It->Player && !(*It)->IsPendingKill())
-				characters.Add(*It);
+            if (IsValid(*It) && IsValid(It->Player) && *It != this)
+            {
+                Characters.Add(*It);
+            }
 		}
 
-		auto closestCharacter = UFrontierHelperFunctionLibrary::GetClosestEnemy(GetActorLocation(),Player, characters);
-		if (closestCharacter)
-			MoveTo(closestCharacter);
+		auto ClosestCharacter = UFrontierHelperFunctionLibrary::GetClosestEnemy(GetActorLocation(), Player, Characters);
+
+		if (ClosestCharacter)
+			MoveTo(ClosestCharacter);
 		else
 			State = ECharacterStates::Idle;
 	}
@@ -480,8 +483,8 @@ void AFrontierCharacter::MoveTo(AActor* Actor)
 	if (IsValid(GetController()))
 	{
 		MoveObject = Actor;
-		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange);
 		State = ECharacterStates::Moving;
+		UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange);
 	}
 }
 
