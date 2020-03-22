@@ -17,7 +17,9 @@
 
 AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
 {
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
+    SetTickGroup(ETickingGroup::TG_PostPhysics);
+    SetActorTickInterval(1.0f / 20.0f);
 
     Scale *= 2.0f;
 
@@ -25,7 +27,7 @@ AFogOfWar::AFogOfWar() : WholeTexRegion(0, 0, 0, 0, TextureSize, TextureSize)
     Decal->SetDecalMaterial(Material);
     Decal->DecalSize = FVector(1000.0f, Scale, Scale);
     Decal->SetRelativeRotation(FRotator(-90.0f, 0.0f, 0.0f));
-	Decal->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+    Decal->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
     
     RootComponent = Decal;
 }
