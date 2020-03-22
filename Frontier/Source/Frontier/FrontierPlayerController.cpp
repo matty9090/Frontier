@@ -181,6 +181,10 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
                 {
                     CursorState = ECursorState::Attack;
                 }
+                else
+                {
+                    CursorState = ECursorState::Send;
+                }
             }
             else if (Cast<ABaseResource>(Hit.Actor) && Cast<ABaseResource>(Hit.Actor)->bRevealed)
             {
