@@ -623,10 +623,25 @@ bool AFrontierPlayerController::ServerMoveAIToLocation_Validate(const TArray<AFr
 
 void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(const TArray<AFrontierCharacter*>& AI, FVector Location, AActor* Object)
 {
-    if (Object && !Object->IsPendingKill())
+    if (IsValid(Object))
     {
+        auto Cols = FMath::CeilToInt(FMath::Sqrt(AI.Num()));
+        auto Rows = FMath::CeilToInt(StaticCast<float>(AI.Num()) / Cols);
+
+        TArray<FVector> Positions;
+
+        for (int Row = 0; Row < Rows; ++Row)
+        {
+            for (int Col = 0; Col < Cols; ++Col)
+            {
+                Positions.Add(FVector(FormationSeparation * Col, FormationSeparation * Row, 0.0f));
+            }
+        }
+
+        auto Offset = FVector(-FormationSeparation * 0.5f * Cols, FormationSeparation * 0.5f * Rows, 0.0f);
+
         for(auto Unit : AI)
-            Unit->MoveToLocation(Location, Object);
+            Unit->MoveToLocation(Location + Offset + Positions.Pop(), Object);
     }
 }
 

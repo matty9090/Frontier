@@ -132,6 +132,9 @@ private:
     float MouseMovementPadding = 1.0f;
 
     UPROPERTY(EditAnywhere)
+    float FormationSeparation = 50.0f;
+
+    UPROPERTY(EditAnywhere)
     UCurveFloat* MovementCurve = nullptr;
 
     UPROPERTY(EditAnywhere)

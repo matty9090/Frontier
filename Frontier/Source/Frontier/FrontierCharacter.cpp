@@ -136,6 +136,22 @@ void AFrontierCharacter::BeginPlay()
 			ai->ReceiveMoveCompleted.Add(MoveCompleteDelegate);
 		}
 	}
+
+	auto AI = UAIBlueprintHelperLibrary::GetAIController(this);
+
+	if (AI)
+	{
+		auto Path = Cast<UCrowdFollowingComponent>(AI->GetPathFollowingComponent());
+
+		if (Path)
+		{
+			Path->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
+			Path->SetCrowdAvoidanceRangeMultiplier(1.6f);
+			Path->SetCrowdAnticipateTurns(true);
+			Path->SetCrowdSlowdownAtGoal(false);
+			Path->SetCrowdOptimizeTopology(true);
+		}
+	}
 }
 
 void AFrontierCharacter::EndPlay(EEndPlayReason::Type Reason)
@@ -498,16 +514,6 @@ void AFrontierCharacter::PauseTimerFunctions()
 void AFrontierCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	auto AI = UAIBlueprintHelperLibrary::GetAIController(this);
-
-	if (AI)
-	{
-		auto Path = Cast<UCrowdFollowingComponent>(AI->GetPathFollowingComponent());
-		Path->SetCrowdAnticipateTurns(true);
-		Path->SetCrowdSlowdownAtGoal(false);
-		Path->SetCrowdOptimizeTopology(true);
-	}
 }
 
 void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
