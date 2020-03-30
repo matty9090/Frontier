@@ -16,6 +16,7 @@ class UResearchNode;
 class ADummyBuilding;
 class UBuildingBaseWidget;
 class UResourcesContainerWidget;
+class UBuildingPlacementErrorWidget;
 
 DECLARE_DELEGATE_OneParam(FPlayerKilledEvent, AFrontierCharacter*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCityBuiltEvent, ACity*);
@@ -150,6 +151,9 @@ private:
     TSubclassOf<UResourcesContainerWidget> ResourcesContainerClass;
 
     UPROPERTY(EditAnywhere)
+    TSubclassOf<UBuildingPlacementErrorWidget> BuildingPlacementErrorClass;
+
+    UPROPERTY(EditAnywhere)
     UMaterialInterface* HoverMaterialGreen = nullptr;
 
     UPROPERTY(EditAnywhere)
@@ -187,6 +191,9 @@ private:
 
     UPROPERTY()
     UResourcesContainerWidget* ResourcesContainerWidget;
+    
+    UPROPERTY()
+    UBuildingPlacementErrorWidget* BuildingPlacementErrorWidget;
 
     FCityBuiltEvent CityBuiltEvent;
 };

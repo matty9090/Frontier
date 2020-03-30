@@ -84,7 +84,7 @@ bool AFrontierPlayerState::CanCreateBuilding(TSubclassOf<ABuilding> Building, co
 
     for (auto& City : Cities)
     {
-        if (City->CanPlaceBuilding(Building, Position, Extent))
+        if (City->CanPlaceBuilding(Building) && City->IsInCity(Position, Extent))
         {
             CanPlaceInCity = true;
             break;

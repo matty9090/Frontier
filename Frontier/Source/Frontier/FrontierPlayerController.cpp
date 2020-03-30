@@ -31,6 +31,7 @@
 #include "Widgets/UnitSelected.h"
 #include "Widgets/BuildingBaseWidget.h"
 #include "Widgets/ResourcesContainerWidget.h"
+#include "Widgets/BuildingPlacementErrorWidget.h"
 
 AFrontierPlayerController::AFrontierPlayerController()
 {
@@ -135,9 +136,21 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             {
                 auto BoxComponent = Cast<UBoxComponent>(HoveredBuilding->GetComponentByClass(UBoxComponent::StaticClass()));
                 auto Extent = BoxComponent->GetScaledBoxExtent();
-                
+                bool bClear = FogOfWar->IsRevealedBox(HoveredBuilding->GetActorLocation(), Extent.X, Extent.Y);
+
                 HoveredBuilding->SetActorLocation(Hit.Location + FVector(0.0f, 0.0f, Extent.Z));
-                HoveredBuilding->SetCanPlace(FogOfWar->IsRevealedBox(HoveredBuilding->GetActorLocation(), Extent.X, Extent.Y));
+                HoveredBuilding->Requirements[EBuildingPlacementConditions::NotInFog].Met = bClear;
+                
+                if (HoveredBuilding->IsAllRequirementsMet())
+                {
+                    BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Collapsed);
+                }
+                else
+                {
+                    BuildingPlacementErrorWidget->SetPositionInViewport(FVector2D(MX, MY));
+                    BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Visible);
+                    BuildingPlacementErrorWidget->ErrorMessage = HoveredBuilding->GetPlacementErrorString();
+                }
             }
         }
     }
@@ -236,6 +249,15 @@ void AFrontierPlayerController::ClientCreateUI_Implementation()
         ResourcesContainerWidget->SetVisibility(ESlateVisibility::Collapsed);
     }
 
+    BuildingPlacementErrorWidget = CreateWidget<UBuildingPlacementErrorWidget>(this, BuildingPlacementErrorClass, "BuildingPlacementError");
+
+    if (BuildingPlacementErrorWidget)
+    {
+        BuildingPlacementErrorWidget->AddToViewport();
+        BuildingPlacementErrorWidget->SetDesiredSizeInViewport(BuildingPlacementErrorWidget->GetDesiredSize());
+        BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Collapsed);
+    }
+
     AnimationFinishedEvent.BindUFunction(this, "BuildingUIAnimationFinished");
 }
 
@@ -266,6 +288,7 @@ void AFrontierPlayerController::SetHoveredBuilding(TSubclassOf<ABuilding> Buildi
     HoveredBuilding->HoverMaterialGreen = HoverMaterialGreen;
     HoveredBuilding->HoverMaterialRed = HoverMaterialRed;
     HoveredBuilding->BuildingType = BuildingType;
+    HoveredBuilding->Player = GetPlayerState<AFrontierPlayerState>();
 
     UGameplayStatics::FinishSpawningActor(HoveredBuilding, Transform);
 
@@ -410,7 +433,7 @@ void AFrontierPlayerController::OnSelectUp()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation()) && HoveredBuilding && HoveredBuilding->CanPlace())
+        if (PS->CanCreateBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation()) && HoveredBuilding && HoveredBuilding->CanCreateBuilding())
         {
             ControllerState = EControllerState::Idle;
             ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
@@ -539,6 +562,7 @@ void AFrontierPlayerController::OnSend()
     else if (ControllerState == EControllerState::PlacingBuilding)
     {
         ControllerState = EControllerState::Idle;
+        BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Collapsed);
         HoveredBuilding->Destroy();
         HoveredBuilding = nullptr;
 
@@ -600,7 +624,7 @@ void AFrontierPlayerController::ServerSpawnBuilding_Implementation(TSubclassOf<A
 
         for (auto& City : PS->Cities)
         {
-            if (City->CanPlaceBuilding(Type, Location, Extent))
+            if (City->CanPlaceBuilding(Type) && City->IsInCity(Location, Extent))
             {
                 AvailableCity = City;
                 break;

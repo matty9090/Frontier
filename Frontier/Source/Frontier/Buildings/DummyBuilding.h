@@ -9,6 +9,27 @@
 #include "DummyBuilding.generated.h"
 
 class ABuilding;
+class AFrontierPlayerState;
+
+enum class EBuildingPlacementConditions
+{
+    HaveResources,
+    IsInCity,
+    CityNumLimit,
+    AreaClear,
+    IsResearched,
+    NotInFog,
+    _Max
+};
+
+struct FBuildingPlacementRequirement
+{
+    bool Met = false;
+    const FString Message = "";
+
+    bool operator ()() const { return Met; }
+    FBuildingPlacementRequirement(FString Msg) : Message(Msg) {}
+};
 
 UCLASS()
 class FRONTIER_API ADummyBuilding : public AActor
@@ -21,8 +42,9 @@ public:
 
     void BeginPlay() override;
     void Tick(float DeltaTime) override;
-    void SetCanPlace(bool bInCanPlace);
-    bool CanPlace() const { return bCanPlace && !bIsOverlapping; }
+    bool CanCreateBuilding() const;
+    bool IsAllRequirementsMet() const;
+    FString GetPlacementErrorString() const;
 
     UPROPERTY(EditAnywhere)
     UBoxComponent* Box = nullptr;
@@ -39,6 +61,9 @@ public:
     UPROPERTY()
     TSubclassOf<ABuilding> BuildingType;
 
+    AFrontierPlayerState* Player;
+    TMap<EBuildingPlacementConditions, FBuildingPlacementRequirement> Requirements;
+
 private:
     UFUNCTION()
     void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -50,8 +75,4 @@ private:
 
     FScriptDelegate BeginOverlapDelegate;
     FScriptDelegate EndOverlapDelegate;
-
-    bool bCanPlace = false;
-    bool bIsOverlapping = false;
-    bool bIsWithinCity = false;
 };

@@ -23,7 +23,8 @@ public:
 
     void AddBuilding(ABuilding* Building);
     void RemoveBuilding(ABuilding* Building);
-    bool CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& DesiredPosition, float Bounds) const;
+    bool IsInCity(const FVector& DesiredPosition, float Bounds) const;
+    bool CanPlaceBuilding(TSubclassOf<ABuilding> Type) const;
     void FinaliseCityPlayerWidgets();
 
     UPROPERTY(EditAnywhere)

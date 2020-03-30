@@ -121,7 +121,12 @@ void ACity::RemoveBuilding(ABuilding* Building)
     Buildings.Remove(Building);
 }
 
-bool ACity::CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& DesiredPosition, float Bounds) const
+bool ACity::IsInCity(const FVector& DesiredPosition, float Bounds) const
+{
+    return FVector::Distance(DesiredPosition, GetActorLocation()) < Radius - Bounds;
+}
+
+bool ACity::CanPlaceBuilding(TSubclassOf<ABuilding> Type) const
 {
     int32 Total = 0;
 
@@ -133,8 +138,7 @@ bool ACity::CanPlaceBuilding(TSubclassOf<ABuilding> Type, const FVector& Desired
         }
     }
 
-    return Total < MaxBuildingNums[Type] &&
-           FVector::Distance(DesiredPosition, GetActorLocation()) < Radius - Bounds;
+    return Total < MaxBuildingNums[Type];
 }
 
 void ACity::FinaliseCityPlayerWidgets()
