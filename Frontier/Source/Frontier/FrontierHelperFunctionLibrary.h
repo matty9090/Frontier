@@ -182,7 +182,7 @@ public:
 	UFUNCTION(BlueprintPure)
 	static FRotator LookAt(FVector Position, FVector Target)
 	{
-		FRotator r = UKismetMathLibrary::FindLookAtRotation(Position,Target);
-		return FRotator(0, r.Yaw,0);
+		FRotator r = UKismetMathLibrary::FindLookAtRotation(Position, Target);
+		return FRotator(0, r.Yaw, 0);
 	}
 };

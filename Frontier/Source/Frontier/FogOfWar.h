@@ -20,6 +20,7 @@ public:
 
     void Tick(float DeltaTime) override;
     bool IsRevealedBox(const FVector& Pos, float SizeX, float SizeY);
+    bool IsServerActorRevealed(AActor* Actor, int32 ClientID) const { return ServerInfo[Actor][ClientID]; }
 
     UPROPERTY()
     AFrontierPlayerState* Player;
@@ -33,7 +34,7 @@ protected:
 
 private:
     FVector2D WorldPositionToFog(const FVector& Pos);
-    void RevealCircle(const FVector& Pos, float Radius);
+    void RevealCircle(uint8* FogPixels, const FVector& Pos, float Radius, bool IsServer);
     void UpdateTextureRegions(int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData);
 
     UPROPERTY(EditAnywhere)
@@ -57,12 +58,15 @@ private:
     uint8* Pixels;
     FUpdateTextureRegion2D WholeTexRegion;
 
+    TMap<int32, uint8*> ServerPixels;
+    TMap<AActor*, TMap<int32, bool>> ServerInfo;
+
     template <class T>
-    void UpdateActorsVisibility(bool bRemainVisible);
+    void UpdateActorsVisibility(uint8* FogPixels, bool bServer, bool bRemainVisible, int32 Client);
 };
 
 template <class T>
-inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
+inline void AFogOfWar::UpdateActorsVisibility(uint8* FogPixels, bool bServer, bool bRemainVisible, int32 Client = 0)
 {
     for (TActorIterator<T> It(GetWorld()); It; ++It)
     {
@@ -81,7 +85,7 @@ inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
         {
             for (int Y = MinY; Y < MaxY; ++Y)
             {
-                if (Pixels[Y * TextureSize + X] >= KnownOpacity)
+                if (FogPixels[Y * TextureSize + X] >= KnownOpacity)
                 {
                     Visible = false;
                     break;
@@ -89,6 +93,13 @@ inline void AFogOfWar::UpdateActorsVisibility(bool bRemainVisible)
             }
         }
 
-        bRemainVisible ? Actor->bRevealed |= Visible : Actor->bRevealed = Visible;
+        if (bServer)
+        {
+            bRemainVisible ? ServerInfo.FindOrAdd(Actor).FindOrAdd(Client) |= Visible : ServerInfo.FindOrAdd(Actor).FindOrAdd(Client) = Visible;
+        }
+        else
+        {
+            bRemainVisible ? Actor->bRevealed |= Visible : Actor->bRevealed = Visible;
+        }
     }
 }

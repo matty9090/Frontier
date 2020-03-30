@@ -475,11 +475,19 @@ void AFrontierCharacter::FindNewEnemy()
 {
 	if (HasAuthority())
 	{
+		auto Fog = Cast<AFogOfWar>(UGameplayStatics::GetActorOfClass(GetWorld(), AFogOfWar::StaticClass()));
+		
+		int32 Client;
+		GetWorld()->GetGameState()->PlayerArray.Find(Player, Client);
+
+		if (!IsValid(Fog))
+			return;
+
 		TArray<AFrontierCharacter*> Characters;
 
         for (TActorIterator<AFrontierCharacter> It(GetWorld(), AFrontierCharacter::StaticClass()); It; ++It)
 		{
-            if (IsValid(*It) && IsValid(It->Player) && *It != this)
+            if (IsValid(*It) && IsValid(It->Player) && *It != this && Fog->IsServerActorRevealed(*It, Client))
             {
                 Characters.Add(*It);
             }

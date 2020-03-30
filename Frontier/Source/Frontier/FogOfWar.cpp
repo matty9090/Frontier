@@ -8,6 +8,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/RevealFogComponent.h"
+#include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
 #include "FrontierPlayerController.h"
 #include "City.h"
@@ -36,10 +37,45 @@ void AFogOfWar::BeginPlay()
 {
     Super::BeginPlay();
 
+    auto InitPixels = [this](uint8* FogPixels) {
+        for (int Y = 0; Y < TextureSize; ++Y)
+        {
+            for (int X = 0; X < TextureSize; ++X)
+            {
+                FogPixels[Y * TextureSize + X] = 255;
+            }
+        }
+    };
+
+    Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
+    InitPixels(Pixels);
+
+    if (HasAuthority())
+    {
+        auto Num = 2;//GetWorld()->GetGameState()->PlayerArray.Num();
+        ServerPixels.Reserve(Num);
+
+        for (int i = 0; i < Num; ++i)
+        {
+            ServerPixels.FindOrAdd(i, reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize)));
+            InitPixels(ServerPixels[i]);
+        }
+    }
+
+    UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
+
+    if (Decal)
+    {
+        MaterialInstance = Decal->CreateDynamicMaterialInstance();
+        MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
+    }
+
     auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
 
     if (!GetOuter() || Player != FrontierController->PlayerState)
-        SetActorHiddenInGame(true);
+    {
+        Decal->SetHiddenInGame(true);
+    }
 }
 
 void AFogOfWar::PostInitializeComponents()
@@ -51,70 +87,87 @@ void AFogOfWar::PostInitializeComponents()
     Texture->SRGB = 0;
     Texture->UpdateResource();
     // Texture->MipGenSettings = TMGS_NoMipmaps; // Only available in Development mode?
-
-    Pixels = reinterpret_cast<uint8*>(FMemory::Malloc(TextureSize * TextureSize));
-
-    for (int Y = 0; Y < TextureSize; ++Y)
-    {
-        for (int X = 0; X < TextureSize; ++X)
-        {
-            Pixels[Y * TextureSize + X] = 255;
-        }
-    }
-
-    UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
-
-    if (Decal)
-    {
-        MaterialInstance = Decal->CreateDynamicMaterialInstance();
-        MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
-    }
 }
 
 void AFogOfWar::Tick(float DeltaTime)
 {
-    UpdateActorsVisibility<ABuilding>(true);
-    UpdateActorsVisibility<ABaseResource>(true);
-    UpdateActorsVisibility<AFrontierCharacter>(false);
+    UpdateActorsVisibility<ABuilding>(Pixels, false, true);
+    UpdateActorsVisibility<ABaseResource>(Pixels, false, true);
+    UpdateActorsVisibility<AFrontierCharacter>(Pixels, false, false);
 
-    for (int Y = 0; Y < TextureSize; ++Y)
+    if (HasAuthority())
     {
-        for (int X = 0; X < TextureSize; ++X)
+        for (int i = 0; i < ServerPixels.Num(); ++i)
         {
-            auto i = Y * TextureSize + X;
-            
-            if (Pixels[i] < KnownOpacity)
-            {
-                Pixels[i] = KnownOpacity;
-            }
+            UpdateActorsVisibility<ABuilding>(ServerPixels[i], true, true, i);
+            UpdateActorsVisibility<ABaseResource>(ServerPixels[i], true, true, i);
+            UpdateActorsVisibility<AFrontierCharacter>(ServerPixels[i], true, false, i);
         }
     }
 
-    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
-    
-    for (TObjectIterator<URevealFogComponent> It; It; ++It)
-    {
-        auto Actor = It->GetOwner();
-        auto Prop = Actor->GetClass()->FindPropertyByName("Player");
-
-        if (Prop)
+    auto UpdatePixels = [this](uint8* FogPixels) {
+        for (int Y = 0; Y < TextureSize; ++Y)
         {
-            UObject* Obj = Cast<UObjectPropertyBase>(Prop)->GetObjectPropertyValue_InContainer(Actor);
-
-            if (Obj && Cast<AFrontierPlayerState>(Obj) && FrontierController->PlayerState)
+            for (int X = 0; X < TextureSize; ++X)
             {
-                if (Cast<AFrontierPlayerState>(Obj)->Team == Cast<AFrontierPlayerState>(FrontierController->PlayerState)->Team)
+                auto i = Y * TextureSize + X;
+
+                if (FogPixels[i] < KnownOpacity)
                 {
-                    RevealCircle(Actor->GetActorLocation(), It->FogRadius);
+                    FogPixels[i] = KnownOpacity;
                 }
             }
+        }
+    };
+
+    UpdatePixels(Pixels);
+
+    if (HasAuthority())
+    {
+        for (auto& P : ServerPixels)
+        {
+            UpdatePixels(P.Value);
+        }
+    }
+
+    auto UpdateReveal = [this](uint8* FogPixels, AFrontierPlayerState* Player, bool Server) {
+        for (TObjectIterator<URevealFogComponent> It; It; ++It)
+        {
+            auto Actor = It->GetOwner();
+            auto Prop = Actor->GetClass()->FindPropertyByName("Player");
+
+            if (Prop)
+            {
+                UObject* Obj = Cast<UObjectPropertyBase>(Prop)->GetObjectPropertyValue_InContainer(Actor);
+
+                if (Obj && Cast<AFrontierPlayerState>(Obj) && Player)
+                {
+                    if (Cast<AFrontierPlayerState>(Obj)->Team == Player->Team)
+                    {
+                        RevealCircle(FogPixels, Actor->GetActorLocation(), It->FogRadius, Server);
+                    }
+                }
+            }
+        }
+    };
+
+    auto FrontierController = GetWorld()->GetFirstPlayerController<AFrontierPlayerController>();
+    UpdateReveal(Pixels, FrontierController->GetPlayerState<AFrontierPlayerState>(), false);
+
+    if (HasAuthority())
+    {
+        auto Players = GetWorld()->GetGameState()->PlayerArray;
+
+        for (int i = 0; i < Players.Num(); ++i)
+        {
+            UpdateReveal(ServerPixels[i], Cast<AFrontierPlayerState>(Players[i]), true);
         }
     }
 
     UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
 }
 
-void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
+void AFogOfWar::RevealCircle(uint8* FogPixels, const FVector& Pos, float Radius, bool IsServer)
 {
     auto Texel = WorldPositionToFog(Pos);
     float TexelRadius = Radius * TextureSize / (Scale * 0.75f);
@@ -136,20 +189,20 @@ void AFogOfWar::RevealCircle(const FVector& Pos, float Radius)
             {
                 static float smoothPct = 0.7f;
 
-                uint8 OldVal = Pixels[Y * TextureSize + X];
+                uint8 OldVal = FogPixels[Y * TextureSize + X];
                 float Lerp = FMath::GetMappedRangeValueClamped(FVector2D(smoothPct, 1.0f), FVector2D(0, 1), distance / TexelRadius);
                 uint8 NewVal = Lerp * 255;
                 NewVal = FMath::Min(NewVal, OldVal);
 
-                Pixels[Y * TextureSize + X] = NewVal;
+                FogPixels[Y * TextureSize + X] = NewVal;
                 dirty = dirty || OldVal != NewVal;
             }
         }
     }
 
-    if (dirty)
+    if (dirty && !IsServer)
     {
-        UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, Pixels, false);
+        UpdateTextureRegions(0, 1, &WholeTexRegion, TextureSize, 1, FogPixels, false);
         MaterialInstance->SetTextureParameterValue("FowTexture", Texture);
     }
 }
