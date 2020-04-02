@@ -53,9 +53,6 @@ public:
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable)
-	void ReceiveDamage(int Damage);
-
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type Reason) override;

@@ -202,14 +202,3 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
     DOREPLIFETIME(ABuilding, City);
     DOREPLIFETIME(ABuilding, Player);
 }
-
-void ABuilding::ReceiveDamage(int Damage)
-{
-	HP -= Damage;
-
-	if (HP <= 0)
-	{
-        OnBuildingDestroyed();
-		Destroy();
-	}
-}
