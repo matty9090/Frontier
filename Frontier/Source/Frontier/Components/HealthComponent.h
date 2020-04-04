@@ -18,6 +18,8 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+	bool AddHealth(float Value);
+	void SetHealth(float Value);
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Health)

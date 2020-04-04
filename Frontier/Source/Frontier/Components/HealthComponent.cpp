@@ -22,6 +22,18 @@ void UHealthComponent::BeginPlay()
 	Health = MaxHealth;
 }
 
+bool UHealthComponent::AddHealth(float Value)
+{
+	Health = FMath::Clamp(Health + Value, 0.0f, MaxHealth);
+	HealthChangeEvent.Broadcast(GetOwner(), Health / MaxHealth);
+	return Health >= MaxHealth;
+}
+
+void UHealthComponent::SetHealth(float Value)
+{
+	Health = FMath::Clamp(Value, 0.0f, MaxHealth);
+	HealthChangeEvent.Broadcast(GetOwner(), Health / MaxHealth);
+}
 
 void UHealthComponent::ReceiveDamage(int Damage)
 {

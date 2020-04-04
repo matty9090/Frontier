@@ -93,9 +93,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     EBuildingCategory BuildingCategory = EBuildingCategory::General;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
-	int32 HP;
-
     UPROPERTY(EditAnywhere, BlueprintReadOnly, ReplicatedUsing=OnRep_Built)
     bool bBuilt = false;
 
@@ -132,7 +129,4 @@ private:
 
     TScriptDelegate<> BeginMouseOverDelegate;
     TScriptDelegate<> EndMouseOverDelegate;
-
-	float ConstructionProgress = 0.f;
-	const float MaxConstruct = 100.f;
 };

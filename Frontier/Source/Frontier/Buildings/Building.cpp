@@ -107,6 +107,8 @@ void ABuilding::BeginPlay()
         OnBuildingConstructed();
     }
 
+    HealthComponent->SetHealth(0.0f);
+
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
@@ -174,9 +176,7 @@ bool ABuilding::Construct(float ConstructionAmount)
             ConstructionAmount *= 9999.0f;
     }
 
-	ConstructionProgress += ConstructionAmount;
-
-	if (ConstructionProgress >= MaxConstruct)
+	if (HealthComponent->AddHealth(ConstructionAmount))
 	{
 		bBuilt = true;
 		Mesh->SetStaticMesh(BuildingMesh);
@@ -197,7 +197,6 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ABuilding, Cost);
-	DOREPLIFETIME(ABuilding, HP);
     DOREPLIFETIME(ABuilding, bBuilt);
     DOREPLIFETIME(ABuilding, City);
     DOREPLIFETIME(ABuilding, Player);
