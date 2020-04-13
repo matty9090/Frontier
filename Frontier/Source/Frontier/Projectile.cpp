@@ -3,6 +3,7 @@
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/HealthComponent.h"
+#include "FrontierPlayerState.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -31,7 +32,8 @@ void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImp
 	if (Component != nullptr)
 	{
 		auto OtherActorHealth = Cast<UHealthComponent>(Component);
-		OtherActorHealth->ReceiveDamage(Damage);
+		if(OtherActorHealth->ReceiveDamage(Damage))
+			Player->PlayerStats.UnitsKilled++;
 	}
     Destroy();
 }

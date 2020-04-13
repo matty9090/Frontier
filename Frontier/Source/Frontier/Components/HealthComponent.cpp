@@ -34,10 +34,11 @@ void UHealthComponent::SetHealth(float Value)
 	HealthChangeEvent.Broadcast(GetOwner(), Health / MaxHealth);
 }
 
-void UHealthComponent::ReceiveDamage(int Damage)
+bool UHealthComponent::ReceiveDamage(int Damage)
 {
 	Health -= Damage;
 	HealthChangeEvent.Broadcast(GetOwner(), Health / MaxHealth);
+	return Health <= 0;
 }
 
 void UHealthComponent::OnRep_Health()

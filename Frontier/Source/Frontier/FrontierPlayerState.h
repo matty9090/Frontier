@@ -17,6 +17,19 @@ class ABuilding;
 class AFrontierCharacter;
 class UResearchNode;
 
+USTRUCT(BlueprintType)
+struct FPlayerStats
+{
+	GENERATED_BODY()
+
+	FResources TotalResources;
+	int BuildingsBuilt = 0;
+	int LargestArmy = 0;
+	int UnitsKilled = 0;
+	int UnitsCreated = 0;
+	int Actions = 0;
+};
+
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnResearchTreeChangedEvent, EResearchTreeChangedType, UResearchNode*);
 /**
  * 
@@ -96,6 +109,10 @@ public:
     TArray<ACity*> Cities;
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
+
+	//Game Stats
+	UPROPERTY(BlueprintReadOnly)
+	FPlayerStats PlayerStats;
 
 private:
     UPROPERTY(Replicated)

@@ -41,6 +41,7 @@ void AFrontierPlayerState::Tick(float DeltaTime)
 void AFrontierPlayerState::AddResources(FResources Res)
 {
     Resources += Res * ResourceMultiplier;
+	PlayerStats.TotalResources += Res * ResourceMultiplier;
 }
 
 void AFrontierPlayerState::AddResourceMultiplier(float ResMultiplier, EResource Type)

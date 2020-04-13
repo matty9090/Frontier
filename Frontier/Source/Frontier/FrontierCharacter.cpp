@@ -427,6 +427,8 @@ void AFrontierCharacter::Attack()
 			);
 
             Projectile->MovementComponent->HomingTargetComponent = MoveObject->GetRootComponent();
+
+			Projectile->Player = Player;
 		}
 		else
 		{
@@ -440,7 +442,8 @@ void AFrontierCharacter::Attack()
 			if(typeComponent)
 				damage = UnitTypeComponent->AffectDamage(AttackStrength, typeComponent);
 
-			healthComponent->ReceiveDamage((int)damage);
+			if (healthComponent->ReceiveDamage((int)damage))
+				Player->PlayerStats.UnitsKilled++;
 		}
 	}
 }

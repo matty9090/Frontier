@@ -29,7 +29,7 @@ public:
 	float MaxHealth = 100;
 
 	UFUNCTION(BlueprintCallable)
-	void ReceiveDamage(int Damage);
+	bool ReceiveDamage(int Damage);
 
 	UFUNCTION()
 	void OnRep_Health();

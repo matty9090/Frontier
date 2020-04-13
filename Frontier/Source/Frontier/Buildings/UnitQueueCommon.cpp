@@ -81,6 +81,10 @@ void AUnitQueueCommon::Tick(float DeltaTime)
                 Player->Units.Add(Unit);
                 UnitQueue.RemoveAt(0);
 
+				//player stats
+				Player->PlayerStats.LargestArmy = FMath::Max(Player->PlayerStats.LargestArmy, Player->Units.Num());
+				Player->PlayerStats.UnitsCreated++;
+
                 if(!IsRunningDedicatedServer())
                     UnitQueueChangedEvent.Broadcast();
             }

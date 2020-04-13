@@ -186,6 +186,7 @@ bool ABuilding::Construct(float ConstructionAmount)
 		bBuilt = true;
 		Mesh->SetStaticMesh(BuildingMesh);
 
+		Cast<AFrontierPlayerState>(Player)->PlayerStats.BuildingsBuilt++;
         OnBuildingConstructed();
 	}
 
