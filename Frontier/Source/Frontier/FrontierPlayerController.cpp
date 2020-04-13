@@ -219,7 +219,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
             EObjectTypeQuery::ObjectTypeQuery2, // WorldDynamic
         };
 
-        if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
+        if (IsValid(UI) && !UI->IsHovered() && GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
         {
             auto Res = Cast<ABaseResource>(Hit.Actor);
 
