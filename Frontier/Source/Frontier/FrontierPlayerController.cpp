@@ -545,6 +545,7 @@ void AFrontierPlayerController::OnSend()
 {
     if (ControllerState == EControllerState::SelectedUnit)
     {
+		GetPlayerState<AFrontierPlayerState>()->PlayerStats.Actions++;
         FHitResult Hit;
 
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
@@ -561,6 +562,7 @@ void AFrontierPlayerController::OnSend()
     }
     else if (ControllerState == EControllerState::PlacingBuilding)
     {
+		GetPlayerState<AFrontierPlayerState>()->PlayerStats.Actions++;
         ControllerState = EControllerState::Idle;
         BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Collapsed);
         HoveredBuilding->Destroy();

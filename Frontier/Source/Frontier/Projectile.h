@@ -8,6 +8,7 @@
 
 class UMeshComponent;
 class UProjectileMovementComponent;
+class AFrontierPlayerState;
 
 UCLASS()
 class FRONTIER_API AProjectile : public AActor
@@ -25,6 +26,8 @@ public:
 
     UPROPERTY(EditAnywhere)
     int32 Damage = 20;
+
+	AFrontierPlayerState* Player = nullptr;
 
 protected:
 	virtual void BeginPlay() override;
