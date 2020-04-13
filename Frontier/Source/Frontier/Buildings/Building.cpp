@@ -107,8 +107,6 @@ void ABuilding::BeginPlay()
         OnBuildingConstructed();
     }
 
-    HealthComponent->SetHealth(0.0f);
-
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
@@ -148,6 +146,13 @@ void ABuilding::Tick(float DeltaTime)
 
     SetActorHiddenInGame(!bRevealed);
     //SetActorEnableCollision(bRevealed);
+}
+
+void ABuilding::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    HealthComponent->SetHealth(0.0f);
 }
 
 void ABuilding::ShowOutline()

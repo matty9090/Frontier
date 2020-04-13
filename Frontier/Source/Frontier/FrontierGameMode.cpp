@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Buildings/Building.h"
+#include "Components/HealthComponent.h"
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Buildings/TownHall.h"
@@ -42,7 +43,7 @@ void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
 
     auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
 
-    auto BoxComponent = Cast<UBoxComponent>(TownHallClass.GetDefaultObject()->GetComponentByClass(UBoxComponent::StaticClass()));
+    auto BoxComponent = TownHallClass.GetDefaultObject()->FindComponentByClass<UBoxComponent>();
     float Z = BoxComponent->GetScaledBoxExtent().Z;
     FTransform TownHallTransform(Location + FVector(0.0f, 0.0f, Z));
 
@@ -56,6 +57,9 @@ void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
 
     UGameplayStatics::FinishSpawningActor(TownHall, TownHallTransform);
     UGameplayStatics::FinishSpawningActor(Worker, WorkerTransform);
+
+    auto Health = TownHall->FindComponentByClass<UHealthComponent>();
+    Health->SetHealth(Health->MaxHealth);
 }
 
 void AFrontierGameMode::GameOver()

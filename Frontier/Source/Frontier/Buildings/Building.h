@@ -38,6 +38,7 @@ public:
     ABuilding();
 
     void Tick(float DeltaTime) override;
+    void PostInitializeComponents() override;
 
     UFUNCTION(BlueprintCallable)
     void ShowOutline();

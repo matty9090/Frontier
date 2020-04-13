@@ -5,6 +5,7 @@
 UHealthComponent::UHealthComponent() 
 {
 	bReplicates = true;
+	Health = MaxHealth;
 }
 
 void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,8 +19,6 @@ void UHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void UHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
-
-	Health = MaxHealth;
 }
 
 bool UHealthComponent::AddHealth(float Value)
