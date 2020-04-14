@@ -6,8 +6,9 @@
 #include "GameFramework/GameStateBase.h"
 #include "FrontierGameState.generated.h"
 
-class AFrontierPlayerState;
+struct FPlayerStats;
 class UResearchNode;
+class AFrontierPlayerState;
 
 /**
  * 

@@ -13,6 +13,7 @@
 
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
+#include "FrontierGameInstance.h"
 #include "FrontierHUD.h"
 #include "Buildings/Building.h"
 #include "Buildings/UnitQueueCommon.h"
@@ -716,6 +717,15 @@ bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)
 {
     Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
+}
+
+void AFrontierPlayerController::OnGameOver_Implementation(const TArray<FPlayerStats>& Stats, FUniqueNetIdRepl WinningPlayer)
+{
+    auto GI = GetGameInstance<UFrontierGameInstance>();
+    GI->Stats = Stats;
+    GI->WinningPlayer = WinningPlayer;
+
+    ClientTravel("GameOver", ETravelType::TRAVEL_Absolute);
 }
 
 void AFrontierPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

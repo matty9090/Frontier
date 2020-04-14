@@ -1,9 +1,11 @@
 // Copyright Nathan Williams & Matthew Lowe 2019. All Rights Reserved.
 
 #include "FrontierGameMode.h"
-#include "FrontierPlayerController.h"
+#include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
+#include "FrontierPlayerController.h"
 #include "FrontierCharacter.h"
+#include "FrontierGameInstance.h"
 #include "GameFramework/PlayerStart.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Buildings/Building.h"
@@ -64,8 +66,29 @@ void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
 
 void AFrontierGameMode::GameOver()
 {
-    if (IsValid(GetWorld()))
+    auto GS = GetGameState<AFrontierGameState>();
+    float GameTime = GS->GetServerWorldTimeSeconds();
+
+    FUniqueNetIdRepl Winner;
+    TArray<FPlayerStats> Stats;
+
+    for (auto Player : GS->FrontierPlayers)
     {
-        GetWorld()->ServerTravel("GameOver");
+        if (Player->Cities.Num() > 0)
+        {
+            Winner = Player->UniqueId;
+        }
+
+        Player->PlayerStats.APM = static_cast<float>(Player->PlayerStats.Actions) / (GameTime / 60.0f);
+        Player->PlayerStats.PlayerID = Player->UniqueId;
+        Stats.Add(Player->PlayerStats);
+    }
+
+    TArray<AActor*> Controllers;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFrontierPlayerController::StaticClass(), Controllers);
+
+    for (auto Controller : Controllers)
+    {
+        Cast<AFrontierPlayerController>(Controller)->OnGameOver(Stats, Winner);
     }
 }

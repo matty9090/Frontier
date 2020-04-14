@@ -22,12 +22,29 @@ struct FPlayerStats
 {
 	GENERATED_BODY()
 
+    UPROPERTY()
 	FResources TotalResources;
+
+    UPROPERTY()
 	int BuildingsBuilt = 0;
-	int LargestArmy = 0;
+
+    UPROPERTY()
+	int LargestArmy = 1;
+
+    UPROPERTY()
 	int UnitsKilled = 0;
+
+    UPROPERTY()
 	int UnitsCreated = 0;
+
+    UPROPERTY()
 	int Actions = 0;
+
+    UPROPERTY()
+    float APM;
+
+    UPROPERTY()
+    FUniqueNetIdRepl PlayerID;
 };
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnResearchTreeChangedEvent, EResearchTreeChangedType, UResearchNode*);
@@ -110,7 +127,7 @@ public:
 
     FOnResearchTreeChangedEvent OnResearchTreeChangedEvent;
 
-	//Game Stats
+	// Game Stats
 	UPROPERTY(BlueprintReadOnly)
 	FPlayerStats PlayerStats;
 

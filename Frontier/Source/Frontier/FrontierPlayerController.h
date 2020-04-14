@@ -48,6 +48,9 @@ class AFrontierPlayerController : public APlayerController
 public:
     AFrontierPlayerController();
 
+    UFUNCTION(Client, Reliable)
+    void OnGameOver(const TArray<FPlayerStats>& Stats, FUniqueNetIdRepl WinningPlayer);
+
     void BeginPlay() override;
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     
