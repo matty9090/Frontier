@@ -16,11 +16,13 @@ public:
     // Sets default values for this actor's properties
     ABaseResource();
 
+    void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
     int32 ResourceAmount = 200;
 
 public:    
