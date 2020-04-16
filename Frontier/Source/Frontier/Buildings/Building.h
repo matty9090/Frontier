@@ -50,7 +50,13 @@ public:
 	bool IsConstructed() const;
 
 	UFUNCTION(BlueprintCallable)
+	bool IsDamaged();
+
+	UFUNCTION(BlueprintCallable)
 	bool Construct(float ConstructionAmount);
+
+	UFUNCTION(BlueprintCallable)
+	bool Repair(float RepairAmount);
 
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 

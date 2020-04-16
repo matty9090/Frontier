@@ -170,6 +170,11 @@ bool ABuilding::IsConstructed() const
     return bBuilt;
 }
 
+bool ABuilding::IsDamaged()
+{
+	return HealthComponent->Health < HealthComponent->MaxHealth;
+}
+
 
 bool ABuilding::Construct(float ConstructionAmount)
 {
@@ -193,10 +198,16 @@ bool ABuilding::Construct(float ConstructionAmount)
 	return bBuilt;
 }
 
+bool ABuilding::Repair(float RepairAmount)
+{
+	return HealthComponent->AddHealth(RepairAmount);
+}
+
 void ABuilding::OnRep_Built()
 {
     Mesh->SetStaticMesh(bBuilt ? BuildingMesh : ConstructionMesh);
 }
+
 
 void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

@@ -104,6 +104,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Construct();
 
+	//Repair functions
+	UFUNCTION(BlueprintCallable)
+	void SetRepair();
+
+	UFUNCTION(BlueprintCallable)
+	void Repair();
+
 	//attack functions
 	UFUNCTION(BlueprintCallable)
 	void SetAttack();
@@ -120,6 +127,9 @@ public:
 
 	UPROPERTY()
 	FTimerHandle ConstructTimerHandler;
+
+	UPROPERTY()
+	FTimerHandle RepairTimerHandler;
 
 	UPROPERTY()
 	FTimerHandle HarvestTimerHandler;
