@@ -225,6 +225,8 @@ void AFrontierCharacter::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingR
 					auto building = Cast<ABuilding>(MoveObject);
 					if (!building->bBuilt)
 						SetBuild();
+					else if (building->IsDamaged())
+						SetRepair();
 					else if (building->bCanDeposit)
 						FinishDeposit();
 				}
@@ -379,16 +381,6 @@ void AFrontierCharacter::SetBuild()
 	}
 }
 
-void AFrontierCharacter::SetAttack()
-{
-	if (IsValid(MoveObject))
-	{
-		State = ECharacterStates::Attacking;
-		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
-		GetWorldTimerManager().SetTimer(AttackTimerHandler, this, &AFrontierCharacter::Attack, AttackTime, true); // check
-	}
-}
-
 void AFrontierCharacter::Construct()
 {
 	if (IsValid(MoveObject))
@@ -406,6 +398,51 @@ void AFrontierCharacter::Construct()
 		GetWorldTimerManager().ClearTimer(ConstructTimerHandler);
 	}
 }
+
+
+void AFrontierCharacter::SetRepair()
+{
+	if (IsValid(MoveObject))
+	{
+		auto building = Cast<ABuilding>(MoveObject);
+
+		if (building->IsConstructed() && bCanGather)
+		{
+			State = ECharacterStates::Building;
+			SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
+			GetWorldTimerManager().SetTimer(RepairTimerHandler, this, &AFrontierCharacter::Repair, 1.0f, true);
+		}
+	}
+}
+
+void AFrontierCharacter::Repair()
+{
+	if (IsValid(MoveObject))
+	{
+		auto building = Cast<ABuilding>(MoveObject);
+		
+		if (building->Repair(BuildSpeed))
+		{
+			GetWorldTimerManager().ClearTimer(RepairTimerHandler);
+			State = ECharacterStates::Idle;
+		}
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(RepairTimerHandler);
+	}
+}
+
+void AFrontierCharacter::SetAttack()
+{
+	if (IsValid(MoveObject))
+	{
+		State = ECharacterStates::Attacking;
+		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
+		GetWorldTimerManager().SetTimer(AttackTimerHandler, this, &AFrontierCharacter::Attack, AttackTime, true); // check
+	}
+}
+
 
 void AFrontierCharacter::Attack()
 {
