@@ -115,7 +115,7 @@ void ABuilding::BeginPlay()
     for (auto Location : FireLocations)
     {
         USceneComponent* SceneLocation = Cast<USceneComponent>(Location);
-        auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation(), FRotator::ZeroRotator,  false);
+        auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation(), FRotator::ZeroRotator,false);
         ParticleSystem->DeactivateSystem();
         FireParticleSystems.Add(ParticleSystem);
     }
