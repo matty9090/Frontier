@@ -124,6 +124,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	URevealFogComponent* RevealFogComponent;
 
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* FireParticle;
+
+	UPROPERTY(EditAnywhere)
+	TArray<UParticleSystemComponent*> FireParticleSystems;
+
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);

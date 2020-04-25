@@ -14,6 +14,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/RevealFogComponent.h"
+#include "Components/FlamePositionComponent.h"
 #include "Widgets/HealthBarWidget.h"
 #include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
@@ -83,12 +84,14 @@ ABuilding::ABuilding()
     }
 
     Widget = UBuildingBaseWidget::StaticClass();
+
 }
 
 // Called when the game starts or when spawned
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
+
 	Mesh->SetStaticMesh(bBuilt ? BuildingMesh : ConstructionMesh);
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
@@ -107,9 +110,40 @@ void ABuilding::BeginPlay()
         OnBuildingConstructed();
     }
 
+    auto FireLocations = GetComponentsByClass(UFlamePositionComponent::StaticClass());
+
+    for (auto Location : FireLocations)
+    {
+        USceneComponent* SceneLocation = Cast<USceneComponent>(Location);
+        auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation(), FRotator::ZeroRotator,false);
+        ParticleSystem->DeactivateSystem();
+        FireParticleSystems.Add(ParticleSystem);
+    }
+
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
+		
+		if (Health <= 0.5f && bBuilt)
+		{
+			for (auto system : FireParticleSystems)
+			{
+				if (!system->IsActive())
+				{
+					system->ActivateSystem();
+				}
+			}
+		}
+		else
+		{
+			for (auto system : FireParticleSystems)
+			{
+                if (system->IsActive())
+                {
+					system->DeactivateSystem();
+                }
+			}
+		}
 
         if (Health <= 0)
         {
@@ -122,6 +156,14 @@ void ABuilding::BeginPlay()
 void ABuilding::EndPlay(const EEndPlayReason::Type Reason)
 {
     Super::EndPlay(Reason);
+
+    for (auto system : FireParticleSystems)
+    {
+        if (system)
+        {
+            system->DeactivateSystem();
+        }
+    }
 
     if (IsValid(City))
     {
@@ -216,5 +258,5 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
     DOREPLIFETIME(ABuilding, Cost);
     DOREPLIFETIME(ABuilding, bBuilt);
     DOREPLIFETIME(ABuilding, City);
-    DOREPLIFETIME(ABuilding, Player);
+    DOREPLIFETIME(ABuilding, Player); 
 }

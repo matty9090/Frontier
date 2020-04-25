@@ -292,7 +292,7 @@ void AFrontierCharacter::StateAttacking()
 	if (IsValid(MoveObject))
 	{
 		SetActorRelativeRotation(UFrontierHelperFunctionLibrary::LookAt(GetActorLocation(), MoveObject->GetActorLocation()));
-		if (GetDistanceTo(MoveObject) > AttackRange) 
+		if (GetDistanceTo(MoveObject) > AttackRange && !MoveObject->GetClass()->IsChildOf(ABuilding::StaticClass()))
 		{
 			GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 			MoveTo(MoveObject);
@@ -557,6 +557,7 @@ void AFrontierCharacter::PauseTimerFunctions()
 	GetWorldTimerManager().ClearTimer(ConstructTimerHandler);
 	GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 	GetWorldTimerManager().ClearTimer(HarvestTimerHandler);
+	GetWorldTimerManager().ClearTimer(RepairTimerHandler);
 }
 
 void AFrontierCharacter::PostInitializeComponents()
