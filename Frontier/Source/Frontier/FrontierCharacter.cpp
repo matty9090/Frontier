@@ -557,6 +557,7 @@ void AFrontierCharacter::PauseTimerFunctions()
 	GetWorldTimerManager().ClearTimer(ConstructTimerHandler);
 	GetWorldTimerManager().ClearTimer(AttackTimerHandler);
 	GetWorldTimerManager().ClearTimer(HarvestTimerHandler);
+	GetWorldTimerManager().ClearTimer(RepairTimerHandler);
 }
 
 void AFrontierCharacter::PostInitializeComponents()

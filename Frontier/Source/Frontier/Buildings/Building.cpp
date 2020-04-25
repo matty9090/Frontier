@@ -14,6 +14,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/RevealFogComponent.h"
+#include "Components/FlamePositionComponent.h"
 #include "Widgets/HealthBarWidget.h"
 #include "FrontierGameState.h"
 #include "FrontierPlayerState.h"
@@ -83,6 +84,7 @@ ABuilding::ABuilding()
     }
 
     Widget = UBuildingBaseWidget::StaticClass();
+
 }
 
 // Called when the game starts or when spawned
@@ -110,6 +112,25 @@ void ABuilding::BeginPlay()
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
+		
+		if (Health <= 0.5f && bBuilt)
+		{
+			for (auto system : FireParticleSystems)
+			{
+				if (system)
+				{
+					system->Activate(true);
+				}
+			}
+		}
+		else
+		{
+			for (auto system : FireParticleSystems)
+			{
+				if (system)
+					system->Deactivate();
+			}
+		}
 
         if (Health <= 0)
         {
@@ -153,6 +174,16 @@ void ABuilding::PostInitializeComponents()
     Super::PostInitializeComponents();
 
     HealthComponent->SetHealth(0.0f);
+
+	auto FireLocations = GetComponentsByClass(UFlamePositionComponent::StaticClass());
+
+	for (auto Location : FireLocations)
+	{
+		USceneComponent* SceneLocation = Cast<USceneComponent>(Location);
+		auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation());
+		
+		FireParticleSystems.Add(ParticleSystem);
+	}
 }
 
 void ABuilding::ShowOutline()
@@ -216,5 +247,5 @@ void ABuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
     DOREPLIFETIME(ABuilding, Cost);
     DOREPLIFETIME(ABuilding, bBuilt);
     DOREPLIFETIME(ABuilding, City);
-    DOREPLIFETIME(ABuilding, Player);
+    DOREPLIFETIME(ABuilding, Player); 
 }
