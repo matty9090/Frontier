@@ -91,6 +91,7 @@ ABuilding::ABuilding()
 void ABuilding::BeginPlay()
 {
     Super::BeginPlay();
+
 	Mesh->SetStaticMesh(bBuilt ? BuildingMesh : ConstructionMesh);
     auto TooltipWidget = Tooltip->GetUserWidgetObject();
 
@@ -109,6 +110,16 @@ void ABuilding::BeginPlay()
         OnBuildingConstructed();
     }
 
+    auto FireLocations = GetComponentsByClass(UFlamePositionComponent::StaticClass());
+
+    for (auto Location : FireLocations)
+    {
+        USceneComponent* SceneLocation = Cast<USceneComponent>(Location);
+        auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation(), FRotator::ZeroRotator,  false);
+        ParticleSystem->DeactivateSystem();
+        FireParticleSystems.Add(ParticleSystem);
+    }
+
 	HealthComponent->HealthChangeEvent.AddLambda([&](AActor* Actor, float Health) {
 		auto HealthBarWidget = Cast<UHealthBarWidget>(HealthBar->GetUserWidgetObject());
 		HealthBarWidget->ChangeHealthPercentage(Health);
@@ -117,9 +128,9 @@ void ABuilding::BeginPlay()
 		{
 			for (auto system : FireParticleSystems)
 			{
-				if (system)
+				if (!system->IsActive())
 				{
-					system->Activate(true);
+					system->ActivateSystem();
 				}
 			}
 		}
@@ -127,8 +138,10 @@ void ABuilding::BeginPlay()
 		{
 			for (auto system : FireParticleSystems)
 			{
-				if (system)
-					system->Deactivate();
+                if (system->IsActive())
+                {
+					system->DeactivateSystem();
+                }
 			}
 		}
 
@@ -174,16 +187,6 @@ void ABuilding::PostInitializeComponents()
     Super::PostInitializeComponents();
 
     HealthComponent->SetHealth(0.0f);
-
-	auto FireLocations = GetComponentsByClass(UFlamePositionComponent::StaticClass());
-
-	for (auto Location : FireLocations)
-	{
-		USceneComponent* SceneLocation = Cast<USceneComponent>(Location);
-		auto ParticleSystem = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticle, SceneLocation->GetComponentLocation());
-		
-		FireParticleSystems.Add(ParticleSystem);
-	}
 }
 
 void ABuilding::ShowOutline()
