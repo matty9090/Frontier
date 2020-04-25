@@ -157,6 +157,14 @@ void ABuilding::EndPlay(const EEndPlayReason::Type Reason)
 {
     Super::EndPlay(Reason);
 
+    for (auto system : FireParticleSystems)
+    {
+        if (system)
+        {
+            system->DeactivateSystem();
+        }
+    }
+
     if (IsValid(City))
     {
         City->RemoveBuilding(this);
