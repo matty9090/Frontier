@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 #include "Components/StaticMeshComponent.h"
 
 #include "FrontierCharacter.h"
@@ -39,6 +40,9 @@ AFrontierPlayerController::AFrontierPlayerController()
     bShowMouseCursor = true;
     bEnableMouseOverEvents = true;
     DefaultMouseCursor = EMouseCursor::Default;
+
+    PlaceSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PlaceSound"));
+    RotateSound = CreateDefaultSubobject<UAudioComponent>(TEXT("RotateSound"));
 }
 
 void AFrontierPlayerController::BeginPlay()
@@ -455,6 +459,8 @@ void AFrontierPlayerController::OnSelectUp()
                 HoveredBuilding->Destroy();
                 HoveredBuilding = nullptr;
             }
+
+            PlaceSound->Play();
         }
     }
     else
@@ -587,6 +593,7 @@ void AFrontierPlayerController::OnRotate()
     if (HoveredBuilding)
     {
         HoveredBuilding->AddActorWorldRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 90.0f)));
+        RotateSound->Play();
     }
 }
 

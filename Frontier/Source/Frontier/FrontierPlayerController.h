@@ -165,6 +165,12 @@ private:
     UPROPERTY(EditAnywhere)
     TSubclassOf<AFogOfWar> FogOfWarClass;
 
+    UPROPERTY(EditAnywhere)
+    UAudioComponent* PlaceSound;
+
+    UPROPERTY(EditAnywhere)
+    UAudioComponent* RotateSound;
+
     UPROPERTY()
     UUI* UI;
 
