@@ -92,20 +92,26 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
 		{
 		case ECharacterStates::Idle:
 			StateIdle();
+			SetCanAffectNavigationGeneration(true);
 			break;
 		case ECharacterStates::Harvesting:
 			StateHarvest();
+			SetCanAffectNavigationGeneration(true);
 			break;
 		case ECharacterStates::Attacking:
 			StateAttacking();
+			SetCanAffectNavigationGeneration(true);
 			break;
 		case ECharacterStates::Building:
 			StateBuilding();
+			SetCanAffectNavigationGeneration(true);
 			break;
 		case ECharacterStates::Moving:
 			StateMoving();
+			SetCanAffectNavigationGeneration(false);
 			break;
 		default:
+			SetCanAffectNavigationGeneration(false);
 			break;
 		}
     }
@@ -464,7 +470,6 @@ void AFrontierCharacter::Attack()
 			);
 
             Projectile->MovementComponent->HomingTargetComponent = MoveObject->GetRootComponent();
-
 			Projectile->Player = Player;
 		}
 		else
