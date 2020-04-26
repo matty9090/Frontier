@@ -43,6 +43,8 @@ AFrontierPlayerController::AFrontierPlayerController()
 
     PlaceSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PlaceSound"));
     RotateSound = CreateDefaultSubobject<UAudioComponent>(TEXT("RotateSound"));
+    ClickSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ClickSound"));
+    SelectSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SelectSound"));
 }
 
 void AFrontierPlayerController::BeginPlay()
@@ -437,6 +439,8 @@ void AFrontierPlayerController::OnSelectUp()
             Char->ShowOutline();
         }
 
+        SelectSound->Play();
+
         return;
     }
 
@@ -494,6 +498,8 @@ void AFrontierPlayerController::OnSelectUp()
 
                 Selected = true;
                 ControllerState = EControllerState::SelectedUnit;
+
+                SelectSound->Play();
             }
             else
             {

@@ -171,6 +171,12 @@ private:
     UPROPERTY(EditAnywhere)
     UAudioComponent* RotateSound;
 
+    UPROPERTY(EditAnywhere)
+    UAudioComponent* ClickSound;
+
+    UPROPERTY(EditAnywhere)
+    UAudioComponent* SelectSound;
+
     UPROPERTY()
     UUI* UI;
 
