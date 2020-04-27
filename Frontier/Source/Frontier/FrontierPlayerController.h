@@ -18,6 +18,7 @@ class UBuildingBaseWidget;
 class UResourcesContainerWidget;
 class UBuildingPlacementErrorWidget;
 
+DECLARE_DELEGATE(FBuildingConstructedEvent)
 DECLARE_DELEGATE_OneParam(FPlayerKilledEvent, AFrontierCharacter*);
 DECLARE_MULTICAST_DELEGATE_OneParam(FCityBuiltEvent, ACity*);
 
@@ -48,6 +49,7 @@ enum class ESound : uint8
     Rotate              UMETA(DisplayName = "Rotate"),
     Click               UMETA(DisplayName = "Click"),
     Select              UMETA(DisplayName = "Select"),
+    Built               UMETA(DisplayName = "Built"),
     ActionBuild         UMETA(DisplayName = "ActionBuild"),
     ActionHarvest       UMETA(DisplayName = "ActionHarvest"),
     _Max
@@ -68,6 +70,7 @@ public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
     
     FCityBuiltEvent GetCityBuiltEvent() { return CityBuiltEvent; }
+    FBuildingConstructedEvent GetBuildingConstructedEvent() { return BuildingConstructedEvent; }
 
     UFUNCTION(BlueprintCallable)
     void SetHoveredBuilding(TSubclassOf<ABuilding> BuildingType);
@@ -218,4 +221,5 @@ private:
     UBuildingPlacementErrorWidget* BuildingPlacementErrorWidget;
 
     FCityBuiltEvent CityBuiltEvent;
+    FBuildingConstructedEvent BuildingConstructedEvent;
 };

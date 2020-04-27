@@ -235,6 +235,13 @@ bool ABuilding::Construct(float ConstructionAmount)
 
 		Cast<AFrontierPlayerState>(Player)->PlayerStats.BuildingsBuilt++;
         OnBuildingConstructed();
+
+        auto Controller = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+        if (Controller)
+        {
+            Controller->GetBuildingConstructedEvent().ExecuteIfBound();
+        }
 	}
 
 	return bBuilt;

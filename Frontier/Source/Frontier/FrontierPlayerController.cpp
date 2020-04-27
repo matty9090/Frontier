@@ -96,6 +96,10 @@ void AFrontierPlayerController::BeginPlay()
                 }
             }
         });
+
+        BuildingConstructedEvent.BindLambda([&]() {
+            Sounds[ESound::Built]->Play();
+        });
     }
 }
 
