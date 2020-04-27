@@ -35,16 +35,19 @@
 #include "Widgets/ResourcesContainerWidget.h"
 #include "Widgets/BuildingPlacementErrorWidget.h"
 
-AFrontierPlayerController::AFrontierPlayerController()
+AFrontierPlayerController::AFrontierPlayerController(const FObjectInitializer& ObjectInitializer)
 {
     bShowMouseCursor = true;
     bEnableMouseOverEvents = true;
     DefaultMouseCursor = EMouseCursor::Default;
 
-    PlaceSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PlaceSound"));
-    RotateSound = CreateDefaultSubobject<UAudioComponent>(TEXT("RotateSound"));
-    ClickSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ClickSound"));
-    SelectSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SelectSound"));
+    for (uint8_t i = 0; i < (uint8_t)ESound::_Max; ++i)
+    {
+        const TEnumAsByte<ESound> SoundEnum = (ESound)i;
+        auto Comp = CreateDefaultSubobject<UAudioComponent>(*UEnum::GetValueAsString(SoundEnum.GetValue()));
+        Comp->SetAutoActivate(false);
+        Sounds.Add((ESound)i, Comp);
+    }
 }
 
 void AFrontierPlayerController::BeginPlay()
@@ -55,6 +58,11 @@ void AFrontierPlayerController::BeginPlay()
 
     if (!IsRunningDedicatedServer())
     {
+        for (auto Sound : UserSounds)
+        {
+            Sounds[Sound.Key]->SetSound(Sound.Value);
+        }
+
         FTransform Transform(FVector(0.0f, 0.0f, 260.0f));
         FogOfWar = GetWorld()->SpawnActorDeferred<AFogOfWar>(FogOfWarClass, Transform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
         FogOfWar->Player = Cast<AFrontierPlayerState>(PlayerState);
@@ -439,7 +447,7 @@ void AFrontierPlayerController::OnSelectUp()
             Char->ShowOutline();
         }
 
-        SelectSound->Play();
+        Sounds[ESound::Select]->Play();
 
         return;
     }
@@ -448,7 +456,7 @@ void AFrontierPlayerController::OnSelectUp()
 
     if (ControllerState == EControllerState::PlacingBuilding)
     {
-        if (PS->CanCreateBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation()) && HoveredBuilding && HoveredBuilding->CanCreateBuilding())
+        if (HoveredBuilding->IsAllRequirementsMet())
         {
             ControllerState = EControllerState::Idle;
             ServerSpawnBuilding(HoveredBuildingType, HoveredBuilding->GetActorLocation(), HoveredBuilding->GetActorRotation());
@@ -464,7 +472,7 @@ void AFrontierPlayerController::OnSelectUp()
                 HoveredBuilding = nullptr;
             }
 
-            PlaceSound->Play();
+            Sounds[ESound::Place]->Play();
         }
     }
     else
@@ -499,7 +507,7 @@ void AFrontierPlayerController::OnSelectUp()
                 Selected = true;
                 ControllerState = EControllerState::SelectedUnit;
 
-                SelectSound->Play();
+                Sounds[ESound::Select]->Play();
             }
             else
             {
@@ -576,6 +584,11 @@ void AFrontierPlayerController::OnSend()
 
         if (GetHitResultUnderCursorForObjects(ObjectTypes, false, Hit))
         {
+            const auto Actor = Hit.Actor.Get();
+
+            if (Actor->IsA<ABuilding>()) Sounds[ESound::ActionBuild]->Play();
+            else if (Actor->IsA<ABaseResource>()) Sounds[ESound::ActionHarvest]->Play();
+
             ServerMoveAIToLocation(SelectedUnits, Hit.Location, Hit.Actor.Get());
         }
     }
@@ -599,7 +612,7 @@ void AFrontierPlayerController::OnRotate()
     if (HoveredBuilding)
     {
         HoveredBuilding->AddActorWorldRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, 90.0f)));
-        RotateSound->Play();
+        Sounds[ESound::Rotate]->Play();
     }
 }
 

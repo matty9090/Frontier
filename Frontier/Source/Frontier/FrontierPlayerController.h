@@ -40,13 +40,26 @@ enum class ECursorState : uint8
     Harvest             UMETA(DisplayName = "Harvest")
 };
 
+UENUM(BlueprintType)
+enum class ESound : uint8
+{
+    Default             UMETA(DisplayName = "Default"),
+    Place               UMETA(DisplayName = "Place"),
+    Rotate              UMETA(DisplayName = "Rotate"),
+    Click               UMETA(DisplayName = "Click"),
+    Select              UMETA(DisplayName = "Select"),
+    ActionBuild         UMETA(DisplayName = "ActionBuild"),
+    ActionHarvest       UMETA(DisplayName = "ActionHarvest"),
+    _Max
+};
+
 UCLASS(Blueprintable)
 class AFrontierPlayerController : public APlayerController
 {
     GENERATED_BODY()
 
 public:
-    AFrontierPlayerController();
+    AFrontierPlayerController(const FObjectInitializer& ObjectInitializer);
 
     UFUNCTION(Client, Reliable)
     void OnGameOver(const TArray<FPlayerStats>& Stats, FUniqueNetIdRepl WinningPlayer);
@@ -166,16 +179,10 @@ private:
     TSubclassOf<AFogOfWar> FogOfWarClass;
 
     UPROPERTY(EditAnywhere)
-    UAudioComponent* PlaceSound;
+    TMap<ESound, USoundBase*> UserSounds;
 
-    UPROPERTY(EditAnywhere)
-    UAudioComponent* RotateSound;
-
-    UPROPERTY(EditAnywhere)
-    UAudioComponent* ClickSound;
-
-    UPROPERTY(EditAnywhere)
-    UAudioComponent* SelectSound;
+    UPROPERTY()
+    TMap<ESound, UAudioComponent*> Sounds;
 
     UPROPERTY()
     UUI* UI;
