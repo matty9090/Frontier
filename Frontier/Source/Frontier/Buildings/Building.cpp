@@ -11,6 +11,7 @@
 #include "FrontierCharacter.h"
 #include "FrontierPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/RevealFogComponent.h"
@@ -68,6 +69,9 @@ ABuilding::ABuilding()
     Tooltip->SetVisibility(false);
 
     RevealFogComponent = CreateDefaultSubobject<URevealFogComponent>(TEXT("RevealFog"));
+    FireSound = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSound"));
+    FireSound->SetAutoActivate(false);
+    FireSound->SetupAttachment(RootComponent);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> BarClass(TEXT("/Game/Frontier/Blueprints/Widgets/WBP_HealthBar"));
 
@@ -84,7 +88,6 @@ ABuilding::ABuilding()
     }
 
     Widget = UBuildingBaseWidget::StaticClass();
-
 }
 
 // Called when the game starts or when spawned
@@ -131,6 +134,7 @@ void ABuilding::BeginPlay()
 				if (!system->IsActive())
 				{
 					system->ActivateSystem();
+                    FireSound->FadeIn(1.0f, 1.0f, 0.0f);
 				}
 			}
 		}
@@ -141,6 +145,7 @@ void ABuilding::BeginPlay()
                 if (system->IsActive())
                 {
 					system->DeactivateSystem();
+                    FireSound->FadeOut(1.0f, 0.0f);
                 }
 			}
 		}

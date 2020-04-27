@@ -130,6 +130,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<UParticleSystemComponent*> FireParticleSystems;
 
+    UPROPERTY(EditAnywhere)
+    UAudioComponent* FireSound;
+
 private:
     UFUNCTION()
     void BeginMouseOver(UPrimitiveComponent* TouchedComponent);
