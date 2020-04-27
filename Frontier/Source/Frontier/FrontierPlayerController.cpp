@@ -478,6 +478,10 @@ void AFrontierPlayerController::OnSelectUp()
 
             Sounds[ESound::Place]->Play();
         }
+        else
+        {
+            Sounds[ESound::Error]->Play();
+        }
     }
     else
     {
@@ -592,6 +596,7 @@ void AFrontierPlayerController::OnSend()
 
             if (Actor->IsA<ABuilding>()) Sounds[ESound::ActionBuild]->Play();
             else if (Actor->IsA<ABaseResource>()) Sounds[ESound::ActionHarvest]->Play();
+            else Sounds[ESound::ActionSent]->Play();
 
             ServerMoveAIToLocation(SelectedUnits, Hit.Location, Hit.Actor.Get());
         }

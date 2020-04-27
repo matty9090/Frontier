@@ -45,11 +45,13 @@ UENUM(BlueprintType)
 enum class ESound : uint8
 {
     Default             UMETA(DisplayName = "Default"),
+    Error               UMETA(DisplayName = "Error"),
     Place               UMETA(DisplayName = "Place"),
     Rotate              UMETA(DisplayName = "Rotate"),
     Click               UMETA(DisplayName = "Click"),
     Select              UMETA(DisplayName = "Select"),
     Built               UMETA(DisplayName = "Built"),
+    ActionSent          UMETA(DisplayName = "ActionSent"),
     ActionBuild         UMETA(DisplayName = "ActionBuild"),
     ActionHarvest       UMETA(DisplayName = "ActionHarvest"),
     _Max
