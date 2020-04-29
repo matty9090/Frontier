@@ -195,7 +195,7 @@ void AFrontierPlayerController::PlayerTick(float DeltaTime)
 
             if (Cast<AFrontierCharacter>(Hit.Actor))
             {
-                Char->Player->Team != PS->Team && Char->bRevealed ? CursorState = ECursorState::Attack : CursorState = ECursorState::Send;
+				Char->Player->Team != PS->Team && Char->bRevealed ?	CursorState = ECursorState::Attack : CursorState = ECursorState::Send;
             }
             else if (Cast<ABuilding>(Hit.Actor))
             {
@@ -599,6 +599,24 @@ void AFrontierPlayerController::OnSend()
             if (Actor->IsA<ABuilding>()) Sounds[ESound::ActionBuild]->Play();
             else if (Actor->IsA<ABaseResource>()) Sounds[ESound::ActionHarvest]->Play();
             else Sounds[ESound::ActionSent]->Play();
+
+			UDecalComponent* Decal;
+
+			FHitResult DecalHit;
+			TArray<TEnumAsByte<EObjectTypeQuery>> DecalRayObjectTypes = {
+				EObjectTypeQuery::ObjectTypeQuery7, // Terrain
+			};
+
+			
+			GetHitResultUnderCursorForObjects(DecalRayObjectTypes, false, DecalHit);
+
+			if(CursorState == ECursorState::Attack)
+				Decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), MovementMaterialRed, FVector(50, 50, 50), DecalHit.Location, FRotator(-90, 0, 0), 0.4f);
+			else
+				Decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), MovementMaterialGreen, FVector(50, 50, 50), DecalHit.Location, FRotator(-90, 0, 0), 0.4f);
+
+			Decal->SetFadeIn(0.f, 0.1f);
+			Decal->SetFadeOut(0.2f, 0.1f);
 
             ServerMoveAIToLocation(SelectedUnits, Hit.Location, Hit.Actor.Get());
         }

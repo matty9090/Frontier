@@ -181,6 +181,12 @@ private:
     UPROPERTY(EditAnywhere)
     UMaterialInterface* HoverMaterialRed = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* MovementMaterialGreen = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* MovementMaterialRed = nullptr;
+
     UPROPERTY(EditAnywhere)
     TSubclassOf<AFogOfWar> FogOfWarClass;
 
