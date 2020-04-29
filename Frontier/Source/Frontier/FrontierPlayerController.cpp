@@ -546,6 +546,8 @@ void AFrontierPlayerController::OnSelectUp()
 
                 ControllerState = EControllerState::SelectedBuilding;
                 Selected = true;
+
+                Sounds[ESound::ActionClickBuilding]->Play();
             }
 
             auto Resource = Cast<ABaseResource>(Hit.Actor);

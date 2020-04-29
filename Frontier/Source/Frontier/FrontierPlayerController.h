@@ -54,6 +54,7 @@ enum class ESound : uint8
     ActionSent          UMETA(DisplayName = "ActionSent"),
     ActionBuild         UMETA(DisplayName = "ActionBuild"),
     ActionHarvest       UMETA(DisplayName = "ActionHarvest"),
+    ActionClickBuilding UMETA(DisplayName = "ActionClickBuilding"),
     _Max
 };
 
