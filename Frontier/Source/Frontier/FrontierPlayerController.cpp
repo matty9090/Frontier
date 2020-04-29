@@ -601,14 +601,16 @@ void AFrontierPlayerController::OnSend()
             else Sounds[ESound::ActionSent]->Play();
 
 			UDecalComponent* Decal;
-
 			FHitResult DecalHit;
+
 			TArray<TEnumAsByte<EObjectTypeQuery>> DecalRayObjectTypes = {
 				EObjectTypeQuery::ObjectTypeQuery7, // Terrain
 			};
-
 			
-			GetHitResultUnderCursorForObjects(DecalRayObjectTypes, false, DecalHit);
+            float MX, MY;
+
+            GetMousePosition(MX, MY);
+			GetHitResultAtScreenPosition(FVector2D(MX + 20.0f, MY + 40.0f), DecalRayObjectTypes, false, DecalHit);
 
 			if(CursorState == ECursorState::Attack)
 				Decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), MovementMaterialRed, FVector(50, 50, 50), DecalHit.Location, FRotator(-90, 0, 0), 0.4f);
