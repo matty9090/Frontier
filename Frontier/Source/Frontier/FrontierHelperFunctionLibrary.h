@@ -96,7 +96,7 @@ public:
     }
 
     UFUNCTION(BlueprintPure)
-    static FString GetResourcesAvailableString(FResources Target, FResources Current)
+    static FString GetResourcesAvailableString(FResources Target, FResources Current, bool bIncludePop = false)
     {
         auto Available = Current.GetResourcesAvailable(Target);
 
@@ -108,10 +108,11 @@ public:
 
         FString Str = "Wood " + GetTxt(EResource::Wood);
         Str += "\nStone " + GetTxt(EResource::Stone);
-        Str += "\nMetal " + GetTxt(EResource::Metal);
-        Str += "\nGold " + GetTxt(EResource::Gold);
-        Str += "\nFood " + GetTxt(EResource::Food);
-        Str += "\nPopulation " + GetTxt(EResource::Population);
+
+        if (bIncludePop)
+        {
+            Str += "\nPopulation " + GetTxt(EResource::Population);
+        }
 
         return Str;
     }

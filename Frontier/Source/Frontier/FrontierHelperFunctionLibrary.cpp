@@ -11,9 +11,6 @@ FString UFrontierHelperFunctionLibrary::GetResourceName(EResource Res)
     {
         case EResource::Wood: Name = "Wood"; break;
         case EResource::Stone: Name = "Stone"; break;
-        case EResource::Metal: Name = "Metal"; break;
-        case EResource::Gold: Name = "Gold"; break;
-        case EResource::Food: Name = "Food"; break;
         case EResource::Population: Name = "Population"; break;
         case EResource::MaxPop: Name = "Max Population"; break;
     }

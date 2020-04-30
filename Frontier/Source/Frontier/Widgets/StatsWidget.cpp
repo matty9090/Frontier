@@ -11,9 +11,6 @@ void UStatsWidget::UpdateStats(FPlayerStats Stats)
 
     Res += Stats.TotalResources.Resources[EResource::Wood];
     Res += Stats.TotalResources.Resources[EResource::Stone];
-    Res += Stats.TotalResources.Resources[EResource::Metal];
-    Res += Stats.TotalResources.Resources[EResource::Gold];
-    Res += Stats.TotalResources.Resources[EResource::Food];
 
     TxtTotalResources->Text = FText::FromString(FString::FromInt(Res));
     TxtBuildingsBuilt->Text = FText::FromString(FString::FromInt(Stats.BuildingsBuilt));

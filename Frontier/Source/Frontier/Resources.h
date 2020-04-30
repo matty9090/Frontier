@@ -8,9 +8,6 @@ enum class EResource : uint8
 {
     Wood        UMETA(DisplayName="Wood"),
     Stone       UMETA(DisplayName="Stone"),
-    Metal       UMETA(DisplayName="Metal"),
-    Gold        UMETA(DisplayName="Gold"),
-    Food        UMETA(DisplayName="Food"),
     Population  UMETA(DisplayName="Population"),
     MaxPop      UMETA(DisplayName="Max Population")
 };
@@ -30,9 +27,6 @@ struct FResources
     {
         Resources.Add(EResource::Wood, 0);
         Resources.Add(EResource::Stone, 0);
-        Resources.Add(EResource::Metal, 0);
-        Resources.Add(EResource::Gold, 0);
-        Resources.Add(EResource::Food, 0);
         Resources.Add(EResource::Population, 0);
         Resources.Add(EResource::MaxPop, 0);
     }
@@ -41,9 +35,6 @@ struct FResources
     {
         Resources.Add(EResource::Wood, Wood);
         Resources.Add(EResource::Stone, Stone);
-        Resources.Add(EResource::Metal, Metal);
-        Resources.Add(EResource::Gold, Gold);
-        Resources.Add(EResource::Food, Food);
         Resources.Add(EResource::Population, Population);
         Resources.Add(EResource::MaxPop, MaxPop);
     }
@@ -52,9 +43,6 @@ struct FResources
     {
         Resources[EResource::Wood] += Res.Resources[EResource::Wood];
         Resources[EResource::Stone] += Res.Resources[EResource::Stone];
-        Resources[EResource::Metal] += Res.Resources[EResource::Metal];
-        Resources[EResource::Gold] += Res.Resources[EResource::Gold];
-        Resources[EResource::Food] += Res.Resources[EResource::Food];
         Resources[EResource::Population] -= Res.Resources[EResource::Population];
         Resources[EResource::MaxPop] += Res.Resources[EResource::MaxPop];
     }
@@ -63,9 +51,6 @@ struct FResources
     {
         Resources[EResource::Wood] -= Res.Resources[EResource::Wood];
         Resources[EResource::Stone] -= Res.Resources[EResource::Stone];
-        Resources[EResource::Metal] -= Res.Resources[EResource::Metal];
-        Resources[EResource::Gold] -= Res.Resources[EResource::Gold];
-        Resources[EResource::Food] -= Res.Resources[EResource::Food];
         Resources[EResource::Population] += Res.Resources[EResource::Population];
         Resources[EResource::MaxPop] -= Res.Resources[EResource::MaxPop];
     }
@@ -75,9 +60,6 @@ struct FResources
         FResources NewRes;
         NewRes.Resources[EResource::Wood] = Resources[EResource::Wood] * Res.Resources[EResource::Wood];
         NewRes.Resources[EResource::Stone] = Resources[EResource::Stone] * Res.Resources[EResource::Stone];
-        NewRes.Resources[EResource::Metal] = Resources[EResource::Metal] * Res.Resources[EResource::Metal];
-        NewRes.Resources[EResource::Gold] = Resources[EResource::Gold] * Res.Resources[EResource::Gold];
-        NewRes.Resources[EResource::Food] = Resources[EResource::Food] * Res.Resources[EResource::Food];
         NewRes.Resources[EResource::Population] = Resources[EResource::Population] * Res.Resources[EResource::Population];
         NewRes.Resources[EResource::MaxPop] = Resources[EResource::MaxPop] * Res.Resources[EResource::MaxPop];
 
@@ -88,9 +70,6 @@ struct FResources
     {
         return Resources[EResource::Wood] >= Res.Resources[EResource::Wood] &&
                Resources[EResource::Stone] >= Res.Resources[EResource::Stone] &&
-               Resources[EResource::Metal] >= Res.Resources[EResource::Metal] &&
-               Resources[EResource::Gold] >= Res.Resources[EResource::Gold] &&
-               Resources[EResource::Food] >= Res.Resources[EResource::Food] &&
                Resources[EResource::Population] + Res.Resources[EResource::Population] <= Resources[EResource::MaxPop];
     }
 
@@ -100,9 +79,6 @@ struct FResources
 
         Available.Add(EResource::Wood, Resources[EResource::Wood] >= Target.Resources[EResource::Wood]);
         Available.Add(EResource::Stone, Resources[EResource::Stone] >= Target.Resources[EResource::Stone]);
-        Available.Add(EResource::Metal, Resources[EResource::Metal] >= Target.Resources[EResource::Metal]);
-        Available.Add(EResource::Gold, Resources[EResource::Gold] >= Target.Resources[EResource::Gold]);
-        Available.Add(EResource::Food, Resources[EResource::Food] >= Target.Resources[EResource::Food]);
         Available.Add(EResource::Population, Resources[EResource::Population] + Target.Resources[EResource::Population] <= Resources[EResource::MaxPop]);
 
         return Available;
