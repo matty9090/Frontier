@@ -332,16 +332,26 @@ void AFrontierCharacter::SetHarvest()
 	}
 }
 
+void AFrontierCharacter::ClientFinishDeposit_Implementation(float Res, EResource Type)
+{
+	auto PC = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	if (PC->GetPlayerState<AFrontierPlayerState>()->Team == Player->Team)
+	{
+		auto ResWidget = Cast<UFeedbackWidget>(ResourceDepositWidget->GetUserWidgetObject());
+		ResWidget->Text = "<Green>+" + FString::FromInt(Res) + "</> ";
+		ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(Type);
+		ResWidget->Play();
+
+		ResourceDepositWidget->SetWorldLocation(MoveObject->GetActorLocation() + FVector::UpVector * 60.0f);
+	}
+}
+
 void AFrontierCharacter::FinishDeposit()
 {
 	if (HeldResources > 0.0f)
 	{
-		auto ResWidget = Cast<UFeedbackWidget>(ResourceDepositWidget->GetUserWidgetObject());
-		ResWidget->Text = "<Green>+" + FString::FromInt(HeldResources) + "</> ";
-		ResWidget->Text += UFrontierHelperFunctionLibrary::GetResourceName(HeldResourceType);
-		ResWidget->Play();
-
-		ResourceDepositWidget->SetWorldLocation(MoveObject->GetActorLocation() + FVector::UpVector * 60.0f);
+		ClientFinishDeposit(HeldResources, HeldResourceType);
 	}
 
 	Player->AddSpecificResources(HeldResources, HeldResourceType);
@@ -448,7 +458,6 @@ void AFrontierCharacter::SetAttack()
 		GetWorldTimerManager().SetTimer(AttackTimerHandler, this, &AFrontierCharacter::Attack, AttackTime, true); // check
 	}
 }
-
 
 void AFrontierCharacter::Attack()
 {

@@ -231,6 +231,9 @@ public:
     URevealFogComponent* RevealFogComponent;
 
 private:
+	UFUNCTION(NetMulticast, Reliable)
+    void ClientFinishDeposit(float Res, EResource Type);
+
     FScriptDelegate ActorHitDelegate;
 	FScriptDelegate MoveCompleteDelegate;
 };
