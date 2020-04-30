@@ -222,6 +222,20 @@ bool ABuilding::IsDamaged()
 	return HealthComponent->Health < HealthComponent->MaxHealth;
 }
 
+void ABuilding::ClientBuildingBuilt_Implementation()
+{
+    auto PC = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+    if (PC->GetPlayerState<AFrontierPlayerState>()->Team == Player->Team)
+    {
+        auto Controller = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+        if (Controller)
+        {
+            Controller->GetBuildingConstructedEvent().ExecuteIfBound();
+        }
+    }
+}
 
 bool ABuilding::Construct(float ConstructionAmount)
 {
@@ -240,13 +254,7 @@ bool ABuilding::Construct(float ConstructionAmount)
 
 		Cast<AFrontierPlayerState>(Player)->PlayerStats.BuildingsBuilt++;
         OnBuildingConstructed();
-
-        auto Controller = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-        if (Controller)
-        {
-            Controller->GetBuildingConstructedEvent().ExecuteIfBound();
-        }
+        ClientBuildingBuilt();
 	}
 
 	return bBuilt;

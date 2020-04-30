@@ -143,6 +143,9 @@ private:
     UFUNCTION()
     void OnRep_Built();
 
+    UFUNCTION(NetMulticast, Reliable)
+    void ClientBuildingBuilt();
+
     TScriptDelegate<> BeginMouseOverDelegate;
     TScriptDelegate<> EndMouseOverDelegate;
 };
