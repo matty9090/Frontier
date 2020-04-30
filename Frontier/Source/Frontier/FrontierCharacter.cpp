@@ -84,7 +84,7 @@ void AFrontierCharacter::Tick(float DeltaSeconds)
 
 	SetActorHiddenInGame(!bRevealed);
 
-    if (GetOwner())
+    if (HasAuthority())
     {
 		UpdateNav();
 

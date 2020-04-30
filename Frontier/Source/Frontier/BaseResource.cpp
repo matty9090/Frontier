@@ -7,8 +7,12 @@ ABaseResource::ABaseResource()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    if (RootComponent)
+	SetActorEnableCollision(true);
+
+	if (RootComponent)
+	{
         RootComponent->SetMobility(EComponentMobility::Stationary);
+	}
 }
 
 void ABaseResource::BeginPlay()
@@ -21,7 +25,6 @@ void ABaseResource::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
 	SetActorHiddenInGame(!bRevealed);
-	SetActorEnableCollision(bRevealed);
 }
 
 int ABaseResource::Harvest(int GatherSpeed)
