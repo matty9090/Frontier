@@ -349,12 +349,13 @@ void AFrontierCharacter::ClientFinishDeposit_Implementation(float Res, EResource
 
 void AFrontierCharacter::FinishDeposit()
 {
+	float AddedRes = Player->AddSpecificResources(HeldResources, HeldResourceType);
+
 	if (HeldResources > 0.0f)
 	{
-		ClientFinishDeposit(HeldResources, HeldResourceType);
+		ClientFinishDeposit(AddedRes, HeldResourceType);
 	}
 
-	Player->AddSpecificResources(HeldResources, HeldResourceType);
 	HeldResources = 0.f;
 
 	if (IsValid(HarvestObject))

@@ -49,10 +49,12 @@ void AFrontierPlayerState::AddResourceMultiplier(float ResMultiplier, EResource 
     ResourceMultiplier.Resources[Type] += ResMultiplier;
 }
 
-void AFrontierPlayerState::AddSpecificResources(float Res, EResource Type)
+float AFrontierPlayerState::AddSpecificResources(float Res, EResource Type)
 {
-	Resources.Resources[Type] += Res * ResourceMultiplier.Resources[Type];
+    float Multiplied = Res * ResourceMultiplier.Resources[Type];
+	Resources.Resources[Type] += Multiplied;
 	PlayerStats.TotalResources.Resources[Type] += Res * ResourceMultiplier.Resources[Type];
+    return Multiplied;
 }
 
 void AFrontierPlayerState::UnlockResearchNode(UResearchNode* Node)

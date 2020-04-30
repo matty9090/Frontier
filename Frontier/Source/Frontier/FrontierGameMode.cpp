@@ -44,6 +44,7 @@ void AFrontierGameMode::SetupPlayer(AController* Player, FVector Location)
     Player->GetPawn()->SetActorLocation(Location);
 
     auto PS = Cast<AFrontierPlayerState>(Player->PlayerState);
+    PS->AddSpecificResources(1.0f, EResource::Population);
 
     auto BoxComponent = TownHallClass.GetDefaultObject()->FindComponentByClass<UBoxComponent>();
     float Z = BoxComponent->GetScaledBoxExtent().Z;

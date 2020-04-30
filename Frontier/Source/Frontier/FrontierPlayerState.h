@@ -75,7 +75,7 @@ public:
 	void AddResourceMultiplier(float ResMultiplier, EResource Type);
 
 	UFUNCTION(BlueprintCallable)
-	void AddSpecificResources(float Res, EResource Type);
+	float AddSpecificResources(float Res, EResource Type);
 
     // Do we need this?
     UFUNCTION(BlueprintCallable)
