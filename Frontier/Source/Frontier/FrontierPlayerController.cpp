@@ -582,7 +582,7 @@ void AFrontierPlayerController::OnSend()
 {
     if (ControllerState == EControllerState::SelectedUnit)
     {
-		GetPlayerState<AFrontierPlayerState>()->PlayerStats.Actions++;
+		ServerIncrementActions();
         FHitResult Hit;
 
         TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = {
@@ -625,7 +625,7 @@ void AFrontierPlayerController::OnSend()
     }
     else if (ControllerState == EControllerState::PlacingBuilding)
     {
-		GetPlayerState<AFrontierPlayerState>()->PlayerStats.Actions++;
+		ServerIncrementActions();
         ControllerState = EControllerState::Idle;
         BuildingPlacementErrorWidget->SetVisibility(ESlateVisibility::Collapsed);
         HoveredBuilding->Destroy();
@@ -780,6 +780,16 @@ bool AFrontierPlayerController::ServerResearch_Validate(UResearchNode* Node)
 void AFrontierPlayerController::ServerResearch_Implementation(UResearchNode* Node)
 {
     Cast<AFrontierPlayerState>(PlayerState)->Research(Node);
+}
+
+bool AFrontierPlayerController::ServerIncrementActions_Validate()
+{
+    return true;
+}
+
+void AFrontierPlayerController::ServerIncrementActions_Implementation()
+{
+    GetPlayerState<AFrontierPlayerState>()->PlayerStats.Actions++;
 }
 
 void AFrontierPlayerController::OnGameOver_Implementation(const TArray<FPlayerStats>& Stats, FUniqueNetIdRepl WinningPlayer)

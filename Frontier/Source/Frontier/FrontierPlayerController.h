@@ -137,6 +137,9 @@ private:
 
     UFUNCTION(Server, Reliable, WithValidation, BlueprintCallable)
     void ServerResearch(UResearchNode* Node);
+
+    UFUNCTION(Server, Reliable, WithValidation)
+    void ServerIncrementActions();
     // End RPCs
 
     UPROPERTY(EditAnywhere)
