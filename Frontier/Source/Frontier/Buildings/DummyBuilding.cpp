@@ -15,13 +15,7 @@ ADummyBuilding::ADummyBuilding()
     Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
     Box->SetupAttachment(RootComponent);
     Box->SetBoxExtent(FVector(32.0f, 32.0f, 32.0f));
-
-    Box->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    Box->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel2); // Dummy
-    Box->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Overlap);
-    Box->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+    Box->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
     RootComponent = Box;
     RootComponent->SetMobility(EComponentMobility::Movable);
