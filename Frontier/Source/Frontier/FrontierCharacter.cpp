@@ -188,6 +188,11 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 		MoveObject = Object;
 		PauseTimerFunctions();
 
+		if (MoveObject->GetClass()->IsChildOf(ABaseResource::StaticClass()))
+			bHarvestMove = true;
+		else
+			bHarvestMove = false;
+
 		if (HasAuthority())
 		{
 			State = ECharacterStates::Moving;
@@ -240,6 +245,12 @@ void AFrontierCharacter::OnMoveCompleted(FAIRequestID RequestID, EPathFollowingR
 			else
 				State = ECharacterStates::Idle;
 		}
+		else
+		{
+			if(bHarvestMove)
+				FindNewHarvest();
+		}
+
 		break;
 
 	case ECharacterStates::Depositing:

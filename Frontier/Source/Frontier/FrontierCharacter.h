@@ -171,7 +171,7 @@ public:
 	TSubclassOf<AProjectile> ProjectileClass = AProjectile::StaticClass();
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    int32 GatherSpeed = 10;
+    int32 GatherSpeed = 50;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 BuildSpeed = 10;
@@ -223,6 +223,8 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bRevealed = false;
+
+	bool bHarvestMove = false;
 
 	UPROPERTY()
     UWidgetComponent* ResourceDepositWidget = nullptr;
