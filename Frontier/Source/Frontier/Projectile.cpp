@@ -28,14 +28,17 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	auto Component = OtherActor->GetComponentByClass(UHealthComponent::StaticClass());
-	if (Component != nullptr)
+	if (HasAuthority())
 	{
-		auto OtherActorHealth = Cast<UHealthComponent>(Component);
-		if(OtherActorHealth->ReceiveDamage(Damage))
-			Player->PlayerStats.UnitsKilled++;
+		auto Component = OtherActor->GetComponentByClass(UHealthComponent::StaticClass());
+		if (Component != nullptr)
+		{
+			auto OtherActorHealth = Cast<UHealthComponent>(Component);
+			if(OtherActorHealth->ReceiveDamage(Damage))
+				Player->PlayerStats.UnitsKilled++;
+		}
 	}
-    Destroy();
+	Destroy();
 }
 
 void AProjectile::Tick(float DeltaTime)

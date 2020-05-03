@@ -39,18 +39,20 @@ void ATurret::Tick(float DeltaTime)
 
         if (CurrentTarget && bCanFire)
         {
-            FActorSpawnParameters SpawnParams;
-            SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
             FVector FirePoint = GetActorLocation() + FireLocation->GetRelativeTransform().GetLocation();
             auto Rotator = (CurrentTarget->GetActorLocation() - FirePoint).Rotation();
 
-            GetWorld()->SpawnActor<AProjectile>(
+			FTransform ProjTransform(Rotator,FirePoint);
+
+            auto Proj = GetWorld()->SpawnActorDeferred<AProjectile>(
                 ProjectileClass,
-                FirePoint,
-                Rotator,
-                SpawnParams
+				ProjTransform,
+				this,
+				nullptr,
+				ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
             );
+			Proj->Player = Player;
+			UGameplayStatics::FinishSpawningActor(Proj, ProjTransform);
 
             bCanFire = false;
             Timer = FireRate;
