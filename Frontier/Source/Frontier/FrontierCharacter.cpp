@@ -587,6 +587,5 @@ void AFrontierCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
     DOREPLIFETIME(AFrontierCharacter, Player); 
 	DOREPLIFETIME(AFrontierCharacter, State); 
 	DOREPLIFETIME(AFrontierCharacter, MoveObject);
-	DOREPLIFETIME(AFrontierCharacter, HarvestObject);
 	DOREPLIFETIME(AFrontierCharacter, LastHarvestClass);
 }
