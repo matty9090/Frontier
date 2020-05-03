@@ -239,6 +239,9 @@ void ABuilding::ClientBuildingBuilt_Implementation()
 
 bool ABuilding::Construct(float ConstructionAmount)
 {
+    if (bBuilt)
+        return true;
+
     if (HasAuthority())
     {
         auto GM = Cast<AFrontierGameMode>(UGameplayStatics::GetGameMode(GetWorld()));

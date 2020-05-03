@@ -151,8 +151,7 @@ void AFrontierCharacter::BeginPlay()
 
 		if (Path)
 		{
-			Path->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
-			Path->SetCrowdAvoidanceRangeMultiplier(1.6f);
+			Path->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Medium);
 			Path->SetCrowdAnticipateTurns(true);
 			Path->SetCrowdSlowdownAtGoal(false);
 			Path->SetCrowdOptimizeTopology(true);
@@ -192,10 +191,11 @@ void AFrontierCharacter::MoveToLocation(FVector Location, AActor* Object)
 		if (HasAuthority())
 		{
 			State = ECharacterStates::Moving;
+
 			if (MoveObject->GetClass() == ALandscape::StaticClass())
 				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToLocation(Location, -1.0f);
 			else
-				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange,false);
+				UAIBlueprintHelperLibrary::GetAIController(GetController())->MoveToActor(MoveObject, MoveRange, false);
 		}
 	}
 }
