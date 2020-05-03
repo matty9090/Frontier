@@ -39,6 +39,7 @@ AFrontierPlayerController::AFrontierPlayerController(const FObjectInitializer& O
 {
     bShowMouseCursor = true;
     bEnableMouseOverEvents = true;
+    bAllowTickBeforeBeginPlay = false;
     DefaultMouseCursor = EMouseCursor::Default;
 
     for (uint8_t i = 0; i < (uint8_t)ESound::_Max; ++i)
@@ -77,8 +78,10 @@ void AFrontierPlayerController::BeginPlay()
         ASceneCapture2D* SceneCapture = GetWorld()->SpawnActor<ASceneCapture2D>(ASceneCapture2D::StaticClass(), CapTransform);
         auto Capture = SceneCapture->GetCaptureComponent2D();
         Capture->TextureTarget = MinimapTarget;
-        Capture->OrthoWidth = FMath::Abs(Landscape->GetActorLocation().X) * 2.0f;
+        Capture->OrthoWidth =  FMath::Abs(Landscape->GetActorLocation().X);
         Capture->ProjectionType = ECameraProjectionMode::Orthographic;
+
+        BoundsLimit = Capture->OrthoWidth / 2.0f - 3000.0f;
         
         ClientCreateUI();
 
@@ -377,6 +380,9 @@ void AFrontierPlayerController::OnMoveUp(float Value)
         auto Delta = Value * MoveSpeed * MovementCurve->GetFloatValue(RoamPawn->GetCameraHeight());
         auto Location = GetPawn()->GetActorLocation() + FVector(Delta, 0.0f, 0.0f);
 
+        if (Location.X < -BoundsLimit) Location.X = -BoundsLimit;
+        if (Location.X >  BoundsLimit) Location.X =  BoundsLimit;
+
         RoamPawn->SetActorLocation(Location);
     }
 }
@@ -388,6 +394,9 @@ void AFrontierPlayerController::OnMoveRight(float Value)
         auto RoamPawn = Cast<ARoamPawn>(GetPawn());
         auto Delta = Value * MoveSpeed * MovementCurve->GetFloatValue(RoamPawn->GetCameraHeight());
         auto Location = GetPawn()->GetActorLocation() + FVector(0.0f, Delta, 0.0f);
+
+        if (Location.Y < -BoundsLimit) Location.Y = -BoundsLimit;
+        if (Location.Y >  BoundsLimit) Location.Y =  BoundsLimit;
 
         RoamPawn->SetActorLocation(Location);
     }

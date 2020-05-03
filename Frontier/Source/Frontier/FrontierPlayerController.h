@@ -221,6 +221,9 @@ private:
     ABuilding* SelectedBuilding = nullptr;
 
     UPROPERTY()
+    float BoundsLimit;
+
+    UPROPERTY()
     UBuildingBaseWidget* SelectedBuildingUI = nullptr;
 
     UPROPERTY()

@@ -2,6 +2,7 @@
 
 #include "BaseResource.h"
 #include "Net/UnrealNetwork.h"
+#include "Frontier.h"
 
 ABaseResource::ABaseResource()
 {
@@ -32,7 +33,7 @@ int ABaseResource::Harvest(int GatherSpeed)
 	ResourceAmount -= GatherSpeed;
 	if (ResourceAmount <= 0)
 	{
-		Destroy();
+		Destroy(false, false);
 		return (GatherSpeed + ResourceAmount);
 	}
 	else
