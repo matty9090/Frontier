@@ -52,7 +52,7 @@ void AFogOfWar::BeginPlay()
 
     if (HasAuthority())
     {
-        auto Num = 2;//GetWorld()->GetGameState()->PlayerArray.Num();
+        auto Num = 4;//GetWorld()->GetGameState()->PlayerArray.Num();
         ServerPixels.Reserve(Num);
 
         for (int i = 0; i < Num; ++i)
@@ -160,7 +160,10 @@ void AFogOfWar::Tick(float DeltaTime)
 
         for (int i = 0; i < Players.Num(); ++i)
         {
-            UpdateReveal(ServerPixels[i], Cast<AFrontierPlayerState>(Players[i]), true);
+            if (IsValid(Players[i]))
+            {
+                UpdateReveal(ServerPixels[i], Cast<AFrontierPlayerState>(Players[i]), true);
+            }
         }
     }
 
