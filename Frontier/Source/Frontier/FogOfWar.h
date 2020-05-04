@@ -20,7 +20,7 @@ public:
 
     void Tick(float DeltaTime) override;
     bool IsRevealedBox(const FVector& Pos, float SizeX, float SizeY);
-    bool IsServerActorRevealed(AActor* Actor, int32 ClientID) const { return ServerInfo[Actor][ClientID]; }
+    bool IsServerActorRevealed(AActor* Actor, int32 ClientID) const;
 
     UPROPERTY()
     AFrontierPlayerState* Player;

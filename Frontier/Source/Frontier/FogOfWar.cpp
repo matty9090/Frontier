@@ -237,6 +237,16 @@ bool AFogOfWar::IsRevealedBox(const FVector& Pos, float SizeX, float SizeY)
     return true;
 }
 
+bool AFogOfWar::IsServerActorRevealed(AActor* Actor, int32 ClientID) const
+{
+    if (ServerInfo.Contains(Actor) && ServerInfo[Actor].Contains(ClientID))
+    {
+        return ServerInfo[Actor][ClientID];
+    }
+
+    return false;
+}
+
 FVector2D AFogOfWar::WorldPositionToFog(const FVector& Pos)
 {
     FVector2D Texel = FVector2D(Pos.X, Pos.Y) - FVector2D(GetActorLocation().X, GetActorLocation().Y);
