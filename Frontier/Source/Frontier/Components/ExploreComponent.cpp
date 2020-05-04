@@ -15,7 +15,10 @@ void UExploreComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-    AIController = Cast<AAIController>(Cast<AFrontierCharacter>(GetOwner())->GetController());
+    auto Character = Cast<AFrontierCharacter>(GetOwner());
+    Character->State = ECharacterStates::Moving;
+
+    AIController = Cast<AAIController>(Character->GetController());
 
     if (AIController)
     {
@@ -43,7 +46,7 @@ void UExploreComponent::OnMoveComplete(FAIRequestID RequestID, const FPathFollow
     if (GetOwner()->HasAuthority())
     {
         PickTargetLocation();
-        AIController->MoveToLocation(TargetLocation, AcceptanceRadius);
+        AIController->MoveToLocation(TargetLocation, -1.0f);
     }
 }
 
