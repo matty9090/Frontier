@@ -347,7 +347,7 @@ void AFrontierCharacter::ClientFinishDeposit_Implementation(float Res, EResource
 {
 	auto PC = Cast<AFrontierPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-	if (PC->GetPlayerState<AFrontierPlayerState>()->Team == Player->Team)
+	if (PC->GetPlayerState<AFrontierPlayerState>()->Team == Player->Team && IsValid(ResourceDepositWidget) && IsValid(MoveObject))
 	{
 		auto ResWidget = Cast<UFeedbackWidget>(ResourceDepositWidget->GetUserWidgetObject());
 		ResWidget->Text = "<Green>+" + FString::FromInt(Res) + "</> ";
