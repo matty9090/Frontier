@@ -746,21 +746,14 @@ void AFrontierPlayerController::ServerMoveAIToLocation_Implementation(const TArr
 
 bool AFrontierPlayerController::ServerQueueUnit_Validate(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
-    auto Barracks = Cast<AUnitQueueCommon>(Building);
-
-    if (Barracks)
-    {
-        return Barracks->CanCreateUnit(Unit);
-    }
-
-    return false;
+    return true;
 }
 
 void AFrontierPlayerController::ServerQueueUnit_Implementation(TSubclassOf<AFrontierCharacter> Unit, ABuilding* Building)
 {
     auto Barracks = Cast<AUnitQueueCommon>(Building);
 
-    if (Barracks)
+    if (Barracks && Barracks->CanCreateUnit(Unit))
     {
         Barracks->QueueUnit(Unit);
     }

@@ -10,7 +10,6 @@ UExploreComponent::UExploreComponent()
     PrimaryComponentTick.bCanEverTick = false;
 }
 
-
 void UExploreComponent::BeginPlay()
 {
 	Super::BeginPlay();
