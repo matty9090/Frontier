@@ -360,6 +360,9 @@ void AFrontierCharacter::ClientFinishDeposit_Implementation(float Res, EResource
 
 void AFrontierCharacter::FinishDeposit()
 {
+	if (!IsValid(Player))
+		return;
+
 	float AddedRes = Player->AddSpecificResources(HeldResources, HeldResourceType);
 
 	if (HeldResources > 0.0f)
